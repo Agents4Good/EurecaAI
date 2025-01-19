@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UFCGPT</title>
+    <link rel="stylesheet" href="../static/css/index.css">
+    <!--<link rel="stylesheet" href="../static/css/index.css">-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#chat_form').on('submit', function (event) {
+                event.preventDefault();
+                var userMessage = $('#user_input').val();
+                $('#user_input').val(''); // Limpa o campo de input após o envio
+                if (userMessage.trim() !== '') {
+                    addUserMessage(userMessage);
+                    sendMessage(userMessage);
+                }
+            });
+        });
+
+        let synth = window.speechSynthesis;
+        let isSpeaking = false;
+
+        // Função para ler texto
+        function speak(msg) {
+            if (isSpeaking) {
+                synth.cancel();
+                isSpeaking = false;
+            } else {
+                const utterance = new SpeechSynthesisUtterance(msg);
+                utterance.lang = 'pt-BR';
+                utterance.pitch = 1;
+                utterance.rate = 1;
+                
+                const voices = synth.getVoices();
+                utterance.voice = voices[1]; // Escolher voz
+
+                synth.speak(utterance);
+                isSpeaking = true;
+            }
+        }
+
+        // Função que adiciona a mensagem do usuário
+        function addUserMessage(message) {
+            var userMessageBlock = `
+                <div class="user">
+                    <div class="user__name">
+                        <p>Você:</p>
+                    </div>
+                    <p class="user__response">${message}</p>
+                </div>`;
+            $('.chat__container').append(userMessageBlock);
+            scrollToBottom();
+        }
+
+        // Função que adiciona a mensagem do bot
+        function addBotMessage() {
+            var botMessageBlock = `
+                <div class="bot">
+                    <div class="bot__container">
+                        <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
+                        <div class="bot__response">
+                            <div class="bot__name">
+                                <p>LMChatv1.0:</p>
+                            </div>
+                            <p class="bot__name__response">Bot is typing...</p>
+                            <div class="bot_options">
+                                <button class="audio-button">
+                                    <img src="../static/images/audio.png" />
+                                </button>
+                            </div>  
+                        </div>
+                    </div>
+                </div>`;
+            $('.chat__container').append(botMessageBlock);
+            scrollToBottom();
+        }
+
+        // Função que envia a mensagem e manipula a resposta do bot
+        function sendMessage(message) {
+            addBotMessage();
+            $.ajax({
+                type: 'POST',
+                url: '/chat',
+                timeout: 120000,
+                data: { user_input: message },
+                success: function (response) {
+                    console.log("Resposta do servidor:", response);
+                    $('.bot__name__response').last().text(response.response); // Atualiza a última resposta
+                    const cleanedResponse = (response.response.trim()).replace(/['"]/g, '');
+                    $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+                    scrollToBottom();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if (textStatus === 'timeout') {
+                        $('.bot__name__response').last().text('Desculpe, o tempo de espera foi excedido.');
+                    } else {
+                        $('.bot__name__response').last().text('Desculpe, algo deu errado.');
+                    } 
+                    console.log(textStatus)
+                }
+            });
+        }
+
+        // Função para manter o scroll no fim do chat
+        function scrollToBottom() {
+            $('.chat').animate({ scrollTop: $('.chat')[0].scrollHeight }, 200);
+        }
+
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // Função para iniciar a gravação de áudio
+        function startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                console.log("Gravação iniciada");
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.play(); 
+                    audioChunks = []; 
+                };
+            });
+        }
+
+        // Função para parar a gravação de áudio
+        function stopRecording() {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                console.log("Gravação parada");
+        
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = []; // Limpa o array para a próxima gravação
+        
+                    // Enviar o áudio para o servidor Flask
+                    const formData = new FormData();
+                    formData.append('file', audioBlob, 'recording.wav'); // Nome do arquivo
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/voice-to-text',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            const transcription = data.transcription;
+                            if (transcription) {
+                                addUserMessage(transcription);
+                                sendMessage(transcription);
+                            }
+                        },
+                        error: function () {
+                            console.error("Erro ao enviar o áudio:", error);
+                        }
+                    });
+                };
+            }
+        }
+        
+        function changeImage(button) {
+            console.log("Ok");
+            const img = button.querySelector('img');
+            const inputQuery = document.getElementsByClassName('query')[0]; 
+
+            if (img.src.includes('microphone.png')) {
+                img.src = '../static/images/audio.png'; 
+                img.style.backgroundColor = "#30ABED";
+                inputQuery.disabled = true;
+                
+                inputQuery.style.backgroundColor = "white";
+                startRecording();
+            } else {
+                img.src = '../static/images/microphone.png'; 
+                img.style.backgroundColor = "#a6d1e9";
+                inputQuery.disabled = false; 
+                stopRecording();
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <header>
+        <img src="./static/images/logo_ufcg.png"/>
+        <h1>UFCGPT</h1>
+    </header>
+    
+    <section>
+        <article class="chat">
+            <div class="chat__container"> 
+
+            </div>
+        </article>
+
+        <form id="chat_form" class="query__container" method="post">
+            <div class="input_container">
+                <input type="text" id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."/>
+                <button class="send" type="submit">
+                    <img src="../static/images/arrow_icon.png"/>
+                </button>
+            </div>
+            <button class="record" onClick="changeImage(this)">
+                <img src="../static/images/microphone.png" id="recordImage"/>
+            </button>
+        </form>
+    </section>
+</body>
+</html>
