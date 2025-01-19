@@ -36,6 +36,11 @@ MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
 
+#BERT
+bert_model
+bert_tokenizer
+
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
