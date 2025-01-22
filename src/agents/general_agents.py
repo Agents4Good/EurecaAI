@@ -5,7 +5,10 @@ from ..tools.eureca.curso_tools import *
 from ..tools.eureca.disciplina_tools import *
 from ..tools.eureca.campus_tools import *
 from ..tools.eureca.setor_tools import *
+from ..tools.detector.detect_tags import *
+
 from ..prompts.system_prompts import *
+
 
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
@@ -45,9 +48,13 @@ SETOR_TOOLS = [
     get_estagios
 ]
 
+DETECTOR_TOOLS = [
+    detect
+]
+
 load_dotenv()
 
-#model = ChatOllama(model="llama3.1")
+#model = ChatOllama(model="llama3.2")
 model = ChatOpenAI(model="gpt-4o")
 #model = ChatGroq(model="llama3-70b-8192")
 
@@ -75,3 +82,7 @@ campus_eureca_node = functools.partial(agent_node, agent=campus_eureca_agent, na
 # Agente_Setor_Professor_Estagio_Eureca
 setor_agent = create_react_agent(model, tools=SETOR_TOOLS, state_modifier=SETOR_SYSTEM_PROMPT)
 setor_node = functools.partial(agent_node, agent=setor_agent, name="Agente_Setor_Professor_Estagio_Eureca")
+
+# Agente_Detector
+detector_agent = create_react_agent(model, tools=DETECTOR_TOOLS, state_modifier=DETECTOR_SYSTEM_PROMPT)
+detector_node = functools.partial(agent_node, agent=detector_agent, name="Agente_Detector")

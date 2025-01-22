@@ -24,6 +24,7 @@ def build_flow() -> StateGraph:
     workflow.add_node("Agente_Disciplinas_Turmas_Eureca", disciplinas_eureca_node)
     workflow.add_node("Agente_Campus_Eureca", campus_eureca_node)
     workflow.add_node("Agente_Setor_Professor_Estagio_Eureca", setor_node)
+    workflow.add_node("Agente_Detector", detector_node)
     workflow.add_node("Agente_Agregador", aggregator_node)
     workflow.add_node("Agente_Supervisor", supervisor_node)
 

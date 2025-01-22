@@ -42,6 +42,9 @@ Capacidades dos Agentes:
    - Agrega e reúne informações de outros agentes.
    - Fornece respostas finais e coerentes aos pedidos dos usuários.
 
+6. Agente_Dectector:
+   - Especializado em informar se o texto recebido na entrada contém <tags> que indicam que houve informações confidenciais na pergunta do usuário.
+
 **Importante**
 - Quando a tarefa estiver completa, responda apenas com 'FINISH'.
 - Se um agente já concluiu sua parte, certifique-se de que há a necessidade de passar para outro agente, caso contrário, escolha 'FINISH'.
@@ -59,8 +62,9 @@ Suas tarefas:
 2. Receba consultas sobre currículos de um curso específico ou o currículo mais recente deste curso.
 3. Receba consultas sobre estudantes de um curso específico.
 4. Receba consultas sobre a quantidade de estudantes formados/egressos de um curso específico.
-5. Se a consulta exigir um curso específico, mas o código do curso não for fornecido, utilize a ferramenta para buscar todos os cursos ativos e localize o código correto.
-6. Forneça os dados brutos obtidos pela API.
+5. Se a consulta exigir um curso específico, mas o código do curso não for fornecido, utilize a sua ferramenta para buscar todos os cursos ativos e localize o código correto.
+6. Se o retorno de alguma função for `[{'erro': 'Não foi possível obter informação da UFCG.', 'codigo_erro': 500}]`, responda apenas com esse erro não adicione mais informações além disso.
+7. Forneça os dados brutos obtidos pela API.
 
 Sempre forneça a informação não processada como resposta.
 """
@@ -126,6 +130,13 @@ Regras:
 - Se houver informações essenciais ausentes, informe o supervisor quais são elas.
 
 Sempre forneça a informação não processada como resposta.
+"""
+
+DETECTOR_SYSTEM_PROMPT = """
+Você é um agente especializado em verificar se o texto de entrada possui <tags> específicas que indicam informações confidenciais.
+Use sua ferramenta de detector para verificar isso.
+Caso a ferramenta retorne um valor 'true', informe que o texto possui informações confidenciais.
+Caso a ferramenta retorne um valor 'false', finalize sua atividade e informe que o fluxo poderá prosseguir normalmente. 
 """
 
 AGGREGATOR_SYSTEM_PROMPT = """

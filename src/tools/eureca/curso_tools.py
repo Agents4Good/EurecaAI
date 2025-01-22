@@ -2,7 +2,7 @@ import requests
 import json
 from langchain_core.tools import tool
 
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 @tool
 def get_cursos_ativos() -> list:
@@ -19,13 +19,14 @@ def get_cursos_ativos() -> list:
         'status-enum':'ATIVOS',
         'campus': '1'
     }
+    print("chamando a tool get_cursos_ativos")
     response = requests.get(url_cursos, params=params)
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
         return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_curso(codigo_do_curso: str) -> list:
@@ -41,6 +42,7 @@ def get_curso(codigo_do_curso: str) -> list:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos`.
     """
+    print("chamando a tool get_curso")
     params = {
         'status-enum': 'ATIVOS',
         'curso': codigo_do_curso
@@ -51,7 +53,7 @@ def get_curso(codigo_do_curso: str) -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return None
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_curriculos(codigo_do_curso: str) -> list:
@@ -74,7 +76,7 @@ def get_curriculos(codigo_do_curso: str) -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
@@ -96,7 +98,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
     if response.status_code == 200:
         return json.loads(response.text)[-1]
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_estudantes(codigo_do_curso: str) -> dict:
@@ -112,6 +114,7 @@ def get_estudantes(codigo_do_curso: str) -> dict:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` para recuperar o código do curso.
     """
+    print("chamando a tool get_estudantes")
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "ATIVOS"
@@ -244,7 +247,7 @@ def get_estudantes(codigo_do_curso: str) -> dict:
               # Imprimir resultado final
         return info
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_estudantes_formados(codigo_do_curso: str, periodo: str) -> str:
@@ -265,6 +268,7 @@ def get_estudantes_formados(codigo_do_curso: str, periodo: str) -> str:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
         Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente `Agente_Campus_Eureca`. 
     """
+    print("chamando a tool get_estudantes_formados")
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "EGRESSOS",
@@ -278,4 +282,4 @@ def get_estudantes_formados(codigo_do_curso: str, periodo: str) -> str:
         res = len(json.loads(response.text))
         return f'"{res} formados"'
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

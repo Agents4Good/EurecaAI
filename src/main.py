@@ -1,9 +1,11 @@
 import asyncio, sys
 
+from guardrails import Guard
+
 from langchain_core.messages import HumanMessage
 from .agents.build_graph import build
 
-from IPython.display import Image
+from .guardrails.matricula_validator import *
 
 async def run(system, query, config):
     """
@@ -39,22 +41,14 @@ async def main():
     """
     system = build()
     
-    '''output_file = "grafo1.png"
-    graph_image = system.get_graph().draw_mermaid_png()
-
-    with open(output_file, "wb") as f:
-        f.write(graph_image)
-
-    print(f"Grafo salvo como {output_file}" + "\n")'''
-    
     if len(sys.argv) < 2:
         #await run_interactive(system)
         async for s in system.astream(
         {
             "messages": [
                 #HumanMessage(content=f"{"Qual o código do curso de ciência da computação?"}")
-                HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação?"}")
-                #HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação com código: 14102100."}")
+                #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação?"}")
+                HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação"}")
             ]
         }
         ):
@@ -63,8 +57,14 @@ async def main():
                 print("----")
     else:
         query = " ".join(sys.argv[1:])
+        m_validator = Guard().use(MatriculaValidator)
         config = {"configurable": {"thread_id": "1"}}
-        await run(system, query, config)
+        try:
+            m_validator.parse(query).model_validate
+            await run(system, query, config)
+        except Exception as e:
+            await run(system, str(e)[41:], config)
+            #print(str(e)[41:])
 
 if __name__ == '__main__':
     asyncio.run(main())
