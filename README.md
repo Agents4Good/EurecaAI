@@ -62,4 +62,4 @@ Siga os passos abaixo para colaborar:
 ---
 
 ## 📜 Licença
-Este projeto é licenciado sib a MIT - License
+Este projeto é licenciado sob a MIT - License
