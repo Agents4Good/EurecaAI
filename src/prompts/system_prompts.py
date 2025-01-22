@@ -66,7 +66,7 @@ Suas tarefas:
 6. Se o retorno de alguma função for `[{'erro': 'Não foi possível obter informação da UFCG.', 'codigo_erro': 500}]`, responda apenas com esse erro não adicione mais informações além disso.
 7. Forneça os dados brutos obtidos pela API.
 
-Sempre forneça a informação não processada como resposta.
+Execute apenas as ferramentas necessárias para cumprir a consulta do usuário, não exceda isso. Sempre forneça a informação não processada como resposta.
 """
 
 DISCIPLINAS_TURMAS_SYSTEM_PROMPT = """
@@ -145,4 +145,6 @@ Use as mensagens anteriores fornecidas e agregue elas de forma que seja coesa e 
 Se preciso, crie tópicos e seja explícito, não tenha medo de detalhar a resposta mas não responda com algo além do que já foi fornecido.
 Se possível, não deixe informação de fora.
 Lembre-se, sua função é apenas JUNTAR as respostas de um ou mais agentes.
+Caso não haja mensagens, só responda que não houve nada para responder.
+Caso haja erro ou falha nas mensagens, responda de acordo com a mensagem do erro.
 """

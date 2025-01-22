@@ -19,7 +19,7 @@ def get_cursos_ativos() -> list:
         'status-enum':'ATIVOS',
         'campus': '1'
     }
-    print("chamando a tool get_cursos_ativos")
+    print("chamando a tool get_cursos_ativos.")
     response = requests.get(url_cursos, params=params)
 
     if response.status_code == 200:
@@ -42,7 +42,7 @@ def get_curso(codigo_do_curso: str) -> list:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos`.
     """
-    print("chamando a tool get_curso")
+    print(f"Tool get_curso chamada com codigo_do_curso={codigo_do_curso}.")
     params = {
         'status-enum': 'ATIVOS',
         'curso': codigo_do_curso
@@ -70,7 +70,7 @@ def get_curriculos(codigo_do_curso: str) -> list:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
         Se a pergunta for o curriculo mais recente e tiver apenas um curriculo, traga as informações desse único curriculo como resposta.
     """
-    print(f"Tool get_curriculos chamada com base_url={base_url}, codigo_do_curso={codigo_do_curso}.")
+    print(f"Tool get_curriculos chamada com codigo_do_curso={codigo_do_curso}.")
     response = requests.get(f'{base_url}/curriculos?curso={codigo_do_curso}')
     
     if response.status_code == 200:
@@ -92,7 +92,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
     """
-    print(f"Tool get_curriculo_mais_recente chamada com base_url={base_url}, codigo_do_curso={codigo_do_curso}.")
+    print(f"Tool get_curriculo_mais_recente chamada com codigo_do_curso={codigo_do_curso}.")
     response = requests.get(f'{base_url}/curriculos?curso={codigo_do_curso}')
     
     if response.status_code == 200:
@@ -106,7 +106,7 @@ def get_estudantes(codigo_do_curso: str) -> dict:
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 
     Args:
-        codigo_do_curso: código do curso.
+        codigo_do_curso: o código do curso.
     
     Returns:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
@@ -114,7 +114,7 @@ def get_estudantes(codigo_do_curso: str) -> dict:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` para recuperar o código do curso.
     """
-    print("chamando a tool get_estudantes")
+    print(f"Tool get_estudantes chamada com codigo_do_curso={codigo_do_curso}.")
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "ATIVOS"
@@ -268,7 +268,7 @@ def get_estudantes_formados(codigo_do_curso: str, periodo: str) -> str:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
         Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente `Agente_Campus_Eureca`. 
     """
-    print("chamando a tool get_estudantes_formados")
+    print(f"Tool get_estudantes_formados chamada com codigo_do_curso={codigo_do_curso} e periodo={periodo}.")
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "EGRESSOS",

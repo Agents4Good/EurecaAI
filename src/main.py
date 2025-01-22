@@ -6,6 +6,7 @@ from langchain_core.messages import HumanMessage
 from .agents.build_graph import build
 
 from .guardrails.matricula_validator import *
+from .guardrails.validate_input import validate
 
 async def run(system, query, config):
     """
@@ -46,9 +47,9 @@ async def main():
         async for s in system.astream(
         {
             "messages": [
-                #HumanMessage(content=f"{"Qual o código do curso de ciência da computação?"}")
-                #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação?"}")
-                HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação"}")
+                HumanMessage(content=f"{"Qual o código do curso de ciência da computação?"}")
+                #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação e qual a quantidade?"}")
+                #HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação"}")
             ]
         }
         ):
@@ -57,14 +58,9 @@ async def main():
                 print("----")
     else:
         query = " ".join(sys.argv[1:])
-        m_validator = Guard().use(MatriculaValidator)
+        #m_validator = Guard().use(MatriculaValidator)
         config = {"configurable": {"thread_id": "1"}}
-        try:
-            m_validator.parse(query).model_validate
-            await run(system, query, config)
-        except Exception as e:
-            await run(system, str(e)[41:], config)
-            #print(str(e)[41:])
+        await run(system, validate(query), config)
 
 if __name__ == '__main__':
     asyncio.run(main())

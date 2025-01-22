@@ -1,6 +1,6 @@
 from langchain_core.tools import tool
 
-tags = ["<MATRICULA>", "<CPF>"]
+tags = ["<MATRICULA>", "<CPF>", "<EMAIL_ADDRESS>", "PHONE_NUMBER", "URL"]
 
 @tool
 def detect(texto: str) -> bool:

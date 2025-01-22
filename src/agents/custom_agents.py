@@ -14,14 +14,9 @@ load_dotenv()
 model = ChatOpenAI(model="gpt-4o")
 #model = ChatOllama(model="llama3.2")
 
-'''CLASSIFIER = pipeline(
-    "zero-shot-classification",
-    model='facebook/bart-large-mnli',
-    hypothesis_template="Verifique em qual tópico o texto acima melhor se adequa: {}.",
-    multi_label=True,
-)'''
-
 def supervisor_node(state):
+    """
+    """
     prompt = ChatPromptTemplate.from_messages([
         ("system", SUPERVISOR_SYSTEM_PROMPT),
         MessagesPlaceholder(variable_name="messages"),
@@ -39,6 +34,8 @@ def supervisor_node(state):
     return result
 
 def aggregator_node(state):
+    """
+    """
     messages = [
         ("system", AGGREGATOR_SYSTEM_PROMPT),
         (
