@@ -2,7 +2,8 @@
 from guardrails.validators import (register_validator, Validator, FailResult, ValidationResult, PassResult)
 from guardrails import Guard
 from typing import Any, Dict, Optional, Callable
-from ..utils.text_preprocessor import similarity_between_texts
+#from ..utils.text_preprocessor import similarity_between_texts
+from src.utils.text_preprocessor import similarity_between_texts
 
 
 @register_validator(name="guardrails/teste", data_type="string")
@@ -37,13 +38,3 @@ class SimilarityValidator(Validator):
         
         print(f"{value}: Similaridade alta (igual ou acima de 0.5)")
         return PassResult()
-
-guard = Guard().use(
-    SimilarityValidator(texto1="texto1", texto2="texjjjjje  dfqweffqe wqto2")
-)
-
-try:
-    guard.parse("Agente Inteligente").model_validate
-    print("Passou no teste de similaridade cosseno!")
-except Exception as e:
-    print("Ocorreu um erro: ", e)
