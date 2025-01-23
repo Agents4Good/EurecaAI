@@ -54,8 +54,12 @@ Onde será feita uma única consulta ao chatbot.
 
 ---
 ## 🤝 Contribuição
-Guia para colaboradores, pull requests...
-
+Contribuições são bem-vindas! 
+Siga os passos abaixo para colaborar: 
+- Faça um fork do repositório;
+- Modifique o que desejar e crie um pull request;
+- Detalhe o pull request. Descreva suas alterações.
 ---
+
 ## 📜 Licença
-Informar a licença do projeto.
+Este projeto é licenciado sob a MIT - License
