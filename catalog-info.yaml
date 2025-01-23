@@ -7,6 +7,11 @@ metadata:
     annotations:
         backstage.io/techdocs-ref: dir:.
         github.com/project-slug: Agents4Good/EurecaAI
+        
+    links:
+      - url: https://medium.com/@agents4good/lists
+        title: Artigos do Agents4good
+        icon: https://miro.medium.com/v2/resize:fit:875/1*I0E7U5xI-4UvnkExSGKp_w.png
 
 spec:
     type: service
