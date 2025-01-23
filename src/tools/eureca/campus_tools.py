@@ -2,7 +2,7 @@ import requests
 import json
 from langchain_core.tools import tool
 
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 @tool
 def get_campi() -> list:
@@ -20,7 +20,7 @@ def get_campi() -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_calendarios() -> list:
@@ -33,7 +33,6 @@ def get_calendarios() -> list:
     Returns:
         Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
-    print(f"Tool get_calendarios chamada com base_url={base_url}")
     params = {
         'campus': '1'
     }
@@ -42,7 +41,7 @@ def get_calendarios() -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_periodo_mais_recente() -> str:
@@ -58,10 +57,9 @@ def get_periodo_mais_recente() -> str:
     params = {
         'campus': '1'
     }
-    print(f"Tool get_periodo_mais_recente chamada com base_url={base_url}")
     response = requests.get(f'{base_url}/calendarios', params=params)
 
     if response.status_code == 200:
         return json.loads(response.text)[-1]['periodo']
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

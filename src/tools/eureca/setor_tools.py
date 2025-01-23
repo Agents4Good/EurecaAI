@@ -4,7 +4,7 @@ import json
 from langchain_core.tools import tool
 from datetime import datetime
 
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 @tool
 def get_setores() -> list:
@@ -25,7 +25,7 @@ def get_setores() -> list:
     if response.status_code == 200:
       return json.loads(response.text)
     else:
-      return [{"erro": "Não foi possível obter informação da UFCG."}]
+      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 def get_professores(setor_centro: str) -> list:
     """
@@ -47,7 +47,7 @@ def get_professores(setor_centro: str) -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_total_professores(setor_unidade: str) -> str:
@@ -145,4 +145,4 @@ def get_estagios(ano: str, setor_centro_unidade: str) -> list:
             estados_res[uf] = extrair_insights_estagios(estagiarios=estagiarios_unidade, uf=uf)
         return estados_res
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

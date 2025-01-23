@@ -2,15 +2,14 @@ import requests
 import json
 from langchain_core.tools import tool
 
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
-@tool
-def get_disciplinas_curso(codigo_curriculo="2023") -> list:
+#@tool
+def get_disciplinas_curso(codigo_curriculo: str) -> list:
     """
     Buscar todas as disciplinas do curso de Ciência da Computação da UFCG.
 
     Args:
-        base_url: URL base da API.
         codigo_curriculo: código do currículo.
     
     Returns:
@@ -29,19 +28,16 @@ def get_disciplinas_curso(codigo_curriculo="2023") -> list:
 
     if response.status_code == 200:
         res = json.loads(response.text)
-        print("Tool get_cursos_ativos retornou com sucesso.")
         return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
     else:
-        print("Tool get_cursos_ativos retornou com sucesso.")
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_disciplina(codigo_da_disciplina: str, codigo_curriculo="2023") -> list:
+def get_disciplina(codigo_da_disciplina: str, codigo_curriculo: str) -> list:
     """
     Buscar as informações de uma disciplina do curso de Ciência da Computação da UFCG.
 
     Args:
-        base_url: URL base da API.
         codigo_da_disciplina: código numérico em string da disciplina específica.
         codigo_curriculo: código do currículo.
     
@@ -52,7 +48,7 @@ def get_disciplina(codigo_da_disciplina: str, codigo_curriculo="2023") -> list:
         Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
         Para usar este método, se 'codigo_da_disciplina' não tiver sido informado pelo usuário, obtenha os parâmetros previamente com a tool `get_disciplinas_curso`.
     """
-    print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}, codigo_da_disciplina={codigo_da_disciplina}")
+    print(f"Tool get_disciplina chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}, codigo_da_disciplina={codigo_da_disciplina}")
     params = {
         'curso': '14102100',
         'curriculo': codigo_curriculo,
@@ -62,11 +58,9 @@ def get_disciplina(codigo_da_disciplina: str, codigo_curriculo="2023") -> list:
     response = requests.get(f'{base_url}/disciplinas', params=params)
 
     if response.status_code == 200:
-        print("Tool get_cursos_ativos retornou com sucesso.")
         return json.loads(response.text)
     else:
-        print("Tool get_cursos_ativos retornou com sucesso.")
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_plano_de_curso(codigo_disciplina: str, periodo: str) -> list:
@@ -74,7 +68,6 @@ def get_plano_de_curso(codigo_disciplina: str, periodo: str) -> list:
     Plano de curso de uma disciplina (do curso de Ciência da Computação).
 
     Args:
-        base_url: URL base da API.
         codigo_disciplina: código da disciplina.
         periodo: período letivo (exemplo: '2024.1', '2023.2', ...)
     
@@ -90,13 +83,13 @@ def get_plano_de_curso(codigo_disciplina: str, periodo: str) -> list:
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
-
+    print(f"Tool get_plano_de_curso chamada com codigo_disciplina={codigo_disciplina} e periodo={periodo}.")
     response = requests.get(f'{base_url}/planos-de-curso', params=params)
 
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_plano_de_aulas(codigo_disciplina: str, periodo: str, numero_turma: str) -> list:
@@ -104,7 +97,6 @@ def get_plano_de_aulas(codigo_disciplina: str, periodo: str, numero_turma: str) 
     Buscar plano de aulas de uma turma de uma disciplina.
 
     Args:
-        base_url: URL base da API.
         codigo_disciplina: código da disciplina.
         periodo: período letivo (exemplo: '2024.1', '2023.2', ...).
         numero_turma: número da turma (exemplo: '01', '02'...).
@@ -117,6 +109,7 @@ def get_plano_de_aulas(codigo_disciplina: str, periodo: str, numero_turma: str) 
         Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
         E se a turma não for especificada, use a turma '01' como turma padrão.
     """
+    print(f"Tool get_plano_de_aulas chamada com codigo_disciplina={codigo_disciplina}, periodo={periodo} e numero_turma={numero_turma}.")
     params = {
         'disciplina': codigo_disciplina,
         'periodo-de': periodo,
@@ -129,7 +122,7 @@ def get_plano_de_aulas(codigo_disciplina: str, periodo: str, numero_turma: str) 
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_turmas(periodo: str, codigo_disciplina: str) -> list:
@@ -137,7 +130,6 @@ def get_turmas(periodo: str, codigo_disciplina: str) -> list:
     Buscar turmas.
 
     Args:
-        base_url: URL base da API.
         periodo: o período em que a turma está.
         codigo_disciplina: o código numérico em string da disciplina que a turma está.
     
@@ -158,7 +150,7 @@ def get_turmas(periodo: str, codigo_disciplina: str) -> list:
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-      return [{"erro": "Não foi possível obter informação da UFCG."}]
+      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_media_notas_turma_disciplina(periodo: str, codigo_disciplina: str, turma: str) -> dict:
@@ -166,7 +158,6 @@ def get_media_notas_turma_disciplina(periodo: str, codigo_disciplina: str, turma
     Buscar as notas de estudantes em uma turma de uma disciplina.
 
     Args:
-        base_url: URL base da API.
         periodo: o período em que a turma está.
         codigo_disciplina: o código numérico em string da disciplina que a turma está.
         turma: a turma em questão.
@@ -207,7 +198,7 @@ def get_media_notas_turma_disciplina(periodo: str, codigo_disciplina: str, turma
             len([media for media in medias if float(media) >= 8.5 and float(media) <= 10])
         }
     else:
-      return [{"erro": "Não foi possível obter informação da UFCG."}]
+      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_horarios_disciplinas(base_url, codigo_disciplina, turma, periodo):
@@ -215,7 +206,6 @@ def get_horarios_disciplinas(base_url, codigo_disciplina, turma, periodo):
     Buscar os horários e a sala de uma disciplina de uma turma especificada (caso não seja, busca de todas as turmas).
 
     Args:
-        base_url: URL base da API.
         codigo_disciplina: o código numérico em string da disciplina que a turma está.
         turma: a turma em questão.
         periodo: o período em que a turma está.
@@ -262,7 +252,7 @@ def get_horarios_disciplinas(base_url, codigo_disciplina, turma, periodo):
 
         return filtros_horarios
     else:
-        return [{"erro": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 def get_disciplina_for_tool(base_url, disciplina):
   params = {
@@ -282,7 +272,6 @@ def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo="2023") 
     Buscar os nomes da disciplinas que são requisitos da disciplina desejada.
 
     Args:
-        base_url: URL base da API.
         codigo_disciplina: o código numérico em string da disciplina que a turma está.
         codigo_curriculo: código do currículo.
     
@@ -313,3 +302,5 @@ def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo="2023") 
             disciplinas.append(disciplina_req[0]['nome'])
 
         return set(disciplinas)
+    else:
+        [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
