@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+    name: eureca-ai
+    links:
+      - url: https://medium.com/@agents4good
+        title: Agents4Good - Medium
+        icon: dashboard
+    title: Eureca AI
+    description: Sistema multi-agente que se conecta com a API do Eureca.
+    annotations:
+        backstage.io/techdocs-ref: dir:.
+        github.com/project-slug: Agents4Good/EurecaAI
+        
+spec:
+    type: service
+    lifecycle: development
+    owner: Eureca Team

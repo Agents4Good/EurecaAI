@@ -7,6 +7,9 @@ from ..utils.text_preprocessor import similarity_between_texts
 
 @register_validator(name="guardrails/teste", data_type="string")
 class SimilarityValidator(Validator):
+    """
+        Validador customizado que faz a verificação da similaridade entre dois textos"
+    """
     def __init__(self, texto1: str, texto2: str, match_type: Optional[str] = None, on_fail: Optional[Callable] = None):        
         super().__init__(on_fail=on_fail, match_type=match_type)
         
@@ -14,6 +17,18 @@ class SimilarityValidator(Validator):
         self.texto2 = texto2
         
     def validate(self, value: Any, metadata: Dict = {}) -> ValidationResult:
+        """
+            Verifia a similiaridade entre dois textos. Caso os textos possuam
+            similaridade < 0.5 retorna um FailResult.
+
+            Args:
+                value: string
+                metadata: dicionário de metadados
+
+            Returns:
+               PassResult: passou na validação
+               FailResult: não passou na validação
+        """
         similarity = similarity_between_texts(self.texto1, self.texto2)
         
         if similarity < 0.5:

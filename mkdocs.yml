@@ -1,0 +1,7 @@
+site_name: 'Eureca AI'
+
+nav:
+  - Home: index.md
+
+plugins:
+  - techdocs-core

@@ -16,6 +16,14 @@ model = ChatOpenAI(model="gpt-4o")
 
 def supervisor_node(state):
     """
+        Agente supervisor encaminha a tarefa para o agente apropriado e analisa 
+        se a pergunta do usuário já foi respondida.
+
+        Args:
+            state: Estado do grafo
+        
+        Returns:
+            Resposta do modelo
     """
     prompt = ChatPromptTemplate.from_messages([
         ("system", SUPERVISOR_SYSTEM_PROMPT),
@@ -35,6 +43,15 @@ def supervisor_node(state):
 
 def aggregator_node(state):
     """
+        Recebe um estado (state) com mensagens geradas por outros agentes, 
+        envia essas informações para o modelo de linguagem e retorna uma resposta
+
+        Args:
+            state: Estado do grafo
+
+        Returns:
+            Resposta do modelo
+
     """
     user_query = next(
         (msg.content for msg in state["messages"] if isinstance(msg, HumanMessage)), 
