@@ -5,10 +5,25 @@ from typing import Dict, Optional, Callable
 
 @register_validator(name="guardrails/cpf", data_type="string")
 class CPFValidator(Validator):
+    """
+        Validador customizado que valida a presença de um CPF no texto
+    """
     def __init__(self, on_match: Optional[str] = None, on_fail: Optional[Callable] = None):
         super().__init__(on_match=on_match, on_fail=on_fail)
         
     def validate(self, value: str, metadata: Dict = {}) -> ValidationResult:
+        """
+            Verifica se há um CPF no texto fornecido
+
+            Args:
+                value: string
+                metadata: dicionário de metadados
+            
+            Returns:
+               PassResult: passou na validação
+               FailResult: não passou na validação
+
+        """
         results = self.replace_valid_cpfs(value)
 
         if "<CPF>" in results:
@@ -16,6 +31,16 @@ class CPFValidator(Validator):
         return PassResult()
     
     def validate_digit_verificator(self, cpf_user):
+        """
+            verifica se um número de CPF fornecido é válido, 
+            com base no cálculo dos dois dígitos verificadores.
+
+            Args:
+                cpf_user: cpf do usuário
+
+            Returns:
+                retorna se o CPF fornecido é válido
+        """
         if len(set(cpf_user)) == 1: return False
         
         cpf = cpf_user[:9]
@@ -42,6 +67,15 @@ class CPFValidator(Validator):
 
 
     def replace_valid_cpfs(self, text):
+        """
+            Substitui a presença do CPF no texto por <CPF>
+
+            Args:
+                text: texto a ser tratado
+                
+            Returns
+                texto com o CPF mascarado
+        """
         cpf_pattern =r"\b\d{3}[^a-zA-Z]*\d{3}[^a-zA-Z]*\d{3}[^a-zA-Z]*\d{2}\b"
 
         def validate_and_replace(match):

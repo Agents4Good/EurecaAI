@@ -5,6 +5,9 @@ from src.guardrails.matricula_validator import MatriculaValidator
 from guardrails.hub import DetectPII
 
 def validate(text):
+    """
+        função genérica que valida se o texto fornecido apresenta CPF, MATRÍCULA, EMAIL, NÚMERO DE TELEFONE
+    """
     guard = Guard().use_many(CPFValidator)
 
     try:

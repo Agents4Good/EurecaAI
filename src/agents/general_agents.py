@@ -13,7 +13,7 @@ from ..prompts.system_prompts import *
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
-from langchain_google_genai import ChatGoogleGenerativeAI
+#from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import create_react_agent
 
@@ -62,6 +62,8 @@ model = ChatOpenAI(model="gpt-4o")
 
 async def agent_node(state, agent, name):
     """
+      Executa um agente específico com base em um estado fornecido (state) 
+      e retornar a resposta desse agente.
     """
     try:
         result = await agent.ainvoke(state)
