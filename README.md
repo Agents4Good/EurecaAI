@@ -1,4 +1,4 @@
-<h1 align="center">EurecaAI</h1>
+# EurecaAI
 
 > Este projeto tem como objetivo criar um sistema de agentes inteligentes capazes de responder perguntas relacionadas à Universidade Federal de Campina Grande (UFCG), usando dados reais obtidos pela API oficial Eureca, para fornecer respostas precisas e contextualizadas. O sistema funciona como um chatbot.
 
