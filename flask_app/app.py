@@ -7,6 +7,8 @@ from io import BytesIO
 from langchain_core.messages import HumanMessage
 import asyncio
 
+from src.guardrails.validate_input import validate
+
 app = Flask(__name__)
 
 # Inicializa o sistema de agentes ao iniciar o aplicativo
@@ -17,7 +19,7 @@ async def process_query(query):
     Processa a consulta do usuário usando o sistema de agentes.
     """
     config = {"configurable": {"thread_id": None}}
-    inputs = {"messages": [HumanMessage(content=query)]}
+    inputs = {"messages": [HumanMessage(content=validate(query))]}
     response = []
 
     async for chunk in system.astream(inputs, config, stream_mode="values"):

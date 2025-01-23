@@ -13,7 +13,7 @@ from ..prompts.system_prompts import *
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
-from langchain_google_genai import ChatGoogleGenerativeAI
+#from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import create_react_agent
 
@@ -55,13 +55,15 @@ DETECTOR_TOOLS = [
 
 load_dotenv()
 
-#model = ChatOllama(model="llama3.2")
+#model = ChatOllama(model="llama3.1")
 model = ChatOpenAI(model="gpt-4o")
 #model = ChatGroq(model="llama-3.2-90b-vision-preview")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 
 async def agent_node(state, agent, name):
     """
+      Executa um agente específico com base em um estado fornecido (state) 
+      e retornar a resposta desse agente.
     """
     try:
         result = await agent.ainvoke(state)

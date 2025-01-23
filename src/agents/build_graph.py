@@ -18,6 +18,7 @@ def detect_loop(state):
 
 def build_flow() -> StateGraph:
     """
+        Constrói o grafo
     """
     workflow = StateGraph(AgentState)
     workflow.add_node("Agente_Cursos_Eureca", cursos_eureca_node)

@@ -6,7 +6,7 @@ from .agent_state import RouteResponse
 
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 load_dotenv()
@@ -16,6 +16,14 @@ model = ChatOpenAI(model="gpt-4o")
 
 def supervisor_node(state):
     """
+        Agente supervisor encaminha a tarefa para o agente apropriado e analisa 
+        se a pergunta do usuário já foi respondida.
+
+        Args:
+            state: Estado do grafo
+        
+        Returns:
+            Resposta do modelo
     """
     prompt = ChatPromptTemplate.from_messages([
         ("system", SUPERVISOR_SYSTEM_PROMPT),
@@ -35,15 +43,38 @@ def supervisor_node(state):
 
 def aggregator_node(state):
     """
+        Recebe um estado (state) com mensagens geradas por outros agentes, 
+        envia essas informações para o modelo de linguagem e retorna uma resposta
+
+        Args:
+            state: Estado do grafo
+
+        Returns:
+            Resposta do modelo
+
     """
+    user_query = next(
+        (msg.content for msg in state["messages"] if isinstance(msg, HumanMessage)), 
+        "Nenhuma pergunta encontrada."
+    )
+    
+    agent_responses = next(
+        (msg.content for msg in state["messages"] if isinstance(msg, AIMessage)),
+        "Nenhuma resposta encontrada."
+    )
+    
     messages = [
         ("system", AGGREGATOR_SYSTEM_PROMPT),
         (
             "assistant",
-            "Por favor agregue a seguinte informação:\n\n"
-            + "\n".join([msg.content for msg in state["messages"]]),
+            f"Por favor agregue a seguinte informação:\n\n"
+            f"Pergunta do usuário: {user_query}\n\n"
+            f"Respostas encontradas:\n{agent_responses}"
         ),
     ]
+    print(state)
+    print("\n\n")
+    print(messages)
     response = model.invoke(messages)
     return {
         "messages": [

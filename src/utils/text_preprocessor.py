@@ -8,6 +8,8 @@ import os
 import numpy as np
 from nltk.corpus import stopwords
 
+from numpy.fft import fft
+
 #nltk.download('stopwords')
 #nltk.download('wordnet')
 
@@ -166,6 +168,9 @@ def similarity_between_texts(text1, text2) -> float:
             similarities.append(cosine_similarity(text1, text2)[0][0])
 
     return np.mean(similarities)
+
+
+print(similarity_between_texts("texto 2 texto ", "texto"))
 
 
 
