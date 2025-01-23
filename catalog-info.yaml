@@ -3,8 +3,9 @@ kind: Component
 metadata:
     name: eureca-ai
     links:
-      - url: https://dashboard.example.com
-        title: My Dashboard
+      - url: https://medium.com/@agents4good
+        title: Eureca AI
+        icon: book
     title: Eureca AI
     description: Sistema multi-agente que se conecta com a API do Eureca.
     annotations:
