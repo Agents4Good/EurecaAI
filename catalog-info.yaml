@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-    name: Eureca AI
+    name: eureca-ai
     title: Eureca AI
     description: Sistema multi-agente que se conecta com a API do Eureca.
     annotations:
