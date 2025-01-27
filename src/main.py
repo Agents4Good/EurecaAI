@@ -45,10 +45,11 @@ async def main():
         {
             "messages": [
                 HumanMessage(content=f"{"Qual o código do curso de ciência da computação?"}")
-                #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação e qual a quantidade?"}")
-                #HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação"}")
+                #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação da UFCG? Código: 14102100."}")
+                #HumanMessage(content=f"{"traga informações sobre o curso de ciência da computação"}")
                 #HumanMessage(content="Qual a ementa de Teoria da Computação")
                 #HumanMessage(content="Quais são as informações da disciplina de Teoria da Computação")
+                #HumanMessage(content="Chame a tool de cursos e me diga quais são os cursos da UFCG?")
             ]
         }
         ):

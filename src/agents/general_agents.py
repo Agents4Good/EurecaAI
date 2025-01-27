@@ -9,21 +9,23 @@ from ..tools.detector.detect_tags import *
 
 from ..prompts.system_prompts import *
 
-
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
-from langchain_groq import ChatGroq
-#from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import create_react_agent
 
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.agents import create_tool_calling_agent, AgentExecutor
+
+
 CURSO_EURECA_TOOLS = [
-    get_cursos_ativos,
-    get_curso,
-    get_curriculos,
-    get_curriculo_mais_recente,
-    get_estudantes,
-    get_estudantes_formados
+    buscar_codigos_cursos,
+    consultar_curso,
+    #get_curriculos,
+    #get_curriculo_mais_recente,
+    #get_estudantes,
+    #get_estudantes_formados
 ]
 
 DISCIPLINA_EURECA_TOOLS = [
@@ -55,10 +57,9 @@ DETECTOR_TOOLS = [
 
 load_dotenv()
 
-#model = ChatOllama(model="llama3.1")
-model = ChatOpenAI(model="gpt-4o")
-#model = ChatGroq(model="llama-3.2-90b-vision-preview")
+model = ChatOllama(model="MFDoom/deepseek-r1-tool-calling:8b")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
+#model = ChatOpenAI(model="gpt-4o")
 
 async def agent_node(state, agent, name):
     """
@@ -73,7 +74,19 @@ async def agent_node(state, agent, name):
     except Exception as e:
         return {"messages": [AIMessage(content=f"Ocorreu um erro: {str(e)}", name=name)]}
 
+def create_general_agent(llm, tools, state_modifier):
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", state_modifier), 
+        MessagesPlaceholder(variable_name="messages"),
+        MessagesPlaceholder(variable_name="agent_scratchpad")
+    ])
+    agent = create_tool_calling_agent(llm, tools, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    return agent_executor
+
+
 # Agente_Cursos_Eureca
+#cursos_eureca_agent = build_hf_agent_with_tools()
 cursos_eureca_agent = create_react_agent(model, tools=CURSO_EURECA_TOOLS, state_modifier=CURSOS_SYSTEM_PROMPT)
 cursos_eureca_node = functools.partial(agent_node, agent=cursos_eureca_agent, name="Agente_Cursos_Eureca")
 
