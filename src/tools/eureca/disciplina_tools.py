@@ -4,7 +4,7 @@ from langchain_core.tools import tool
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
-#@tool
+@tool
 def get_disciplinas_curso(codigo_curriculo: str) -> list:
     """
     Buscar todas as disciplinas do curso de Ciência da Computação da UFCG.
@@ -153,7 +153,7 @@ def get_turmas(periodo: str, codigo_disciplina: str) -> list:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_media_notas_turma_disciplina(periodo: str, codigo_disciplina: str, turma: str) -> dict:
+def get_media_notas_turma_disciplina(periodo: str = '2024.1', codigo_disciplina: str = '', turma: str = '01') -> dict:
     """
     Buscar as notas de estudantes em uma turma de uma disciplina.
 
@@ -167,9 +167,10 @@ def get_media_notas_turma_disciplina(periodo: str, codigo_disciplina: str, turma
     
     Nota:
         Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
-        Para usar este método, solicite que o `Agente_Campus_Eureca` forneça o período mais recente.
+        Caso o 'periodo' não tiver sido informado, use o '2024.1' como periodo padrão.
         E se a turma não for especificada, use a turma '01' como turma padrão.
     """
+    print(f"Tool get_media_notas_turma_disciplina chamada com periodo={periodo}, codigo_disciplina={codigo_disciplina} e turma={turma}.")
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
