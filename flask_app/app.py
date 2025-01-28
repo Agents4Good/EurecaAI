@@ -32,6 +32,11 @@ def home():
     # Renderiza a página HTML onde o chatbot será exibido
     return render_template('index.html')
 
+@app.route('/login')
+def login():
+    # Renderiza a página HTML onde o chatbot será exibido
+    return render_template('login.html')
+
 @app.route('/chat', methods=['POST'])
 def chat():
     # Recebe a mensagem do usuário
