@@ -2,20 +2,19 @@
 from guardrails.validators import (register_validator, Validator, FailResult, ValidationResult, PassResult)
 from guardrails import Guard
 from typing import Any, Dict, Optional, Callable
-from presidio_analyzer import AnalyzerEngine, PatternRecognizer, RecognizerResult, Pattern
+from presidio_analyzer import AnalyzerEngine, PatternRecognizer, Pattern
 import datetime as dt
-import re
 
+"""
+Esta classe é um Guardrail que camufla a matricula do estudante presente no texto passado como parâmetro.
+"""
 @register_validator(name="guardrails/enrollment", data_type="string")
-class PIIValidator(Validator):
-    """
-    """
+class PIIValidatorEnrollment(Validator):
     def __init__(self, on_match: Optional[str] = None, on_fail: Optional[Callable] = None):
         super().__init__(on_match=on_match, on_fail=on_fail)
         
+    
     def validate(self, value: str, metadata: Dict = {}) -> ValidationResult:
-        """
-        """
         year = str(dt.datetime.now().year)[2:]
         
         enrollment = r"\b\d{1}[1-" + year[0] + r"]" + r"[0-" + year[1] + r"]" + r"[12]\d{5}\b"
@@ -37,19 +36,39 @@ class PIIValidator(Validator):
         return PassResult()
 
 
-
-guardas_eureca = Guard().use(PIIValidator)
-
-try:
-    guardas_eureca.parse("A minha matricula é o seguinte: 221199999, busque informaões sobre ela").model_validate
-except Exception as e:
-    print(e)
-
-
+"""
+Esta classe é um Guardrail que camufla a o CPF presente no texto passado como parâmetro.
+"""
 @register_validator(name="guardrails/cpf", data_type="string")
 class PIIValidatorCPF(Validator):
     def __init__(self, on_match: Optional[str] = None, on_fail: Optional[Callable] = None):
         super().__init__(on_match=on_match, on_fail=on_fail)
+        
+        
+    def validate_digit_verificator(self, cpf):
+        
+        soma = 0
+        for i in range(1, len(cpf) + 1):
+            soma += i * int(cpf[i - 1])
+            
+        primeiro_digito_verificador = soma % 11
+        
+        if primeiro_digito_verificador == 10:
+            primeiro_digito_verificador = 0
+        
+        soma = 0
+        cpf = cpf + primeiro_digito_verificador
+        for i in range(len(cpf)):
+            soma += i * int(cpf[i])
+        
+        segundo_digito_verificador = soma % 11
+        
+        if segundo_digito_verificador == 10:
+            segundo_digito_verificador = 0
+        
+        cpf_ = cpf[-2:]
+        return cpf_ == cpf[-2:]
+        
         
     def validate(self, value: str, metadata: Dict = {}) -> ValidationResult:
         year = str(dt.datetime.now().year)[2:]
@@ -71,11 +90,3 @@ class PIIValidatorCPF(Validator):
             return FailResult(error_message=value)
         
         return PassResult()
-
-
-guardas_eureca = Guard().use(PIIValidatorCPF)
-
-try:
-    result = guardas_eureca.parse("O meu CPF é o seguinte: 99999999999, busque informaões sobre ele").model_validate
-except Exception as e:
-    print(e)
