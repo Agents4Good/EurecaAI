@@ -1,4 +1,5 @@
 SUPERVISOR_SYSTEM_PROMPT = """
+Vou te falar algumas coisas em portugues e espero que você me responda em português:
 Você é um supervisor gerenciando uma conversa entre os seguintes agentes especializados: {members}.
 Dado o pedido do usuário, determine qual agente deve agir a seguir com base nas capacidades dos agentes.
 
