@@ -1,0 +1,11 @@
+{
+    "Campus": [
+        "campus","descricao","representacao"
+    ],
+    "Calendario": [
+        "id","periodo","campus","inicio_das_aulas","inicio_das_matriculas",
+        "um_terco_do_periodo","ultimo_dia_para_registro_de_notas","um_quarto_do_periodo","numero_de_semanas"
+    ]
+
+    
+}
