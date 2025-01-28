@@ -17,6 +17,7 @@ def get_setores() -> list:
     Returns:
         Lista com informações relevantes do setor (centro) específico.
     """
+    print(f"Tool get_setores chamada")
     params = {
         "campus": '1'
     }
@@ -67,6 +68,7 @@ def get_total_professores(setor_unidade: str) -> str:
         Para usar este método, se o 'setor_unidade' (código do setor) não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_setores` baseado no nome da unidade fornecido pelo usuário.
         Se o nome da unidade não tiver sido informado, e tiver sido informado 'UFCG' use uma string vazia como entrada para 'setor_unidade'.
     """
+    print(f"Tool get_total_professores chamada com setor_unidade={setor_unidade}")
     params = {
         "status": "ATIVO",
         "setor": setor_unidade

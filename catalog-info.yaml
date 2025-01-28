@@ -15,4 +15,4 @@ metadata:
 spec:
     type: service
     lifecycle: development
-    owner:  Time EurecaAI
+    owner: Time EurecaAI
