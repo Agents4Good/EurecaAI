@@ -58,9 +58,12 @@ def aggregator_node(state):
         "Nenhuma pergunta encontrada."
     )
     
-    agent_responses = next(
+    '''agent_responses = next(
         (msg.content for msg in state["messages"] if isinstance(msg, AIMessage)),
         "Nenhuma resposta encontrada."
+    )'''
+    agent_responses = "\n".join(
+        msg.content for msg in state["messages"] if isinstance(msg, AIMessage)
     )
     
     messages = [
@@ -72,9 +75,9 @@ def aggregator_node(state):
             f"Respostas encontradas:\n{agent_responses}"
         ),
     ]
-    print(state)
-    print("\n\n")
-    print(messages)
+    #print(state)
+    #print("\n\n")
+    #print(messages)
     response = model.invoke(messages)
     return {
         "messages": [
