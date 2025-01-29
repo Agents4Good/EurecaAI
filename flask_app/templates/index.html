@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UFCGPT</title>
     <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!--<link rel="stylesheet" href="../static/css/index.css">-->
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -92,6 +94,12 @@
                     $('.bot__name__response').last().text(response.response); // Atualiza a última resposta
                     const cleanedResponse = (response.response.trim()).replace(/['"]/g, '');
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+
+                    const newDiv = document.createElement("div");
+                    newDiv.className = "history_item";
+                    newDiv.innerHTML = "<p>Tópico</p><button><i class='fas fa-ellipsis-h'></i></button>";
+                    document.getElementsByClassName("history")[0].appendChild(newDiv);
+                    
                     scrollToBottom();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -196,30 +204,39 @@
 <body>
     <header>
         <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'"/>
-        <h1>UFCGPT</h1>
+        <h1>Eureca AI</h1>
         <button class="login__button" onClick="window.location.href='/login'">
             <span>Login</span>
         </button>
     </header>
-    
-    <section>
-        <article class="chat">
-            <div class="chat__container"> 
+    <main>
+        <section>
+            <article class="chat">
+                <div class="chat__container"> 
 
-            </div>
-        </article>
+                </div>
+            </article>
 
-        <form id="chat_form" class="query__container" method="post">
-            <div class="input_container">
-                <input type="text" id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."/>
-                <button class="send" type="submit">
-                    <img src="../static/images/arrow_icon.png"/>
+            <form id="chat_form" class="query__container" method="post">
+                <div class="input_container">
+                    <input type="text" id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."/>
+                    <button class="send" type="submit">
+                        <img src="../static/images/arrow_icon.png"/>
+                    </button>
+                </div>
+                <button class="record" onClick="changeImage(this)">
+                    <img src="../static/images/microphone.png" id="recordImage"/>
                 </button>
+            </form>
+        </section>
+        <aside class="aside-chat">
+            <div class="aside-title-container">
+                <p class="aside-title-content">Histórico</p>
             </div>
-            <button class="record" onClick="changeImage(this)">
-                <img src="../static/images/microphone.png" id="recordImage"/>
-            </button>
-        </form>
-    </section>
+            <div class="history">
+                
+            </div>
+        </aside>
+    </main>
 </body>
 </html>

@@ -7,7 +7,7 @@ header {
     width: 100%;
     height: 60px;
     display: grid;
-    grid-template-columns: 100px 1fr 1fr 1fr 100px 100px;
+    grid-template-columns: 17px 1fr 1fr 1fr 100px 30px;
     grid-template-areas: ". ufcg-logo pln-text . login-button .";
     justify-content: center;
     align-items: center;
@@ -63,6 +63,7 @@ header h1 {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    border: 2px solid rgb(65, 64, 70);
 }
 
 .login__button span {
@@ -292,4 +293,68 @@ section {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+main {
+    position: relative;
+}
+
+aside {
+    position: absolute;
+    height: calc(100% + 20px);
+    width: 300px;
+    background-color: #f9f9f9;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.aside-title-container {
+    width: 90%;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    border: 4px;
+    box-sizing: border-box;
+}
+
+.aside-title-content {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.history {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.history_item {
+    width: 100%;
+    height: 44px;
+    border: 10px solid rgb(219, 208, 208);
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: rgb(219, 208, 208);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.history_item p {
+    font-weight: bold;
+}
+
+.history_item button {
+    width: 30px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0px;
+    cursor: pointer;
 }
