@@ -2,7 +2,7 @@ import requests
 import json
 from langchain_core.tools import tool
 
-base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
 
 @tool
 def get_campi() -> list:
