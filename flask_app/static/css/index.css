@@ -38,6 +38,7 @@ header img {
     height: 64px;
     width: 200px;
     grid-area: ufcg-logo;
+    cursor: pointer;
 }
 
 header h1 {
@@ -48,6 +49,7 @@ header h1 {
     grid-area: pln-text;
     text-decoration: underline;
     color: white; 
+    cursor: default;
 }
 
 .login__button {

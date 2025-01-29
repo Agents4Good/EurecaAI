@@ -5,10 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/login.css">
     <title>Login - EurecaAI</title>
+    <script>
+        function showAlert(loginAlert, msg) {
+            loginAlert.innerText = msg;
+
+            setTimeout(() => {
+                loginAlert.innerText = "";
+            }, 3000);
+        }
+
+        function handleLogin() {
+            const login = document.getElementById("login").value;
+            const password = document.getElementById("password").value;
+            const loginAlert = document.getElementById("login-alert");
+            const apiURL = "";
+
+            if (!login || !password) {
+                showAlert(loginAlert, "Por favor, inserir o login e a senha");
+                return;
+            }
+            
+            fetch(url, {
+                method: "POST",
+                body: {
+                    login,
+                    password
+                }
+            }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Success");
+                } else {
+                    showAlert(loginAlert, "Login ou senha inválida");
+                }
+            })
+            .catch(error => {
+                showAlert(loginAlert, "Erro ao fazer login");
+            });
+        }
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Login EurecaAI</h1>
+    <header class="header_main">
+        <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'">
+        <div>
+            <h1>Login EurecaAI</h1>
+        </div>
     </header>
     <main>
         <section>
@@ -17,13 +59,14 @@
                     <h2 class="title_login_container">Faça login no Controle Acadêmico</h2>
                     <div class="credentials">
                         <label for="login" class="credentials_login_container_text">Login</label>
-                        <input type="text" id="login" class="input_field" placeholder="Digite seu login">
+                        <input type="text" id="login" class="input_field" placeholder="Digite sua matrícula">
                     </div>
                     <div class="credentials">
                         <label for="password" class="credentials_login_container_text">Senha</label>
                         <input type="password" id="password" class="input_field" placeholder="Digite sua senha">
                     </div>
-                    <button class="login_button">Fazer Login</button>
+                    <p id="login-alert" style="color: red;"></p>
+                    <button class="login_button" onClick="handleLogin()">Fazer Login</button>
                 </div>                
             </article>
         </section>
