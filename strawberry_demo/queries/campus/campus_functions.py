@@ -1,21 +1,15 @@
 import os,sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from strawberry_demo.main import schema,app
+from strawberry_demo.main import schema
 
 default_campus = "campus,descricao,representacao"
-default_calendario = "id, periodo,campus,inicio_das_matriculas,inicio_das_aulas,um_terco_do_periodo,ultimo_dia_para_registro_de_notas,um_quarto_do_periodo,numero_de_semanas"
+default_calendario = "id, periodo,campus, inicioDasAulas, inicioDasMatriculas,numeroDeSemanas,periodo,ultimoDiaParaRegistroDeNotas,umQuartoDoPeriodo,umTercoDoPeriodo"
   
 # python -m strawberry_demo.queries.campus.campus_functions
 
 def get_all_campi(data: str = default_campus):
-        f"""
+        """
         Buscar todos os campi.
-
-        Args:
-            data: campos a serem retornados, por padrão é {default_campus}
-    
-        Returns:
-            Lista com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
         """
         try:
             query = f"""
@@ -31,14 +25,8 @@ def get_all_campi(data: str = default_campus):
             return e
 
 def get_all_calendarios(data: str = default_calendario):
-    f"""
+    """
     Buscar calendários da universidade do campus 1 da UFCG. Ou seja, os periodos letivos que já ocorreram na UFCG até hoje.
-
-    Args:
-        data: campos a serem retornados, por padrão é {default_calendario}
-
-    Returns:
-        Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
     try:
         query = f"""
@@ -56,12 +44,6 @@ def get_all_calendarios(data: str = default_calendario):
 def get_periodo_mais_recente(data: str = default_calendario):
     """
     Buscar o período mais recente da universidade.
-
-    Args:
-        data: campos a serem retornados, por padrão é {default_calendario}
-
-    Returns:
-       Informações relevantes do calendário acadêmico mais recente do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
     try:
         query = f"""
@@ -76,9 +58,32 @@ def get_periodo_mais_recente(data: str = default_calendario):
     except Exception as e:
             return e
      
-#print("RESPOSTA DA FILTRAGEM ", get_all_campi("campus"))
-#print("RESPOSTA DA FILTRAGEM ", get_periodo_mais_recente("id"))
+#DOCUMENTAÇÂO DAS FUNÇÕES
+get_all_campi.__doc__ = f"""
+        Args:
+            data: campos a serem retornados, por padrão é {default_campus}
+    
+        Returns:
+            Lista com dicionários que possuem os campos desejados. Por padrão é
+            {default_campus}.
+"""
 
+get_all_calendarios.__doc__ = f""" 
+    Args:
+        data: campos a serem retornados, por padrão é {default_calendario}
+
+    Returns:
+       Informações desejadas dos calendário acadêmico. Por padrão é {default_calendario}
+"""
+
+get_periodo_mais_recente.__doc__ = f""" 
+    Args:
+        data: campos a serem retornados, por padrão é {default_calendario}
+
+    Returns:
+       Informações desejadas do calendário acadêmico mais recente. Por padrão é {default_calendario}
+
+"""
 
 
 

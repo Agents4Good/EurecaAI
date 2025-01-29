@@ -1,65 +1,97 @@
-import requests
-import json
+import os,sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from strawberry_demo.main import schema
 from langchain_core.tools import tool
 
-base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+default_campus = "campus,descricao,representacao"
+default_calendario = "id, periodo,campus, inicioDasAulas, inicioDasMatriculas,numeroDeSemanas,periodo,ultimoDiaParaRegistroDeNotas,umQuartoDoPeriodo,umTercoDoPeriodo"
 
 @tool
-def get_campi() -> list:
-    """
-    Buscar todos os campi.
+def get_campi(data: str = default_campus):
+        """
+        Buscar todos os campi.
+        """
+        try:
+            query = f"""
+                    query {{allCampus     
+                    {{ 
+                        {data} 
+                    }}
+                }}
+            """
+            print(f"Tool get campi chamada com args {data}")
+            result = schema.execute_sync(query)
 
-    Args:
-        base_url: URL base da API.
-    
-    Returns:
-        Lista com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
-    """
-    response = requests.get(f'{base_url}/campi')
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+            return result.data['allCampus']
+        except Exception as e:
+            return e
 
 @tool
-def get_calendarios() -> list:
+def get_calendarios(data: str = default_calendario):
     """
     Buscar calendários da universidade do campus 1 da UFCG. Ou seja, os periodos letivos que já ocorreram na UFCG até hoje.
-
-    Args:
-        base_url: URL base da API.
-
-    Returns:
-        Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
-    params = {
-        'campus': '1'
-    }
-    response = requests.get(f'{base_url}/calendarios', params=params)
+    try:
+        query = f"""
+                    query {{calendarios
+                        {{
+                            {data}
+                        }}
+                    }}
+                """
+        print(f"Tool get calendarios chamada com args {data}")
 
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        result = schema.execute_sync(query)
+        
+        return result.data['calendarios']
+    except Exception as e:
+            return e
 
 @tool
-def get_periodo_mais_recente() -> str:
+def get_periodo_mais_recente(data: str = default_calendario):
     """
     Buscar o período mais recente da universidade.
+    """
+    try:
+        query = f"""
+                    query {{periodoMaisRecente
+                        {{
+                            {data}
+                        }}
+                    }}
+                """
+        print(f"Tool get periodo mais recentee chamada com args {data}")
 
+        result = schema.execute_sync(query)
+        return result.data['periodoMaisRecente']
+    except Exception as e:
+            return e
+   
+#DOCUMENTAÇÂO DAS FUNÇÕES
+get_campi.__doc__ = f"""
+        Args:
+            data: campos a serem retornados, por padrão é {default_campus}
+    
+        Returns:
+            Lista com dicionários que possuem os campos desejados. Por padrão é
+            {default_campus}.
+"""
+
+get_calendarios.__doc__ = f""" 
     Args:
-        base_url: URL base da API.
+        data: campos a serem retornados, por padrão é {default_calendario}
 
     Returns:
-        String com o período mais recente (como '2010.1').
-    """
-    params = {
-        'campus': '1'
-    }
-    response = requests.get(f'{base_url}/calendarios', params=params)
+       Informações desejadas dos calendário acadêmico. Por padrão é {default_calendario}
+"""
 
-    if response.status_code == 200:
-        return json.loads(response.text)[-1]['periodo']
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+get_periodo_mais_recente.__doc__ = f""" 
+    Args:
+        data: campos a serem retornados, por padrão é {default_calendario}
+
+    Returns:
+       Informações desejadas do calendário acadêmico mais recente. Por padrão é {default_calendario}
+"""
+
+
+

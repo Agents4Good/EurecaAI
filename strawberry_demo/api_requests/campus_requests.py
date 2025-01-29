@@ -21,8 +21,6 @@ def get_campi() -> list:
     """
     response = requests.get(f'{base_url}/campi')
 
-    print("RESPOSTA DA API EURECA ", response.text)
-
     if response.status_code == 200:
         return json.loads(response.text)
     else:
@@ -38,7 +36,7 @@ def get_calendarios() -> list:
     Returns:
         Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
-    print(f"Tool get_calendarios chamada com base_url={base_url}")
+    #print(f"Tool get_calendarios chamada com base_url={base_url}")
     params = {
         'campus': '1'
     }
@@ -63,7 +61,7 @@ def get_periodo_mais_recente() -> str:
     params = {
         'campus': '1'
     }
-    print(f"Tool get_periodo_mais_recente chamada com base_url={base_url}")
+    #print(f"Tool get_periodo_mais_recente chamada com base_url={base_url}")
     response = requests.get(f'{base_url}/calendarios', params=params)
 
     if response.status_code == 200:

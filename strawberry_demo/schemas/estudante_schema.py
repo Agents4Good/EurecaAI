@@ -1,0 +1,52 @@
+
+import strawberry
+from typing import List, Optional
+
+@strawberry.type
+class Estudante:
+    matricula_do_estudante: str
+    codigo_do_curso: int
+    nome_do_curso: str
+    turno_do_curso: str
+    codigo_do_curriculo: int
+    campus: int
+    nome_do_campus: str
+    codigo_do_setor: int
+    nome_do_setor: str
+    estado_civil: str
+    genero: str
+    idade: str
+    situacao: str
+    motivo_de_evasao: str
+    periodo_de_evasao: str
+    forma_de_ingresso: str
+    periodo_de_ingresso: str
+    nacionalidade: str
+    local_de_nascimento: str
+    naturalidade: str
+    cor: str
+    deficiencias: List[str]
+    ano_de_conclusao_ensino_medio: int
+    tipo_de_ensino_medio: str
+    politica_afirmativa: str
+    prac_renda_per_capita_ate: float
+    creditos_do_cra: int
+    notas_acumuladas: float
+    periodos_completados: int
+    creditos_tentados: int
+    creditos_completados: int
+    creditos_isentos: int
+    creditos_falhados: int
+    creditos_suspensos: int
+    creditos_em_andamento: int
+    velocidade_media: float
+    taxa_de_sucesso: float
+    prac_atualizado: str
+    prac_atualizado_em: str
+    prac_cor: str
+    prac_quilombola: str
+    prac_indigena_aldeado: str
+    prac_deficiente: str
+    prac_deficiencias: List[str]
+    prac_deslocou_mudou: str
+    ufpb: Optional[str]

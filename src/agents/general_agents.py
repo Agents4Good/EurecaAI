@@ -56,8 +56,8 @@ DETECTOR_TOOLS = [
 load_dotenv()
 
 #model = ChatOllama(model="qwen2.5:latest")
-model = ChatOllama(model="llama3.2:3b")
-#model = ChatOpenAI(model="gpt-4o")
+#model = ChatOllama(model="llama3.2:3b")
+model = ChatOpenAI(model="gpt-4o")
 #model = ChatGroq(model="llama-3.2-90b-vision-preview")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 

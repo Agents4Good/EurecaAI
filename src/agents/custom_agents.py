@@ -11,8 +11,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 load_dotenv()
 
-#model = ChatOpenAI(model="gpt-4o")
-model = ChatOllama(model="llama3.2:3b")
+model = ChatOpenAI(model="gpt-4o")
+#model = ChatOllama(model="llama3.2:3b")
 
 def supervisor_node(state):
     """
