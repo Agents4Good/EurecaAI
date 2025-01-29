@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Renderer</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-size: 16px;
+        }
+        #output {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Markdown Renderer</h1>
+    <textarea id="markdown" placeholder="Digite seu Markdown aqui...">
+
+### Origem dos Estudantes por Curso
+
+#### Ciência da Computação
+- **Total de Alunas**: 194
+  - Principais Estados: 
+    - Paraíba (PB): 146
+    - Pernambuco (PE): 17
+    - Outras origens: RJ, RN, CE, SP, MG, MA, AL, PA, BA, PI
+
+- **Total de Alunos**: 709
+  - Principais Estados:
+    - Paraíba (PB): 528
+    - Pernambuco (PE): 49
+    - Outras origens: SP, CE, RN, RJ, BA, AL, MA, PI, e outros
+
+#### Engenharia Elétrica
+- **Total de Alunas**: 185
+  - Principais Estados:
+    - Paraíba (PB): 122
+    - Rio Grande do Norte (RN): 21
+    - Outras origens: PE, SP, TO, AL, MA, RJ, BA, CE, PI, RS, DF
+
+- **Total de Alunos**: 655
+  - Principais Estados:
+    - Paraíba (PB): 435
+    - Ceará (CE): 24
+    - Outras origens: AL, RJ, PI, SE, BA, GO, MA, RN, PE, SP, e outros
+
+#### Letras - Língua Portuguesa/Francês
+- **Total de Alunas**: 36
+  - Principais Estados:
+    - Paraíba (PB): 30
+    - Pernambuco (PE): 5
+
+- **Total de Alunos**: 20
+  - Principais Estados:
+    - Paraíba (PB): 18
+    - Outras origens: PE, CE
+
+Esses dados indicam uma predominância de estudantes originários da Paraíba em todos os cursos mencionados, com variações significativas na presença de estudantes de outros estados, dependendo do curso e do gênero.
+    </textarea>
+    <div id="output"></div>
+
+    <script>
+        function renderMarkdown() {
+            const markdownText = document.getElementById("markdown").value;
+            document.getElementById("output").innerHTML = marked.parse(markdownText);
+        }
+
+        document.getElementById("markdown").addEventListener("input", renderMarkdown);
+        renderMarkdown(); // Renderiza o conteúdo inicial
+    </script>
+</body>
+</html>
