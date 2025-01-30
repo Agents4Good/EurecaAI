@@ -153,7 +153,7 @@ section {
 }
 
 .bot {
-    width: 60%;
+    width: 80%;
 }
 
 @media (max-width: 800px) {
@@ -191,8 +191,9 @@ section {
 .bot__name__response {
     width: 100%;
     flex-wrap: wrap;
-    padding: 20px 0px;
+    padding: 10px 0px;
     white-space: pre-wrap;
+    line-height: 1.2;
 }
 
 .user__response {
