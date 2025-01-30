@@ -9,7 +9,8 @@ from ..tools.detector.detect_tags import *
 
 from ..prompts.system_prompts import *
 
-
+from langchain_community.chat_models import ChatLiteLLM
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
@@ -55,7 +56,14 @@ DETECTOR_TOOLS = [
 
 load_dotenv()
 
-#model = ChatOllama(model="llama3.1")
+'''model = ChatNVIDIA(
+  model="meta/llama-3.3-70b-instruct",
+  temperature=0.2,
+  top_p=0.7,
+  max_tokens=1024,
+)'''
+#model = ChatLiteLLM(model="gpt-3.5-turbo")
+#model = ChatOllama(model="llama3.2")
 model = ChatOpenAI(model="gpt-4o")
 #model = ChatGroq(model="llama-3.2-90b-vision-preview")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
