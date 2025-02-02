@@ -33,7 +33,7 @@ class Query:
     curso: List[Curso] = strawberry.field(resolver=get_curso) 
     curriculos: List[Curriculo] = strawberry.field(resolver =get_curriculos)
     curriculoMaisRecente: Curriculo = strawberry.field(resolver=get_curriculo_mais_recente)
-    estudantesGeraisPorCurso: List[Estudante] = strawberry.field(resolver=get_estudantes)
+    #estudantesGeraisPorCurso: List[Estudante] = strawberry.field(resolver=get_estudantes)
     estudantesFormados: List[Estudante] = strawberry.field(resolver=get_estudantes_formados)
     disciplinaPorCursoCurriculo: List[Disciplina] = strawberry.field(resolver=get_disciplinas_curso)
     disciplinaPorCodigoCurriculo: List[Disciplina] = strawberry.field(resolver=get_disciplina)

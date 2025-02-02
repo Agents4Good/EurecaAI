@@ -319,4 +319,4 @@ def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo: str ="2
         [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-print( get_horarios_disciplinas("1411311","2","2023.1"))
+#print( get_horarios_disciplinas("1411311","2","2023.1"))
