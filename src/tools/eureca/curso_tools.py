@@ -1,6 +1,5 @@
 
 import json
-
 import requests
 from strawberry_demo.main import schema
 from .default_data.default_cursos_data import *
@@ -103,7 +102,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str, data: str = default_curricu
         return e
     
 @tool    
-def get_estudantes(codigo_do_curso: str, periodo_de_ingresso: str) -> dict:
+def get_estudantes(codigo_do_curso: str) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 
@@ -248,7 +247,7 @@ def get_estudantes(codigo_do_curso: str, periodo_de_ingresso: str) -> dict:
                 genero_data["renda_per_capita_ate"]["renda_media"] = round(genero_data["renda_per_capita_ate"]["renda_media"] / quantidade, 2)
 
               # Imprimir resultado final
-        return json.loads(response.text)
+        return info
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
     
