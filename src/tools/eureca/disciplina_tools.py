@@ -1,156 +1,76 @@
-import requests
-import json
-from langchain_core.tools import tool
 
-base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+import json
+import requests
+from strawberry_demo.main import schema
+from .default_data.default_disciplina_data import *
+from langchain.tools import tool
+from .url_config import base_url
 
 @tool
-def get_disciplinas_curso(codigo_curriculo: str) -> list:
+def get_disciplina_for_tool(codigo_disciplina, data: str = default_disciplina):
     """
-    Buscar todas as disciplinas do curso de Ciência da Computação da UFCG.
+    Busca disciplina com base no código
+    """
+    try:
+        query = f"""  
+            query {{
+                disciplina(codigoDisciplina: "{codigo_disciplina}") {{
+                    {data}
+                }}   
+            }}
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_disciplina,
+        }
+
+        result = schema.execute_sync(query,variables)
+        return result.data["disciplina"]
+    
+    except Exception as e:
+        return e
+
+
+@tool
+def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo="2023") -> dict:
+
+    """
+    Buscar os nomes da disciplinas que são requisitos da disciplina desejada.
 
     Args:
+        codigo_disciplina: o código numérico em string da disciplina que a turma está.
         codigo_curriculo: código do currículo.
     
     Returns:
-        Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
+        Dicionário com o nome de cada disciplina que é requisito para a disciplina desejada. Se o retorno for vazio, informe que a disciplina em questão não possui requisitos.
     
     Nota:
+        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
         Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
     """
-    print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}.")
     params = {
-        'curso': '14102100',
+        'disciplina': codigo_disciplina,
         'curriculo': codigo_curriculo
     }
 
-    response = requests.get(f'{base_url}/disciplinas', params=params)
+    response = requests.get(f'{base_url}/pre-requisito-disciplinas', params=params)
 
     if response.status_code == 200:
-        res = json.loads(response.text)
-        return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
+        requisitos = json.loads(response.text)
+
+        print(requisitos)
+        disciplinas = []
+
+        for requisito in requisitos:
+            disciplina_req = get_disciplina_for_tool(
+                requisito['condicao'],
+            )
+
+            disciplinas.append(disciplina_req[0]['nome'])
+
+        return set(disciplinas)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
-@tool
-def get_disciplina(codigo_da_disciplina: str, codigo_curriculo: str) -> list:
-    """
-    Buscar as informações de uma disciplina do curso de Ciência da Computação da UFCG.
-
-    Args:
-        codigo_da_disciplina: código numérico em string da disciplina específica.
-        codigo_curriculo: código do currículo.
-    
-    Returns:
-        Lista com informações relevantes sobre uma disciplica específica.
-    
-    Nota:
-        Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
-        Para usar este método, se 'codigo_da_disciplina' não tiver sido informado pelo usuário, obtenha os parâmetros previamente com a tool `get_disciplinas_curso`.
-    """
-    print(f"Tool get_disciplina chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}, codigo_da_disciplina={codigo_da_disciplina}")
-    params = {
-        'curso': '14102100',
-        'curriculo': codigo_curriculo,
-        'disciplina': codigo_da_disciplina
-    }
-
-    response = requests.get(f'{base_url}/disciplinas', params=params)
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-@tool
-def get_plano_de_curso(codigo_disciplina: str, periodo: str) -> list:
-    """
-    Plano de curso de uma disciplina (do curso de Ciência da Computação).
-
-    Args:
-        codigo_disciplina: código da disciplina.
-        periodo: período letivo (exemplo: '2024.1', '2023.2', ...)
-    
-    Returns:
-        Lista com informações relevantes do plano de curso de uma disciplina.
-    
-    Nota:
-        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
-        Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
-    """
-    params = {
-        'disciplina': codigo_disciplina,
-        'periodo-de': periodo,
-        'periodo-ate': periodo
-    }
-    print(f"Tool get_plano_de_curso chamada com codigo_disciplina={codigo_disciplina} e periodo={periodo}.")
-    response = requests.get(f'{base_url}/planos-de-curso', params=params)
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-@tool
-def get_plano_de_aulas(codigo_disciplina: str, periodo: str, numero_turma: str) -> list:
-    """
-    Buscar plano de aulas de uma turma de uma disciplina.
-
-    Args:
-        codigo_disciplina: código da disciplina.
-        periodo: período letivo (exemplo: '2024.1', '2023.2', ...).
-        numero_turma: número da turma (exemplo: '01', '02'...).
-    
-    Returns:
-        Lista com informações relevantes do plano de aulas da turma de uma disciplina.
-    
-    Nota:
-        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
-        Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
-        E se a turma não for especificada, use a turma '01' como turma padrão.
-    """
-    print(f"Tool get_plano_de_aulas chamada com codigo_disciplina={codigo_disciplina}, periodo={periodo} e numero_turma={numero_turma}.")
-    params = {
-        'disciplina': codigo_disciplina,
-        'periodo-de': periodo,
-        'periodo-ate': periodo,
-        'turma': numero_turma
-    }
-
-    response = requests.get(f'{base_url}/aulas', params=params)
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-@tool
-def get_turmas(periodo: str, codigo_disciplina: str) -> list:
-    """
-    Buscar turmas.
-
-    Args:
-        periodo: o período em que a turma está.
-        codigo_disciplina: o código numérico em string da disciplina que a turma está.
-    
-    Returns:
-        Lista com informações relevantes das turmas.
-    
-    Nota:
-        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
-    """
-    params = {
-        "periodo-de": periodo,
-        "periodo-ate": periodo,
-        "disciplina": codigo_disciplina
-    }
-    
-    response = requests.get(f'{base_url}/turmas', params=params)
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
 def get_media_notas_turma_disciplina(periodo: str = '2024.1', codigo_disciplina: str = '', turma: str = '01') -> dict:
@@ -200,108 +120,276 @@ def get_media_notas_turma_disciplina(periodo: str = '2024.1', codigo_disciplina:
         }
     else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+    
+
 
 @tool
-def get_horarios_disciplinas(base_url, codigo_disciplina, turma, periodo):
+def get_disciplinas_curso(codigo_curriculo: str, data: str = default_disciplina):
     """
-    Buscar os horários e a sala de uma disciplina de uma turma especificada (caso não seja, busca de todas as turmas).
+    Buscar todas as disciplinas do curso de Ciência da Computação da UFCG.
+    """
+    try:
+        query = f"""  
+            query {{
+                disciplinaPorCursoCurriculo(codigoCurriculo: "{codigo_curriculo}") {{
+                    {data}
+                }}   
+            }}
 
+        """
+        variables = {
+            "codigoCurriculo": codigo_curriculo
+        }
+
+        print(f"Tool get_disciplinas_curso com codigo_curriculo {codigo_curriculo} e data {data}")
+        result = schema.execute_sync(query,variables)
+        return result.data["disciplinaPorCursoCurriculo"]
+    
+    except Exception as e:
+        return e
+
+@tool
+def get_disciplina(codigo_da_disciplina: str, codigo_curriculo: str, data: str = default_disciplina):
+    """
+    Buscar as informações desejadas de uma disciplina do curso de Ciência da Computação da UFCG.
+    """
+    try:
+        query = f"""  
+            query {{
+                disciplinaPorCodigoCurriculo(codigoDaDisciplina: "{codigo_da_disciplina}",codigoCurriculo: "{codigo_curriculo}") {{
+                    {data}
+                }}   
+            }}
+
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_da_disciplina,
+            "codigoCurriculo": codigo_curriculo
+        }
+
+        print(f"Tool get_disciplina com codigo_disciplina {codigo_da_disciplina}, curriculo {codigo_curriculo} e data {data}")
+
+        result = schema.execute_sync(query,variables)
+        return result.data["disciplinaPorCodigoCurriculo"]
+    
+    except Exception as e:
+        return e
+    
+
+@tool
+def get_plano_de_curso(codigo_disciplina: str, periodo: str, data: str = default_plano_de_curso):
+    """
+        Plano de curso de uma disciplina (do curso de Ciência da Computação).
+    """
+    try:
+        query = f"""  
+            query {{
+                planoDeCursoPorDisciplinaPeriodo(codigoDisciplina: "{codigo_disciplina}",periodo: "{periodo}") {{
+                    {data}
+                }}   
+            }}
+
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_disciplina,
+            "periodo": periodo
+        }
+
+        print(f"Tool get_plano_curso com codigo_disciplina {codigo_disciplina}, periodo {periodo} e data {data}")
+        result = schema.execute_sync(query,variables)
+        return result.data["planoDeCursoPorDisciplinaPeriodo"]
+    
+    except Exception as e:
+        return e
+    
+
+@tool
+def get_plano_de_aulas(codigo_disciplina: str, periodo: str, turma: str, data: str = default_aula):
+    """
+    Buscar plano de aulas de uma turma de uma disciplina.
+    """
+    try:
+        query = f"""  
+            query {{
+                planoDeAula(codigoDisciplina: "{codigo_disciplina}",periodo: "{periodo}", turma:"{turma}") {{
+                    {data}
+                }}   
+            }}
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_disciplina,
+            "periodo": periodo,
+            "turma": turma
+        }
+
+        print(f"Tool get_plano_de_aulas com codigo_disciplina {codigo_disciplina}, periodo {periodo}, turma {turma} e data {data}")
+        result = schema.execute_sync(query,variables)
+        return result.data["planoDeAula"]
+    
+    except Exception as e:
+        return e
+
+
+@tool
+def get_turmas(periodo: str, codigo_disciplina: str, data: str = default_turma):
+    """
+        Buscar turmas.
+    """
+    try:
+        query = f"""  
+            query {{
+                Turma(codigoDisciplina: "{codigo_disciplina}",periodo: "{periodo}") {{
+                    {data}
+                }}   
+            }}
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_disciplina,
+            "periodo": periodo,
+        }
+
+        print(f"Tool get_turmas com codigo_disciplina {codigo_disciplina}, periodo {periodo}, e data {data}")
+
+        result = schema.execute_sync(query,variables)
+        return result.data["Turma"]
+    
+    except Exception as e:
+        return e
+    
+#get_media_notas_turma_disciplina não pode ser mudado
+
+@tool
+def get_horarios_disciplinas(codigo_disciplina:str, periodo:str, data: str = default_horario_disciplina,turma:str = "1"):
+    """
+    Buscar os horários e a sala de uma disciplina de uma turma especificada (caso     não  seja, busca de todas as turmas).
+    """
+    try:
+        query = f"""  
+            query {{
+                horarioDisciplinas(codigoDisciplina: "{codigo_disciplina}",periodo: "{periodo}", turma: "{turma}") {{
+                    {data}
+                }}   
+            }}
+        """
+        variables = {
+            "codigoDaDisciplina": codigo_disciplina,
+            "periodo": periodo,
+            "turma": turma
+        }
+
+        print(f"Tool get_horarios_disciplinas com codigo_disciplina {codigo_disciplina}, periodo {periodo},turma {turma} e data {data}")
+
+        result = schema.execute_sync(query,variables)
+        return result.data["horarioDisciplinas"]
+    
+    
+    except Exception as e:
+        return e
+    
+
+
+#DOCUMENTAÇÃO DAS TOOLS
+get_disciplinas_curso.__doc__ = f""" 
+
+    Args:
+        codigo_curriculo: código do currículo.
+        data: campos a serem retornados, por padrão é {default_disciplina}
+
+    Returns:
+        Lista com informações desejadas da disciplina. Por padrão é {default_disciplina}
+    
+    Nota:
+        Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
+"""
+
+get_disciplina.__doc__ = f""" 
+    Args:
+        codigo_da_disciplina: código numérico em string da disciplina específica.
+        codigo_curriculo: código do currículo.
+        data: campos a serem retornados, por padrão é {default_disciplina}
+    
+    Returns:
+        Lista com informações desejadas da disciplina. Por padrão é {default_disciplina}
+    
+    Nota:
+        Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
+        Para usar este método, se 'codigo_da_disciplina' não tiver sido informado pelo usuário, obtenha os parâmetros previamente com a `get_disciplinas_curso`.
+
+"""
+
+get_plano_de_curso.__doc__ = f""" 
+    Args:
+        codigo_disciplina: código da disciplina.
+        periodo: período letivo (exemplo: '2024.1', '2023.2', ...)
+         data: campos a serem retornados, por padrão é {default_plano_de_curso}
+    
+    Returns:
+        Lista com informações desejadas do plano de curso de uma disciplina. Por padrão é
+        {default_plano_de_curso}
+    
+    Nota:
+        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
+        Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
+"""
+
+get_plano_de_aulas.__doc__ = f""" 
+   Args:
+        codigo_disciplina: código da disciplina.
+        periodo: período letivo (exemplo: '2024.1', '2023.2', ...).
+        turma: número da turma (exemplo: '01', '02'...).
+        data: campos a serem retornados, por padrão é {default_aula}
+    
+    Returns:
+        Lista com informações desejadas do plano de aulas da turma de uma disciplina. Por padrão é {default_aula}
+    
+    Nota:
+        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
+        Para usar este método, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
+        E se a turma não for especificada, use a turma '01' como turma padrão.
+"""
+
+get_turmas.__doc__ = f""" 
+    
+
+    Args:
+        periodo: o período em que a turma está.
+        codigo_disciplina: o código numérico em string da disciplina que a turma está.
+        data: campos a serem retornados, por padrão é {default_turma}
+    
+    Returns:
+        Lista com informações desejadas das turmas. Por padrão é {default_turma}
+    
+    Nota:
+        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
+    
+"""
+
+get_horarios_disciplinas.__doc__ = f""" 
     Args:
         codigo_disciplina: o código numérico em string da disciplina que a turma está.
         turma: a turma em questão.
         periodo: o período em que a turma está.
+        data: campos a serem retornados, por padrão é {default_horario_disciplina}
     
     Returns:
-        Dicionário com o intervalo das médias das notas de dada disciplina de uma turma.
+        Lista com informações desejadas do horário da disciplia. Por padrão é {default_horario_disciplina}
     
     Nota:
         Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
         Além disso, o 'periodo' deve ser informado pelo usuário, caso não seja fornecido, informe ao supervisor para buscar o **período mais recente** com o agente 'Agente_Campus_Eureca'.
         E se a 'turma' não for especificada, use uma string vazia para assim retornar todas as turmas.
-    """
-    params = {
-        "disciplina": codigo_disciplina,
-        "turma": turma,
-        "periodo-de": periodo,
-        "periodo-ate": periodo
-    }
 
-    response = requests.get(f'{base_url}/horarios', params=params)
+"""
 
-    if response.status_code == 200:
-        horarios = json.loads(response.text)
-        
-        
-        filtros_horarios = []
-        turmas_map = {}
-
-        for horario in horarios:
-            turma = horario['turma']
-            sala = horario['codigo_da_sala']
-            dia = str(horario['dia'])
-            horario_formatado = f"{horario['hora_de_inicio']}h às {horario['hora_de_termino']}h"
-
-            if turma not in turmas_map:
-                turmas_map[turma] = {
-                    'turma': turma,
-                    'sala': sala,
-                    'horarios': {}
-                }
-                filtros_horarios.append(turmas_map[turma])
-
-            turmas_map[turma]['horarios'][dia] = horario_formatado
-
-        return filtros_horarios
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-def get_disciplina_for_tool(base_url, disciplina):
-  params = {
-    'disciplina': disciplina,
-  }
-
-  response = requests.get(f'{base_url}/disciplinas', params=params)
-
-  if response.status_code == 200:
-    return json.loads(response.text)
-  else:
-    return None
-
-@tool
-def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo="2023") -> dict:
-    """
-    Buscar os nomes da disciplinas que são requisitos da disciplina desejada.
-
+get_disciplina_for_tool.__doc__ = f""" 
     Args:
-        codigo_disciplina: o código numérico em string da disciplina que a turma está.
-        codigo_curriculo: código do currículo.
-    
+        codigo_disciplina: codigo da disciplina.
+        data: campos a serem retornados, por padrão é {default_disciplina}        
+
     Returns:
-        Dicionário com o nome de cada disciplina que é requisito para a disciplina desejada. Se o retorno for vazio, informe que a disciplina em questão não possui requisitos.
-    
-    Nota:
-        Para usar este método, se o 'codigo_disciplina' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_disciplinas_curso`.
-        Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
-    """
-    params = {
-        'disciplina': codigo_disciplina,
-        'curriculo': codigo_curriculo
-    }
+        Lista com json que contém as informações desejadas da disciplina. Por padrão é
+        {default_disciplina}
+"""
 
-    response = requests.get(f'{base_url}/pre-requisito-disciplinas', params=params)
 
-    if response.status_code == 200:
-        requisitos = json.loads(response.text)
-        disciplinas = []
-
-        for requisito in requisitos:
-            disciplina_req = get_disciplina_for_tool(
-                base_url,
-                requisito['condicao'],
-            )
-
-            disciplinas.append(disciplina_req[0]['nome'])
-
-        return set(disciplinas)
-    else:
-        [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        
