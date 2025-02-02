@@ -103,7 +103,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str, data: str = default_curricu
         return e
     
 @tool    
-def get_estudantes(codigo_do_curso: str, periodo_de_ingresso: str) -> dict:
+def get_estudantes(codigo_do_curso: str) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 
