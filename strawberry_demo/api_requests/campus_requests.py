@@ -5,8 +5,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-#base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
-base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+from .url_config import base_url
 
 
 def get_campi() -> list:

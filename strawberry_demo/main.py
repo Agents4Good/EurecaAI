@@ -12,11 +12,18 @@ from flask import Flask
 from strawberry.flask.views import GraphQLView
 from strawberry.flask.views import AsyncGraphQLView
 
-def default_resolver(root, field):  #strawberry não permite o retorno de dicionários por padrão para isso é necessário fazer essa config
-    try:
-        return operator.getitem(root, field)
-    except KeyError:
-        return getattr(root, field)
+# def default_resolver(root, field):  #strawberry não permite o retorno de dicionários por padrão para isso é necessário fazer essa config
+#     try:
+#         return operator.getitem(root, field)
+#     except KeyError as e:
+#         return getattr(root, field)
+
+def default_resolver(root, field):
+    # Verifica se o campo existe antes de acessar
+    if field in root:
+        return root[field]
+    else:
+        return None  # Ou trate de outra forma, caso o campo não exist
 
 
 config = StrawberryConfig(

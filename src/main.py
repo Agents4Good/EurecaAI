@@ -44,7 +44,7 @@ async def main():
         async for s in system.astream(
         {
             "messages": [
-                HumanMessage(content=f"{"Qual o código do curso de ciência da computação?"}")
+                HumanMessage(content=f"{'Qual o código do curso de ciência da computação?'}")
                 #HumanMessage(content=f"{"De quais regiões vem os estudantes de ciência da computação e qual a quantidade?"}")
                 #HumanMessage(content=f"{"Traga informações sobre o curso de ciência da computação"}")
                 #HumanMessage(content="Qual a ementa de Teoria da Computação")

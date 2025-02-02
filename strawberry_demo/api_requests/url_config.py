@@ -1,0 +1,1 @@
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
