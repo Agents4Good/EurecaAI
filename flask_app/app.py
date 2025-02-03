@@ -37,6 +37,11 @@ def login():
     # Renderiza a página HTML onde o login será exibido
     return render_template('login.html')
 
+@app.route('/politica_termos')
+def politica_termos():
+    # Renderiza a página HTML onde o login será exibido
+    return render_template('politica_termos.html')
+
 @app.route('/chat', methods=['POST'])
 def chat():
     # Recebe a mensagem do usuário

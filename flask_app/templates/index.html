@@ -68,9 +68,9 @@
                         <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
                         <div class="bot__response">
                             <div class="bot__name">
-                                <p>LMChatv1.0:</p>
+                                <p>Assistente:</p>
                             </div>
-                            <p class="bot__name__response">Bot is typing...</p>
+                            <p class="bot__name__response">Raciocinando...</p>
                             <div class="bot_options">
                                 <button class="audio-button">
                                     <img src="../static/images/audio.png" />
@@ -206,10 +206,28 @@
             }
         }
 
+        function openAsideBarMobile() {
+            const aside = document.querySelector(".aside-chat");
+            const buttonIcon = document.querySelector(".aside__mobile__button i");
+
+            if (aside.classList.contains("open")) {
+                aside.classList.remove("open");
+                buttonIcon.classList.remove("fa-times");
+                buttonIcon.classList.add("fa-bars");
+            } else {
+                aside.classList.add("open");
+                buttonIcon.classList.remove("fa-bars");
+                buttonIcon.classList.add("fa-times");
+            }
+        }
+
     </script>
 </head>
 <body>
     <header>
+        <div class="aside__mobile__button" onClick="openAsideBarMobile()">
+            <i class='fas fa-bars fa-2x'></i>
+        </div>
         <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'"/>
         <h1>EurecaAI</h1>
         <button class="login__button" onClick="window.location.href='/login'">
@@ -238,11 +256,20 @@
         </section>
         <aside class="aside-chat">
             <div class="aside-title-container">
+                <div>
+                    <img src="./static/images/logo_ufcg.png"/>
+                    <button class="login_button_mobile" onClick="window.location.href='/login'">
+                        <p>Login</p>
+                    </button>
+                </div>
                 <p class="aside-title-content">Histórico</p>
             </div>
             <div class="history">
                 
             </div>
+            <div class="about">
+            <p>© 2025 EurecaAI</p>
+            <p onClick="window.location.href='/politica_termos'">Política e Termos</p>
         </aside>
     </main>
 </body>

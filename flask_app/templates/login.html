@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/login.css">
     <link rel="icon" type="image/png" href="../static/images/ufcg.png">
-    <title>Login - EurecaAI</title>
+    <title>EurecaAI - Login</title>
     <script>
         function showAlert(loginAlert, msg) {
             loginAlert.innerText = msg;
@@ -36,6 +36,7 @@
             .then(data => {
                 if (data.success) {
                     console.log("Success");
+                    store_token("token", data.data);
                 } else {
                     showAlert(loginAlert, "Login ou senha inválida");
                 }
@@ -44,14 +45,18 @@
                 showAlert(loginAlert, "Erro ao fazer login");
             });
         }
+
+        async function store_token(name, value) {
+            const date = new Date();
+            date.setTime(expires.getTime() + 1 * 60 * 60 * 1000);
+            document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+        }
+
     </script>
 </head>
 <body>
     <header class="header_main">
         <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'">
-        <div>
-            <h1>Login EurecaAI</h1>
-        </div>
     </header>
     <main>
         <section>
