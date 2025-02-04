@@ -1,9 +1,9 @@
 
 import json
-
 import requests
 from strawberry_demo.main import schema
 from .default_data.default_cursos_data import *
+from .url_config import base_url
 from langchain.tools import tool
 from .url_config import base_url
 
