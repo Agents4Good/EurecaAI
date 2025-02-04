@@ -52,6 +52,7 @@ def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo="2023") 
         'curriculo': codigo_curriculo
     }
 
+    print(f"Tool get_pre_requisitos_disciplinas com disciplina {codigo_disciplina}, curriculo {codigo_curriculo}")
     response = requests.get(f'{base_url}/pre-requisito-disciplinas', params=params)
 
     if response.status_code == 200:
@@ -90,7 +91,6 @@ def get_media_notas_turma_disciplina(periodo: str = '2024.1', codigo_disciplina:
         Caso o 'periodo' não tiver sido informado, use o '2024.1' como periodo padrão.
         E se a turma não for especificada, use a turma '01' como turma padrão.
     """
-    print(f"Tool get_media_notas_turma_disciplina chamada com periodo={periodo}, codigo_disciplina={codigo_disciplina} e turma={turma}.")
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
@@ -98,6 +98,7 @@ def get_media_notas_turma_disciplina(periodo: str = '2024.1', codigo_disciplina:
         "turma": turma
     }
 
+    print(f"Tool get_media_notas_turma_disciplina chamada com periodo={periodo}, codigo_disciplina={codigo_disciplina} e turma={turma}.")
     response = requests.get(f'{base_url}/matriculas', params=params)
 
     if response.status_code == 200:

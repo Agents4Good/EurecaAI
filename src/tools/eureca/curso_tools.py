@@ -103,8 +103,6 @@ def get_curriculo_mais_recente(codigo_do_curso: str, data: str = default_curricu
         return e
     
 @tool    
-
-
 def get_estudantes(codigo_do_curso: str, periodo_de_ingresso: str) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
@@ -118,7 +116,8 @@ def get_estudantes(codigo_do_curso: str, periodo_de_ingresso: str) -> dict:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` para recuperar o código do curso.
     """
-    #print(f"Tool get_estudantes chamada com codigo_do_curso={codigo_do_curso}.")
+
+    print(f"Tool get_estudantes com codigo_do_curso={codigo_do_curso}.")
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "ATIVOS",

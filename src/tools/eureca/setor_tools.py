@@ -3,84 +3,72 @@ import numpy as np
 import json
 from langchain_core.tools import tool
 from datetime import datetime
-
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+from strawberry_demo.main import schema
+from .default_data.default_setor_data import *
+from .url_config import base_url
 
 @tool
-def get_setores() -> list:
+def get_setores(data: str = default_setor):
     """
     Busca as informações de setor (centro) do campus da UFCG.
-
-    Args:
-        base_url: URL base da API.
-    
-    Returns:
-        Lista com informações relevantes do setor (centro) específico.
     """
-    print(f"Tool get_setores chamada")
-    params = {
-        "campus": '1'
-    }
-    response = requests.get(f'{base_url}/setores', params=params)
-
-    if response.status_code == 200:
-      return json.loads(response.text)
-    else:
-      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-def get_professores(setor_centro: str) -> list:
-    """
-    Busca as informações de professores de um setor (centro).
-    
-    Args:
-        base_url: URL base da API.
-        setor_centro: 'código_setor' (centro) do campus.
-
-    Returns:
-        Lista com as informações relevantes de professores de um setor (centro).
-    """
-    params = {
-        "status": "ATIVO",
-        "setor": setor_centro
-    }
-    response = requests.get(f'{base_url}/professores', params=params)
-
-    if response.status_code == 200:
-        return json.loads(response.text)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+    try:
+        query = f"""query{{
+                    setores {{
+                        {data}
+                    }}
+                }}"""
+        
+        print(f"Tool get_setores com data {data}")
+        result = schema.execute_sync(query);
+        return result.data["setores"]
+    except Exception as e:
+        return e
 
 @tool
-def get_total_professores(setor_unidade: str) -> str:
+def get_professores(codigo_do_setor: str, data: str = default_professor):
+    """
+    Busca as informações de professores de um setor (centro).
+    """
+    try:
+        query = f"""query{{
+                    professores(codigoDoSetor: "{codigo_do_setor}") {{
+                        {data}
+                    }}
+                }}"""
+        
+        variables = {
+            "codigoDoSetor": codigo_do_setor
+        }
+        print(f"Tool get_professoes setor {codigo_do_setor} e data {data}")
+        result = schema.execute_sync(query, variable_values=variables);
+        return result.data["professores"]
+    except Exception as e:
+        return e
+    
+@tool
+def get_total_professores(codigo_do_setor: str, data: str = default_professor):
     """
     Busca a quantidade total de professores de um setor (unidade).
-
-    Args:
-        base_url: URL base da API.
-        setor_unidade: 'código_setor' (unidade) do campus.
-    
-    Returns:
-        String que representa o total de professores de um setor (unidade).
-    
-    Exemplo:
-        "44 professores".
-    Nota:
-        Para usar este método, se o 'setor_unidade' (código do setor) não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_setores` baseado no nome da unidade fornecido pelo usuário.
-        Se o nome da unidade não tiver sido informado, e tiver sido informado 'UFCG' use uma string vazia como entrada para 'setor_unidade'.
     """
-    print(f"Tool get_total_professores chamada com setor_unidade={setor_unidade}")
-    params = {
-        "status": "ATIVO",
-        "setor": setor_unidade
-    }
-    response = requests.get(f'{base_url}/professores', params=params)
 
-    if response.status_code == 200:
-        res = len(json.loads(response.text))
-        return f'"{res} professores"'
-    else:
-        return [{"erro": "Não foi possível obter a informação (possível causa: \nProfessores pertencem as unidades. Por favor, informe a unidade acadêmica.)."}]
+    try:
+        query = f"""query{{
+                    professores(codigoDoSetor: "{codigo_do_setor}") {{
+                        {data}
+                    }}
+                }}"""
+        
+        variables = {
+            "codigoDoSetor": codigo_do_setor
+        }
+        print(f"Tool get__total_professoes setor {codigo_do_setor} e data {data}")
+        result = schema.execute_sync(query, variable_values=variables);
+        return result.data["professores"]
+    except Exception as e:
+        return e
 
+#função auxiliar
 def extrair_insights_estagios(estagiarios, uf):
     estagiarios_uf = ([
         est for est in estagiarios
@@ -130,6 +118,7 @@ def get_estagios(ano: str, setor_centro_unidade: str) -> list:
         "fim-ate": ano
     }
 
+    print(f"Tool get_estagios com ano {ano}, setor {setor_centro_unidade}")
     response = requests.get(f'{base_url}/estagios', params=params)
 
     if response.status_code == 200:
@@ -148,3 +137,33 @@ def get_estagios(ano: str, setor_centro_unidade: str) -> list:
         return estados_res
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+    
+
+#DOCUMENTAÇÃO DAS TOOLS
+get_setores.__doc__ = f"""   
+    Args:
+        data: campos a serem retornados, por padrão é {default_setor}
+    
+    Returns:
+        Lista com informações desejadas do setores. Por padrão é {default_setor}
+"""
+
+get_professores.__doc__ = f""" 
+    Args:
+        setor_centro: 'código_setor' (centro) do campus.
+        data: campos a serem retornados, por padrão é {default_professor}
+
+    Returns:
+        Lista com as informações desejadas de professores de um setor (centro). Por padrão é {default_professor}
+"""
+
+get_total_professores.__doc__ = f""" 
+    Returns:
+        String que representa o total de professores de um setor (unidade).
+       
+    Exemplo:
+        "44 professores".
+    Nota:
+        Para usar este método, se o 'setor_unidade' (código do setor) não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_setores` baseado no nome da unidade fornecido pelo usuário.
+        Se o nome da unidade não tiver sido informado, e tiver sido informado 'UFCG' use uma string vazia como entrada para 'setor_unidade'.
+"""

@@ -17,10 +17,13 @@ from schemas.disciplina_schema import Disciplina, HorarioDisciplina, PreRequisit
 from schemas.plano_de_curso_schema import PlanoDeCurso
 from schemas.aula_schema import Aula
 from schemas.turma_schema import Turma
+from schemas.setor_schema import Setor
+from schemas.professor_schema import Professor
 
 from api_requests.campus_requests import *
 from api_requests.cursos_requests import *
 from api_requests.disciplina_requests import *
+from api_requests.setor_requests import *
 
 
 
@@ -42,4 +45,7 @@ class Query:
     turmas: List[Turma] = strawberry.field(resolver=get_turmas)
     horarioDisciplinas: List[HorarioDisciplina] = strawberry.field(resolver=get_horarios_disciplinas)
     disciplina:List[Disciplina] = strawberry.field(resolver=get_disciplina_for_tool)
+    setores: List[Setor] = strawberry.field(resolver=get_setores)
+    professores: List[Professor] = strawberry.field(resolver=get_professores)
+    totalProfessores: str = strawberry.field(resolver=get_total_professores)
  

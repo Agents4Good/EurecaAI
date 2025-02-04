@@ -144,7 +144,7 @@ def get_turmas(periodo: str, codigo_disciplina: str) -> list:
         "disciplina": codigo_disciplina
     }
     
-    print(f"Chamada a API com url {base_url}/turmas com codigo_disciplina={codigo_disciplina}, periodo={periodo} e")
+    print(f"Chamada a API com url {base_url}/turmas com codigo_disciplina={codigo_disciplina}, periodo={periodo}")
     response = requests.get(f'{base_url}/turmas', params=params)
 
     if response.status_code == 200:
@@ -228,6 +228,7 @@ def get_horarios_disciplinas(codigo_disciplina:str, turma:str, periodo:str):
     }
 
     response = requests.get(f'{base_url}/horarios', params=params)
+    print(f"Chamada a API com url {base_url}/turmas com codigo_disciplina={codigo_disciplina}, turma{turma} e periodo={periodo}")
 
     if response.status_code == 200:
         horarios = json.loads(response.text)
@@ -319,4 +320,3 @@ def pre_requisitos_disciplinas(codigo_disciplina: str, codigo_curriculo: str ="2
         [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-#print( get_horarios_disciplinas("1411311","2","2023.1"))

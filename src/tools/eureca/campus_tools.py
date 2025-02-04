@@ -18,7 +18,7 @@ def get_campi(data: str = default_campus):
                     }}
                 }}
             """
-            print(f"Tool get campi chamada com args {data}")
+            print(f"Tool get_campi chamada com data {data}")
             result = schema.execute_sync(query)
             return result.data['allCampus']
         except Exception as e:
@@ -37,7 +37,7 @@ def get_calendarios(data: str = default_calendario):
                         }}
                     }}
                 """
-        print(f"Tool get calendarios chamada com args {data}")
+        print(f"Tool get_calendarios chamada com data {data}")
 
         result = schema.execute_sync(query)
         
@@ -58,7 +58,7 @@ def get_periodo_mais_recente(data: str = default_calendario):
                         }}
                     }}
                 """
-        print(f"Tool get periodo mais recentee chamada com args {data}")
+        print(f"Tool get_periodo mais recentee chamada com data {data}")
 
         result = schema.execute_sync(query)
         return result.data['periodoMaisRecente']
