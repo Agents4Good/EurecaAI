@@ -1,102 +1,87 @@
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+from langchain_core.messages import AIMessage
+from langgraph.prebuilt import ToolNode
+from langgraph.graph import StateGraph, MessagesState, START, END
+from langchain.schema import SystemMessage
+from langchain_core.messages import HumanMessage
+
+from .tools.rag_tools import *
+from .prompts.prompts import *
+
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
-from langchain_core.tools import tool
-import numpy as np
-import requests
-import json
-import asyncio
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
-model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
+import uuid, json
 
-base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+from dotenv import load_dotenv
 
-def get_cursos_ativos() -> list:
-    """
-    Buscar todos os cursos da UFCG.
+load_dotenv()
 
-    Args:
-    
-    Returns:
-        Lista de cursos com 'codigo_do_curso' e 'nome'.
-    """
-    url_cursos = f'{base_url}/cursos'
-    params = {
-        'status-enum':'ATIVOS',
-        'campus': '1'
-    }
-    response = requests.get(url_cursos, params=params)
+tools = [get_cursos, get_codigo_curso, get_estudantes] # tools para testar aqui
+tool_node = ToolNode(tools)
 
-    if response.status_code == 200:
-        data_json = json.loads(response.text)
-        return [{'codigo_do_curso': data['codigo_do_curso'], 'nome': data['descricao']} for data in data_json]
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
+#model_with_tools = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)
+#model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
-def get_codigo_curso(nome: str) -> dict:
-    """
-    Retorna o código e nome do curso.
 
-    Args:
-        nome (str): nome do curso.
+def should_continue(state: MessagesState):
+    messages = state["messages"]
+    last_message = messages[-1]
+    if last_message.tool_calls:
+        return "tools"
+    return END
 
-    Returns:
-        dict: dicionário contendo código e nome do curso.
-    """
-    
-    cursos = get_cursos_ativos()
+def extract_tool_calls(response):
+    try:
+        content_data = json.loads(response.content)
+        if "tool_calls" in content_data:
+            tool_calls = content_data["tool_calls"]
 
-    sentences = [curso["nome"] for curso in cursos]
-    embeddings = model_sentence.encode(sentences)
-    embedding_query = model_sentence.encode(nome).reshape(1, -1)
+            for tool_call in tool_calls:
+                tool_call.setdefault("id", str(uuid.uuid4()))  # Gera um UUID único se não existir
+                tool_call.setdefault("type", "tool_call")  # Define o tipo
+            
+            response.tool_calls = tool_calls
+            response.content = content_data.get("content", "")
+    except json.JSONDecodeError:
+        pass
+    return response
 
-    similarities = cosine_similarity(embeddings, embedding_query).flatten()
-    top_5_indices = np.argsort(similarities)[-5:][::-1]
+def call_model(state: MessagesState):
+    messages = state["messages"]
 
-    top_5_cursos = [{"codigo_do_curso": cursos[idx]["codigo_do_curso"], "descricao": cursos[idx]["nome"], "similaridade": similarities[idx]} for idx in top_5_indices]
-
-    possiveis_cursos = []
-    for curso in top_5_cursos:
-        possiveis_cursos.append(f"{curso['codigo_do_curso']} - {curso['descricao']}")
-    
-    print(possiveis_cursos)
-    
-    #f"{curso['codigo_do_curso']} - {curso['descricao']} - Similaridade: {curso['similaridade']:.4f}
-    '''return model.invoke(
-        f"""
-        Para o curso perguntado de nome: "{nome}", quais desses cursos abaixo é mais similar ao curso da pergunta?
-        
-        {possiveis_cursos}
-        
-        responda no seguinte formato:
-        
-        {formato}
-        """
-    ).content'''
-    response = model.invoke(
-        f"""
-        Para o curso de nome: '{nome}', quais desses possíveis cursos abaixo é mais similar ao curso do nome informado?
-        
-        {possiveis_cursos}
-        
-        Responda no seguinte formato:
-        
-        {formato}
-        
-        Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
-        
-        Observação:
-        
-        'Nome do Curso - M' = é um curso matutino.
-        'Nome do Curso - D' = é um curso diurno.
-        'Nome do Curso - N' = é um curso noturno.
-        """
+    system_prompt = SystemMessage(
+        content=FEW_SHOT_PROMPT2
     )
+
+    if not messages or not isinstance(messages[0], SystemMessage):
+        messages.insert(0, system_prompt)
+    
+    response = model_with_tools.invoke(messages)
+    response = extract_tool_calls(response)
     print({"messages": [response]})
-    return response.content
+    return {"messages": [response]}
 
-formato = """{'curso': [{'codigo': '', 'nome': ''}]}"""
+workflow = StateGraph(MessagesState)
 
-resposta = get_codigo_curso("ciências econômicas manhã")
-print(resposta)
+workflow.add_node("agent", call_model)
+workflow.add_node("tools", tool_node)
+
+workflow.add_edge(START, "agent")
+workflow.add_conditional_edges("agent", should_continue, ["tools", END])
+workflow.add_edge("tools", "agent")
+
+app = workflow.compile()
+
+'''from IPython.display import Image
+
+file = "grafo.png"
+img = app.get_graph().draw_mermaid_png()
+with open(file, "wb") as f:
+    f.write(img)'''
+
+for chunk in app.stream(
+    {"messages": [("human", "traga informações dos estudantes de letras")]}, stream_mode="values"
+):
+    chunk["messages"][-1].pretty_print()

@@ -5,7 +5,7 @@ from langchain.schema import SystemMessage
 from langchain_core.messages import HumanMessage
 
 from src.tools.eureca.curso_tools import *
-from .prompts import *
+from .prompts.prompts import *
 
 from langchain_community.chat_models import ChatLiteLLM
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
