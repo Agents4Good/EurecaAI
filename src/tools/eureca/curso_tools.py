@@ -1,13 +1,14 @@
 import requests
 import json
 from langchain_core.tools import tool
+from typing import Any
 
-base_url = "https://eureca.sti.ufcg.edu.br/das/v2"
+base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 @tool
 def get_cursos_ativos() -> list:
     """
-    Buscar todos os cursos ativos da UFCG.
+    Buscar todos os códigos dos cursos da UFCG. 
 
     Args:
     
@@ -28,8 +29,27 @@ def get_cursos_ativos() -> list:
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
+'''@tool
+def get_cursos_ativos() -> list:
+    """
+    Buscar todos os cursos ativos da UFCG.
+    """
+    url_cursos = f'{base_url}/cursos'
+    params = {
+        'status-enum':'ATIVOS',
+        'campus': '1'
+    }
+    print("chamando a tool get_cursos_ativos.")
+    response = requests.get(url_cursos, params=params)
+
+    if response.status_code == 200:
+        data_json = json.loads(response.text)
+        return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]'''
+
 @tool
-def get_curso(codigo_do_curso: str) -> list:
+def get_curso(codigo_do_curso: Any) -> list:
     """
     Buscar informação de um curso da UFCG a partir do código do curso.
 
@@ -45,7 +65,7 @@ def get_curso(codigo_do_curso: str) -> list:
     print(f"Tool get_curso chamada com codigo_do_curso={codigo_do_curso}.")
     params = {
         'status-enum': 'ATIVOS',
-        'curso': codigo_do_curso
+        'curso': str(codigo_do_curso)
     }
     url_cursos = f'{base_url}/cursos'
     response = requests.get(url_cursos, params=params)
@@ -101,7 +121,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_estudantes(codigo_do_curso: str) -> dict:
+def get_estudantes(codigo_do_curso: Any) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 
@@ -116,7 +136,7 @@ def get_estudantes(codigo_do_curso: str) -> dict:
     """
     print(f"Tool get_estudantes chamada com codigo_do_curso={codigo_do_curso}.")
     params = {
-        "curso": codigo_do_curso,
+        "curso": str(codigo_do_curso),
         "situacao-do-estudante": "ATIVOS"
     }
 

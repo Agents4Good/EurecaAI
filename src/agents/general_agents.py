@@ -9,13 +9,17 @@ from ..tools.detector.detect_tags import *
 
 from ..prompts.system_prompts import *
 
-
+from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_community.chat_models import ChatLiteLLM
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import create_react_agent
+
+from langchain.output_parsers import JsonOutputKeyToolsParser, JsonOutputToolsParser
 
 CURSO_EURECA_TOOLS = [
     get_cursos_ativos,
@@ -55,8 +59,34 @@ DETECTOR_TOOLS = [
 
 load_dotenv()
 
-#model = ChatOllama(model="llama3.1:8b", temperature=0.2)
-model = ChatOpenAI(model="gpt-4o")
+import getpass
+import os
+
+if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+    os.environ["HUGGINGFACEHUB_API_TOKEN"] = getpass.getpass("Enter your token: ")
+
+'''llm = HuggingFacePipeline.from_model_id(
+    model_id="DeepSeek-R1-Distill-Qwen-14B",
+    task="text-generation",
+    pipeline_kwargs=dict(
+        max_new_tokens=512,
+        do_sample=True,
+        repetition_penalty=1.03
+    ),
+)'''
+
+llm = HuggingFaceEndpoint(
+    repo_id="NousResearch/Hermes-3-Llama-3.1-405B",
+    task="text-generation",
+    max_new_tokens=2048,
+    do_sample=False,
+)
+
+#model = ChatHuggingFace(llm=llm)
+#model = ChatNVIDIA(model="meta/llama-3.3-70b-instruct")
+#model = ChatLiteLLM(model="huggingface/MadeAgents/Hammer2.1-7b")
+#model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOpenAI(model="gpt-4o-mini")
 #model = ChatGroq(model="llama-3.2-90b-vision-preview")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 
@@ -66,7 +96,9 @@ async def agent_node(state, agent, name):
       e retornar a resposta desse agente.
     """
     try:
+        print(state)
         result = await agent.ainvoke(state)
+        print(result)
         if isinstance(result, dict) and "messages" in result:
             return {"messages": [AIMessage(content=result["messages"][-1].content, name=name)]}
         return {"messages": [AIMessage(content=str(result), name=name)]}

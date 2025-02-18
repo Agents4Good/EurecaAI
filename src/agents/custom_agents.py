@@ -58,10 +58,6 @@ def aggregator_node(state):
         "Nenhuma pergunta encontrada."
     )
     
-    '''agent_responses = next(
-        (msg.content for msg in state["messages"] if isinstance(msg, AIMessage)),
-        "Nenhuma resposta encontrada."
-    )'''
     agent_responses = "\n".join(
         msg.content for msg in state["messages"] if isinstance(msg, AIMessage)
     )

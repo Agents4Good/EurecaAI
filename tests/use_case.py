@@ -21,10 +21,9 @@ load_dotenv()
 tools = [get_cursos_ativos, get_curso, get_estudantes] # tools para testar aqui
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.1:latest", temperature=0.2).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)
-#model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
-
+#model_with_tools = ChatLiteLLM(model="huggingface/MadeAgents/Hammer2.1-7b").bind_tools(tools)
 
 def should_continue(state: MessagesState):
     messages = state["messages"]
@@ -83,6 +82,8 @@ with open(file, "wb") as f:
     f.write(img)'''
 
 for chunk in app.stream(
-    {"messages": [("human", "Traga informações sobre o curso de engenharia civil.")]}, stream_mode="values"
+    {"messages": [("human", "Quais as nacionalidades dos estudantes do curso de engenharia civil?")]}, stream_mode="values"
+    #{"messages": [("human", "Traga informações sobre francês.")]}, stream_mode="values"
+    #{"messages": [("human", "Existem mais estudantes em ciência da computação ou em engenharia civil?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
