@@ -7,7 +7,7 @@ import requests
 import json
 import asyncio
 
-model = ChatOllama(model="llama3.1:8b", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
@@ -26,7 +26,6 @@ def get_cursos_ativos() -> list:
         'status-enum':'ATIVOS',
         'campus': '1'
     }
-    print("chamando a tool get_cursos_ativos.")
     response = requests.get(url_cursos, params=params)
 
     if response.status_code == 200:
@@ -35,7 +34,7 @@ def get_cursos_ativos() -> list:
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
-async def get_informacoes_curso(nome: str) -> dict:
+def get_codigo_curso(nome: str) -> dict:
     """
     Retorna o código e nome do curso.
 
@@ -61,15 +60,43 @@ async def get_informacoes_curso(nome: str) -> dict:
     for curso in top_5_cursos:
         possiveis_cursos.append(f"{curso['codigo_do_curso']} - {curso['descricao']}")
     
+    print(possiveis_cursos)
+    
     #f"{curso['codigo_do_curso']} - {curso['descricao']} - Similaridade: {curso['similaridade']:.4f}
-    return await model.ainvoke(
+    '''return model.invoke(
         f"""
         Para o curso perguntado de nome: "{nome}", quais desses cursos abaixo é mais similar ao curso da pergunta?
         
         {possiveis_cursos}
+        
+        responda no seguinte formato:
+        
+        {formato}
         """
-    ).content
-    
+    ).content'''
+    response = model.invoke(
+        f"""
+        Para o curso de nome: '{nome}', quais desses possíveis cursos abaixo é mais similar ao curso do nome informado?
+        
+        {possiveis_cursos}
+        
+        Responda no seguinte formato:
+        
+        {formato}
+        
+        Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
+        
+        Observação:
+        
+        'Nome do Curso - M' = é um curso matutino.
+        'Nome do Curso - D' = é um curso diurno.
+        'Nome do Curso - N' = é um curso noturno.
+        """
+    )
+    print({"messages": [response]})
+    return response.content
 
-resposta = asyncio.run(get_informacoes_curso("COMPUTAÇÃO"))
+formato = """{'curso': [{'codigo': '', 'nome': ''}]}"""
+
+resposta = get_codigo_curso("ciências econômicas manhã")
 print(resposta)
