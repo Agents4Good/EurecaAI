@@ -1,18 +1,19 @@
 import requests
 import json
 from langchain_core.tools import tool
+from typing import Any
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 @tool
 def get_cursos_ativos() -> list:
     """
-    Buscar todos os cursos ativos da UFCG.
+    Buscar todos os cursos da UFCG.
 
     Args:
     
     Returns:
-        Lista de cursos com 'codigo_do_curso' e 'descricao'.
+        Lista de cursos com 'codigo_do_curso' e 'nome'.
     """
     url_cursos = f'{base_url}/cursos'
     params = {
@@ -24,14 +25,14 @@ def get_cursos_ativos() -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
-        return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
+        return [{'codigo_do_curso': data['codigo_do_curso'], 'nome': data['descricao']} for data in data_json]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_curso(codigo_do_curso: str) -> list:
+def get_curso(codigo_do_curso: Any) -> list:
     """
-    Buscar informação de um curso da UFCG a partir do código do curso.
+    Buscar informação de um curso da UFCG a partir do código do curso (numérico). 
 
     Args:
         codigo_do_curso: código do curso.
@@ -56,7 +57,7 @@ def get_curso(codigo_do_curso: str) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_curriculos(codigo_do_curso: str) -> list:
+def get_curriculos(codigo_do_curso: Any) -> list:
     """
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
 
@@ -79,7 +80,7 @@ def get_curriculos(codigo_do_curso: str) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
+def get_curriculo_mais_recente(codigo_do_curso: Any) -> list:
     """
     Buscar o currículo mais recente de um curso.
 
@@ -101,7 +102,7 @@ def get_curriculo_mais_recente(codigo_do_curso: str) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 @tool
-def get_estudantes(codigo_do_curso: str) -> dict:
+def get_estudantes(codigo_do_curso: Any) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 

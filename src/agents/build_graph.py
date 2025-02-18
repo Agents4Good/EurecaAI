@@ -11,14 +11,14 @@ load_dotenv()
 
 def detect_loop(state):
     """
-    Detecta se o supervisor está tentando chamar o mesmo agente repetidamente.
+    Detects whether the supervisor is trying to call the same agent repeatedly.
     """
     last_agents = [msg.name for msg in state["messages"][-2:]]  # Últimos dois agentes
     return last_agents[0] == last_agents[1] if len(last_agents) > 1 else False
 
 def build_flow() -> StateGraph:
     """
-        Constrói o grafo
+        Build the graph
     """
     workflow = StateGraph(AgentState)
     workflow.add_node("Agente_Cursos_Eureca", cursos_eureca_node)
@@ -48,7 +48,7 @@ def build_flow() -> StateGraph:
 
 def build():
     """
-    Costrói o fluxo dos agentes e compila.
+    Constructs the agent flow and compiles it.
     """
     workflow = build_flow()
     return workflow.compile()

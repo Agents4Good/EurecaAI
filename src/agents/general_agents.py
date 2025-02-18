@@ -16,10 +16,6 @@ from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import create_react_agent
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
-#from langchain_community.llms import HuggingFaceEndpoint
 
 CURSO_EURECA_TOOLS = [
     get_cursos_ativos,
@@ -59,31 +55,15 @@ DETECTOR_TOOLS = [
 
 load_dotenv()
 
-#model = ChatOllama(model="llama3.2:3b", temperature=0.2)
-#model = ChatOpenAI(model="gpt-4o")
+model = ChatOllama(model="llama3.1:8b", temperature=0.2)
+#model = ChatOpenAI(model="gpt-4o-mini")
 #model = ChatGroq(model="llama-3.2-90b-vision-preview")
 #model = ChatGoogleGenerativeAI(model="gemini-1.5-pro")
 
-'''llm = HuggingFaceEndpoint(
-    repo_id="MadeAgents/Hammer2.1-7b",
-    task='text-generation',
-    temperature=0.67,
-    huggingfacehub_api_token=""    
-)'''
-
-llm = HuggingFaceEndpoint(
-    repo_id="ibm-granite/granite-3.1-3b-a800m-instruct",
-    task="text-generation",
-    max_new_tokens=512,
-    do_sample=False,
-    repetition_penalty=1.03,
-)
-model = ChatHuggingFace(llm=llm)
-
 async def agent_node(state, agent, name):
     """
-      Executa um agente específico com base em um estado fornecido (state) 
-      e retornar a resposta desse agente.
+      Runs a specific agent based on a given state 
+      and return the response from that agent.
     """
     try:
         result = await agent.ainvoke(state)
