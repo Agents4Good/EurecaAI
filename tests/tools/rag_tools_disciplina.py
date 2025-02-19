@@ -87,7 +87,7 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
         
         ***Responda no seguinte formato:***
 
-        **Se o nome da disciplina for muito distinto de '{nome_disciplina}' responda {format}, matenha em branco os campos SOMENTE SE OS NOMES FOREM MUITO DIFERENTES**
+        **Se o nome da disciplina for muito de '{nome_disciplina}' responda {format}, matenha em branco os campos SOMENTE SE OS NOMES FOREM MUITO DIFERENTES**
 
         **SE OS NOMES FOREM PRÓXIMOS RESPONDA NO FORMATO**
         {format}
