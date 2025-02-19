@@ -6,7 +6,7 @@ from typing import Any
 
 import numpy as np
 import requests
-import json
+import json, unicodedata
 
 model = ChatOllama(model="llama3.1", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
@@ -40,6 +40,7 @@ def get_cursos() -> list:
 def processar_json(json_str: str):
     try:
         result = json.loads(json_str.replace("'", '"'))
+
         if 'curso' not in result or not isinstance(result['curso'], dict):
             return "Erro: Estrutura do JSON inválida. A chave 'curso' deve ser um dicionário."
         if 'codigo' not in result['curso'] or not result['curso']['codigo']:
@@ -48,7 +49,7 @@ def processar_json(json_str: str):
             return "Erro: O campo 'nome' está ausente ou vazio."
         return result
     except json.JSONDecodeError:
-        return "Erro: A string fornecida não é um JSON válido."
+        raise ValueError("Erro: A string fornecida não é um JSON válido.")
 
 def get_codigo_curso(nome_do_curso: str) -> dict:
     """
@@ -75,7 +76,13 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     for curso in top_5_cursos:
         possiveis_cursos.append(f"{curso['codigo_do_curso']} - {curso['descricao']}")
     
-    #print(possiveis_cursos)
+    def remover_acentos(texto):
+        return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
+
+    # Aplicando a função em cada item da lista
+    #lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
+    
+    #print(lista_tratada)
     response = model.invoke(
         f"""
         Para o curso de nome: '{nome_do_curso}', quais desses possíveis cursos abaixo é mais similar ao curso do nome informado?
@@ -96,8 +103,34 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
         """
     )
     #print({"messages": [response]})
-    #response = json.loads((response.content).replace("'", '"'))
-    return processar_json(response.content)
+    print(response.content)
+    result = processar_json(response.content)
+    return result
+
+def get_informacoes_curso(nome_do_curso: Any) -> list:
+    """
+    Buscar informação de um curso da UFCG a partir do nome do curso. 
+
+    Args:
+        nome_do_curso: nome do curso.
+    
+    Returns:
+        Lista com informações relevantes do curso específico.
+    """
+    curso = get_codigo_curso(str(nome_do_curso))
+
+    print(f"Tool get_informacoes_curso chamada com nome_do_curso={curso['curso']['codigo']}.")
+    params = {
+        'status-enum': 'ATIVOS',
+        'curso': curso['curso']['codigo']
+    }
+    url_cursos = f'{base_url}/cursos'
+    response = requests.get(url_cursos, params=params)
+
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 def get_estudantes(nome_do_curso: Any) -> dict:
     """
@@ -110,6 +143,7 @@ def get_estudantes(nome_do_curso: Any) -> dict:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
     curso = get_codigo_curso(str(nome_do_curso))
+    print(curso)
 
     print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")
     params = {
