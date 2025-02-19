@@ -72,8 +72,8 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
         if disciplina['similaridade'] >= 0.6:
             possiveis_disciplinas.append(f"{disciplina['codigo']} - {disciplina['nome']}")
 
-    if len(possiveis_disciplinas) == 0:
-        return "DISCIPLINA NÃO EXISTE"
+    # if len(possiveis_disciplinas) == 0:
+    #     return "DISCIPLINA NÃO EXISTE"
 
     print(possiveis_disciplinas)
 
@@ -82,17 +82,22 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
         Para a disciplina de nome: '{nome_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?
     
         {possiveis_disciplinas}
+
+        ***SE {possiveis_disciplinas} estiver vazio, diga que possivelmente não existe ou o nome está incorreto E PARE A EXECUÇÃO***
         
-        Responda no seguinte formato:
-        
+        ***Responda no seguinte formato:***
+
+        **Se o nome da disciplina for muito distinto de '{nome_disciplina}' responda {format}, matenha em branco os campos SOMENTE SE OS NOMES FOREM MUITO DIFERENTES**
+
+        **SE OS NOMES FOREM PRÓXIMOS RESPONDA NO FORMATO**
         {format}
-        
-        Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).       
+        **ADICIONE O CODIGO E NOME DA DISCIPLINA NOS CAMPOS ADEQUADOS**
+
         """   
     )
 
     return response.content
 
-print(get_disciplina("calculo avançado", "2023"))
+print(get_disciplina("BISCOITO", "2023"))
 
 
