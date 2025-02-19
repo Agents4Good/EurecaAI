@@ -40,7 +40,6 @@ def get_cursos() -> list:
 def processar_json(json_str: str):
     try:
         result = json.loads(json_str.replace("'", '"'))
-
         if 'curso' not in result or not isinstance(result['curso'], dict):
             return "Erro: Estrutura do JSON inválida. A chave 'curso' deve ser um dicionário."
         if 'codigo' not in result['curso'] or not result['curso']['codigo']:
