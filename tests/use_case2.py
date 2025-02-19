@@ -4,7 +4,7 @@ from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain.schema import SystemMessage
 from langchain_core.messages import HumanMessage
 
-from .tools.rag_tools import *
+from .tools.curso_tools import *
 from .prompts.prompts import *
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-tools = [get_cursos, get_codigo_curso, get_estudantes] # tools para testar aqui
+tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes] # tools para testar aqui
 tool_node = ToolNode(tools)
 
 model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
@@ -82,6 +82,9 @@ with open(file, "wb") as f:
     f.write(img)'''
 
 for chunk in app.stream(
-    {"messages": [("human", "traga informações dos estudantes de letras")]}, stream_mode="values"
+    #{"messages": [("human", "Qual a quantia de estudantes pardos em ciência da computação?")]}, stream_mode="values"
+    #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
+    {"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
+    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno e ciência da computação")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
