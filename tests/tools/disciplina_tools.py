@@ -70,20 +70,9 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
 
     possiveis_disciplinas = []
     for disciplina in top_5_disciplinas:
-<<<<<<< HEAD
-        #if disciplina['similaridade'] >= 0.5: # testando um json com as siglas
-        possiveis_disciplinas.append(f"{disciplina['codigo']} - {disciplina['nome']}")
-
-    if len(possiveis_disciplinas) == 0:
-        return "Não foi encontrado uma disciplina com esse nome"
-
-    print(possiveis_disciplinas)
-
-=======
         if disciplina['similaridade'] >= 0.65:
             possiveis_disciplinas.append(f"{disciplina['codigo']} - {disciplina['nome']}")
 
->>>>>>> beb15b113c8df225c896791ca1bbc0c9589a0bf2
     if len(possiveis_disciplinas) == 0:
         return "Não foi encontrado uma disciplina com esse nome"
 
