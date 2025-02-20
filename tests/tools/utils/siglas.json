@@ -1,0 +1,18 @@
+{
+    "disciplina": {
+        "EDA": "estrutura de dados",
+        "LEDA": "laboratório de estrutura de dados",
+        "P2": "programação 2",
+        "LP2": "laboratório de programação 2",
+        "FMCC2": "fundamentos de matemática para ciência da computação 2",
+        "FMCC1": "fundamentos de matemática para ciência da computação 1",
+        "P1": "programação 1",
+        "LP1": "laboratório de programação 1",
+        "PLP": "paradigmas de linguagens de programação"
+    },
+    "curso": {
+        "CC": "ciência da computação",
+        "ECONOMIA": "ciências econômicas"
+    }
+    
+}
