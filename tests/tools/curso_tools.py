@@ -53,13 +53,13 @@ def processar_json(json_str: str):
 
 def get_codigo_curso(nome_do_curso: str) -> dict:
     """
-    Retorna o código e nome do curso.
+    Busca o código do curso pelo nome dele.
 
     Args:
         nome_do_curso: str, nome do curso.
 
     Returns:
-        dict: dicionário contendo código e nome do curso.
+        dict: dicionário contendo código do curso e nome do curso.
     """
     cursos = get_cursos()
 
@@ -72,22 +72,25 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
 
     top_5_cursos = [{"codigo_do_curso": cursos[idx]["codigo_do_curso"], "descricao": cursos[idx]["nome"], "similaridade": similarities[idx]} for idx in top_5_indices]
 
+    print(top_5_cursos)
     possiveis_cursos = []
     for curso in top_5_cursos:
-        possiveis_cursos.append(f"{curso['codigo_do_curso']} - {curso['descricao']}")
+        if curso['similaridade'] >= 0.65:
+            possiveis_cursos.append(f"{curso['codigo_do_curso']} - {curso['descricao']}")
     
     def remover_acentos(texto):
         return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
-
-    # Aplicando a função em cada item da lista
-    #lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
     
-    #print(lista_tratada)
+    lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
+    
+    print(lista_tratada)
+    if len(lista_tratada) == 0:
+        return "Não foi encontrado um curso com esse nome"
     response = model.invoke(
         f"""
         Para o curso de nome: '{nome_do_curso}', quais desses possíveis cursos abaixo é mais similar ao curso do nome informado?
         
-        {possiveis_cursos}
+        {lista_tratada}
         
         Responda no seguinte formato:
         
@@ -103,19 +106,18 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
         """
     )
     #print({"messages": [response]})
-    print(response.content)
     result = processar_json(response.content)
     return result
 
 def get_informacoes_curso(nome_do_curso: Any) -> list:
     """
-    Buscar informação de um curso da UFCG a partir do nome do curso. 
+    Buscar informação de um curso da UFCG a partir do nome do curso.
 
     Args:
         nome_do_curso: nome do curso.
     
     Returns:
-        Lista com informações relevantes do curso específico.
+        Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
     curso = get_codigo_curso(str(nome_do_curso))
 
@@ -143,7 +145,6 @@ def get_estudantes(nome_do_curso: Any) -> dict:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
     curso = get_codigo_curso(str(nome_do_curso))
-    print(curso)
 
     print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")
     params = {

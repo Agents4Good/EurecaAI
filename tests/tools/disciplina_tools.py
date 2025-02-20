@@ -69,16 +69,11 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
 
     possiveis_disciplinas = []
     for disciplina in top_5_disciplinas:
-        if disciplina['similaridade'] >= 0.6:
+        if disciplina['similaridade'] >= 0.65:
             possiveis_disciplinas.append(f"{disciplina['codigo']} - {disciplina['nome']}")
 
-    # if len(possiveis_disciplinas) == 0:
-    #     return "DISCIPLINA NÃO EXISTE"
-
-    print(possiveis_disciplinas)
-
     if len(possiveis_disciplinas) == 0:
-        return "Não foi encontrado um curso com esse nome"
+        return "Não foi encontrado uma disciplina com esse nome"
 
     response = model.invoke(
         f"""
