@@ -21,7 +21,7 @@ tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes] # 
 tool_node = ToolNode(tools)
 
 model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
-#model_with_tools = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)
+#model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
 
@@ -52,7 +52,7 @@ def call_model(state: MessagesState):
     messages = state["messages"]
 
     system_prompt = SystemMessage(
-        content=FEW_SHOT_PROMPT2
+        content=ZERO_SHOT_PROMPT2
     )
 
     if not messages or not isinstance(messages[0], SystemMessage):
@@ -60,7 +60,6 @@ def call_model(state: MessagesState):
     
     response = model_with_tools.invoke(messages)
     response = extract_tool_calls(response)
-    print({"messages": [response]})
     return {"messages": [response]}
 
 workflow = StateGraph(MessagesState)
@@ -84,7 +83,8 @@ with open(file, "wb") as f:
 for chunk in app.stream(
     #{"messages": [("human", "Qual a quantia de estudantes pardos em ciência da computação?")]}, stream_mode="values"
     #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
-    {"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
-    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno e ciência da computação")]}, stream_mode="values"
+    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
+    #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
+    {"messages": [("human", "Qual o código do curso de economicas")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
