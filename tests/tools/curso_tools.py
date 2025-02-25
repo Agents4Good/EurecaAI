@@ -2,13 +2,14 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
+from .utils.preprocess_text import remove_siglas
 from typing import Any
 
 import numpy as np
 import requests
 import json, unicodedata
 
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
@@ -20,6 +21,7 @@ def get_cursos() -> list:
     Buscar todos os cursos da UFCG. Importante para saber os códigos e nomes desses cursos.
 
     Args:
+        A função não recebe argumentos.
     
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'nome'.
@@ -61,6 +63,7 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     Returns:
         dict: dicionário contendo código do curso e nome do curso.
     """
+    nome_curso = remove_siglas(nome_do_curso)
     cursos = get_cursos()
 
     sentences = [curso["nome"] for curso in cursos]
@@ -86,6 +89,7 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     print(lista_tratada)
     if len(lista_tratada) == 0:
         return "Não foi encontrado um curso com esse nome"
+        
     response = model.invoke(
         f"""
         Para o curso de nome: '{nome_do_curso}', quais desses possíveis cursos abaixo é mais similar ao curso do nome informado?
@@ -119,7 +123,7 @@ def get_informacoes_curso(nome_do_curso: Any) -> list:
     Returns:
         Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
-    curso = get_codigo_curso(str(nome_do_curso))
+    curso = get_codigo_curso(remove_siglas(nome_do_curso))
 
     print(f"Tool get_informacoes_curso chamada com nome_do_curso={curso['curso']['codigo']}.")
     params = {
@@ -144,7 +148,7 @@ def get_estudantes(nome_do_curso: Any) -> dict:
     Returns:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
-    curso = get_codigo_curso(str(nome_do_curso))
+    curso = get_codigo_curso(remove_siglas(nome_do_curso))
 
     print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")
     params = {

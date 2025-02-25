@@ -1,29 +1,35 @@
+# use case para testar as ferramentas com rag
+
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain.schema import SystemMessage
+from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from .tools.curso_tools import *
-from .prompts.prompts import *
+from tools.curso_tools import *
+from tools.disciplina_tools import *
+from prompts.prompts import *
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
+from langchain.chains import LLMChain
 
 import uuid, json
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes] # tools para testar aqui
+tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes, get_disciplinas_por_nome, get_disciplinas_curso, get_disciplina_por_codigo] # tools para testar aqui
+
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
-
 
 def should_continue(state: MessagesState):
     messages = state["messages"]
@@ -51,6 +57,7 @@ def extract_tool_calls(response):
 def call_model(state: MessagesState):
     messages = state["messages"]
 
+    #print("MSG ",messages)
     system_prompt = SystemMessage(
         content=ZERO_SHOT_PROMPT2
     )
@@ -58,7 +65,7 @@ def call_model(state: MessagesState):
     if not messages or not isinstance(messages[0], SystemMessage):
         messages.insert(0, system_prompt)
     
-    response = model_with_tools.invoke(messages)
+    response =  model_with_tools.invoke(messages)
     response = extract_tool_calls(response)
     return {"messages": [response]}
 
@@ -85,6 +92,7 @@ for chunk in app.stream(
     #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
-    {"messages": [("human", "Qual o código do curso de economicas")]}, stream_mode="values"
+    #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
+    {"messages": [("human", "Traga informações sobre a disciplina EDA")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

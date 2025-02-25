@@ -3,7 +3,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import cosine_similarity
 from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
-from utils.preprocess_text import remove_siglas
+from .utils.preprocess_text import remove_siglas
 
 import numpy as np
 import requests
@@ -16,12 +16,12 @@ base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 format = """{'disciplina': {'codigo': '', 'nome': ''}}"""
 
-def get_disciplinas_curso(codigo_curriculo: str) -> list:
+def get_disciplinas_curso(codigo_curriculo: str = "2023") -> list:
     """
     Buscar todas as disciplinas do curso de Ciência da Computação da UFCG.
 
     Args:
-        codigo_curriculo: código do currículo.
+        codigo_curriculo: String que representa o código do currículo ex: '2022'.
     
     Returns:
         Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
@@ -44,15 +44,49 @@ def get_disciplinas_curso(codigo_curriculo: str) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"): 
+def get_disciplina_por_codigo(codigo_da_disciplina: str, codigo_curriculo: str):
     """
-        Retorna o código e o nome da disciplina
+    Buscar as informações de uma disciplina do curso de Ciência da Computação da UFCG.
 
-        Args:
-            nome_disciplina: nome da disciplina
-            codigo_curriculo: codigo do curriculo, por padrão, é 2023
-        Returns:
-            dicionário contendo nome e codigo da disciplina
+    Args:
+        codigo_da_disciplina: código numérico em string da disciplina específica.
+        codigo_curriculo: código do currículo.
+    
+    Returns:
+        Json com informações relevantes sobre uma disciplica específica.
+    
+    Nota:
+        Para usar este método, se o 'codigo_currículo' não tiver sido informado pelo usuário, use o padrão que é '2023'.
+        Para usar este método, se 'codigo_da_disciplina' não tiver sido informado pelo usuário, obtenha os parâmetros previamente com a tool `get_disciplinas_por_nome`.
+    """
+
+    print(f"Tool get_disciplina chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}, codigo_da_disciplina={codigo_da_disciplina}")
+    params = {
+        'curso': '14102100',
+        'curriculo': codigo_curriculo,
+        'disciplina': codigo_da_disciplina
+    }
+
+    response = requests.get(f'{base_url}/disciplinas', params=params)
+
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
+def get_disciplinas_por_nome(nome_disciplina: str, codigo_curriculo: str = "2023"): 
+    """
+    Retorna o código e o nome da disciplina. Caso você precise do código da disciplina para algumo outra ferramenta você deve chamar esta ferramenta.
+
+    Args:
+        nome_disciplina: nome da disciplina
+        codigo_curriculo: codigo do curriculo, por padrão, é 2023
+
+    Returns:
+        dict: Contendo a resposta gerada pelo que contém nome e código da disciplina ou uma mensagem de erro.
+    
+    Nota:
+        Essa função é apenas um auxiliar para obter o código de uma disciplina com base no nome. Se forem desejadas todas as informações de uma disciplna específica, a função a ser chamada deverá ser get_disciplina_por_codigo após obter o código da disciplina.
     """
     nome_disciplina = remove_siglas(nome_disciplina)
     disciplinas = get_disciplinas_curso(codigo_curriculo)
@@ -81,16 +115,18 @@ def get_disciplina(nome_disciplina: str, codigo_curriculo: str = "2023"):
         Para a disciplina de nome: '{nome_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?
     
         {possiveis_disciplinas}
+
+        ***OBSERVE SE O NOMES DAS DISCIPLINAS SÃO PRÓXIMOS AO NOME {nome_disciplina}*** 
         
         ***Responda no seguinte formato:***
 
-        **Se o nome da disciplina for muito distinto de '{nome_disciplina}' responda que possivelmente não existe ou o nome está incorreto. (SOMENTE SE OS NOMES FOREM MUITO DIFERENTES)**
-
         **SE OS NOMES FOREM PRÓXIMOS RESPONDA NO FORMATO**
         {format} e ADICIONE O CODIGO E NOME DA DISCIPLINA NOS CAMPOS ADEQUADOS**
+
+        **Se o nome da disciplina for muito distinto de '{nome_disciplina}'*** responda que possivelmente não existe ou o nome está incorreto. (SOMENTE SE OS NOMES FOREM MUITO DIFERENTES)
+        
         """   
     )
 
-    return response.content
 
-print(get_disciplina("FMCC2", "2023"))
+    return response.content
