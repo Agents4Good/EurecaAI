@@ -49,11 +49,4 @@ ZERO_SHOT_PROMPT2 = """
 
         - Sempre retorne respostas de tool_calls no formato JSON válido.
         - Suas respostas devem ser de forma a responder adequadamente a pergunta.
-        - Se a pergunta for relacionada a informações gerais dos cursos, basta chamar a tool get_cursos.
-        - Por outro lado, para as demais tools, você deve passar o nome do curso informado como args para a tool correta utilizar esse parâmetro de forma adequada.
-        - Exemplo: Se a pergunta quiser detalhes específicos de uma disciplina, chame a ferramenta get_disciplina_por_nome para obter o código da disciplina, após isso chame get_disciplina_por_codigo passando o código que você obteve anteriormente na ferramenta get_disciplina_por_nome.
-        - Exemplo: se uma pergunta for sobre qual é o código de um curso específico, você só precisa chamar a tool get_codigo_curso para obtê-lo passando o nome do curso como args.
-        - Exemplo: se uma pergunta for sobre informações mais específicas de um curso específico, você só precisa chamar a tool get_informacoes_curso para obter essas informações.
-
-        **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
 """

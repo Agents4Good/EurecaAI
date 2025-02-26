@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes, get_disciplinas_por_nome, get_disciplinas_curso, get_disciplina_por_codigo] # tools para testar aqui
+tools = [get_disciplinas_por_nome, get_disciplinas_curso]
 
 tool_node = ToolNode(tools)
 
@@ -93,6 +93,8 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Traga informações sobre a disciplina EDA")]}, stream_mode="values"
+    {"messages": [("human", "Qual o código da disciplina FMCC2?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
+
+#print(get_disciplinas_por_nome("fmcc2"))
