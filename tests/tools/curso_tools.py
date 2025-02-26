@@ -47,8 +47,8 @@ def processar_json(json_str: str):
             return "Erro: Estrutura do JSON inválida. A chave 'curso' deve ser um dicionário."
         if 'codigo' not in result['curso'] or not result['curso']['codigo']:
             return "Erro: O campo 'codigo' está ausente ou vazio."
-        if 'nome' not in result['curso'] or not result['curso']['nome']:
-            return "Erro: O campo 'nome' está ausente ou vazio."
+        '''if 'nome' not in result['curso'] or not result['curso']['nome']:
+            return "Erro: O campo 'nome' está ausente ou vazio."'''
         return result
     except json.JSONDecodeError:
         raise ValueError("Erro: A string fornecida não é um JSON válido.")
@@ -63,7 +63,7 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     Returns:
         dict: dicionário contendo código do curso e nome do curso.
     """
-    nome_curso = remove_siglas(nome_do_curso)
+    #nome_curso = remove_siglas(nome_do_curso)
     cursos = get_cursos()
 
     sentences = [curso["nome"] for curso in cursos]
@@ -135,6 +135,24 @@ def get_informacoes_curso(nome_do_curso: Any) -> list:
 
     if response.status_code == 200:
         return json.loads(response.text)
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
+def get_curriculo_mais_recente(codigo_do_curso: Any) -> list:
+    """
+    Buscar o currículo mais recente de um curso.
+
+    Args:
+        codigo_do_curso: código do curso.
+    
+    Returns:
+        Lista com informações relevantes do currículo mais recente do curso específico.
+    """
+    print(f"Tool get_curriculo_mais_recente chamada com codigo_do_curso={codigo_do_curso}.")
+    response = requests.get(f'{base_url}/curriculos?curso={codigo_do_curso}')
+    
+    if response.status_code == 200:
+        return json.loads(response.text)[-1]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 

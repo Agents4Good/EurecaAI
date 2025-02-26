@@ -7,7 +7,6 @@ from langchain.schema import SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from tools.curso_tools import *
 from tools.disciplina_tools import *
 from prompts.prompts import *
 
@@ -23,7 +22,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-tools = [get_disciplinas_por_nome, get_disciplinas_curso]
+tools = [get_disciplina, get_disciplinas_curso, get_informacoes_disciplina]
 
 tool_node = ToolNode(tools)
 
@@ -93,8 +92,6 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Qual o código da disciplina FMCC2?")]}, stream_mode="values"
+    {"messages": [("human", "Quais as cargas horárias de FMCC2?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
-
-#print(get_disciplinas_por_nome("fmcc2"))
