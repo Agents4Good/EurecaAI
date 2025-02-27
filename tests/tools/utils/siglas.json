@@ -8,7 +8,23 @@
         "FMCC1": "fundamentos de matemática para ciência da computação 1",
         "P1": "programação 1",
         "LP1": "laboratório de programação 1",
-        "PLP": "paradigmas de linguagens de programação"
+        "PLP": "paradigmas de linguagens de programação",
+        "AA": "algoritimos avançados",
+        "TC": "teoria da computação",
+        "GRAFOS": "teoria dos grafos",
+        "OAC": "organização e arquitetura de computadores",
+        "LOAC": "laboratório de organização e arquitetura de computadores",
+        "BD": "banco de dados",
+        "TD": "transformação digital",
+        "SO": "sistemas operacionais",
+        "PSOFT": "projeto de sotfware",
+        "PROGWEB": "programação para web",
+        "PLN": "processamento de linguagem natural",
+        "IC": "introduçao à computação",
+        "IA": "inteligência artificial",
+        "ES": "engenharia de software",
+        "ATAL": "análise e técnica de algoritmos"
+        
     },
     "curso": {
         "CC": "ciência da computação",
