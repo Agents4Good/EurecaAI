@@ -302,3 +302,25 @@ def get_estudantes(nome_do_curso: Any) -> dict:
         return info
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+    
+def get_curriculos(codigo_do_curso: Any) -> list:
+    """
+    Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
+
+    Args:
+        codigo_do_curso: código do curso.
+    
+    Returns:
+        Lista com informações relevantes dos currículos do curso específico.
+    
+    Nota:
+        Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
+        Se a pergunta for o curriculo mais recente e tiver apenas um curriculo, traga as informações desse único curriculo como resposta.
+    """
+    print(f"Tool get_curriculos chamada com codigo_do_curso={str(codigo_do_curso)}.")
+    response = requests.get(f'{base_url}/curriculos?curso={str(codigo_do_curso)}')
+    
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
