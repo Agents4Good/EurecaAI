@@ -35,7 +35,7 @@ def processar_json_campus(json_str: str):
 
 def get_campi() -> list:
     """
-    Buscar todos os campi/campus/polos da UFCG.
+    Busca todos os campi/campus/polos da UFCG.
     
     Returns:
         Lista com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
@@ -52,7 +52,7 @@ def get_campi() -> list:
 
 def get_calendarios() -> list:
     """
-    Buscar calendários da universidade do campus 1 da UFCG. Ou seja, os periodos letivos que já ocorreram na UFCG até hoje.
+    Busca todos os calendários da universidade do campus 1 da UFCG. Ou seja, os periodos letivos que já ocorreram na UFCG até hoje.
     
     Returns:
         Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
