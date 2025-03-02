@@ -21,6 +21,8 @@ def get_setores(campus: Any = "") -> list:
         Lista com informações relevantes do setor (centro) específico.
     """
     
+    print(f"Tool get_setores chamada com campus={campus}")
+    
     params = {}
     if (str(campus) != ""):
         campus = get_campus_most_similar(campus=str(campus))
@@ -126,6 +128,8 @@ def get_professores(setor_centro: Any, campus: Any = "") -> list:
         Lista com as informações relevantes de professores do(s) setor(es) (centro(s)).
     """
 
+    print(f"Tool get_professores chamada com setor_centro={setor_centro} e campus={campus}")
+
     params = {}
     
     if (str(setor_centro) != ""):
@@ -183,6 +187,8 @@ def get_estagios(nome_do_campus: Any, nome_do_centro_unidade: Any, ano: Any = ""
     Returns:
         Lista com informações relevantes de estágio.
     """
+    
+    print(f"Tool get_estagios chamada com nome_do_campus={nome_do_campus}, nome_do_centro_unidade={nome_do_centro_unidade} e ano={ano}")
     
     campus = get_campus_most_similar(campus=str(nome_do_campus))
     setor_centro_unidade = get_setor_most_similar(setor=nome_do_centro_unidade, campus=campus["campus"]["nome"], filtro="UNID")

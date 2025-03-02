@@ -25,6 +25,9 @@ def get_cursos() -> list:
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'nome'.
     """
+    
+    print("Tool get_cursos chamada")
+    
     url_cursos = f'{base_url}/cursos'
     params = {
         'status-enum':'ATIVOS',
@@ -62,6 +65,9 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     Returns:
         dict: dicionário contendo código do curso e nome do curso.
     """
+    
+    print(f"Tool get_codigo_curso chamada com nome_do_curso {nome_do_curso}")
+    
     #nome_curso = remove_siglas(nome_do_curso)
     cursos = get_cursos()
 
@@ -85,7 +91,6 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     
     lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
     
-    print(lista_tratada)
     if len(lista_tratada) == 0:
         return "Não foi encontrado um curso com esse nome"
         
@@ -122,9 +127,10 @@ def get_informacoes_curso(nome_do_curso: Any) -> list:
     Returns:
         Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
+    
+    print(f"Tool get_informacoes_curso chamada com nome_do_curso={nome_do_curso}.")
     curso = get_codigo_curso(remove_siglas(nome_do_curso))
 
-    print(f"Tool get_informacoes_curso chamada com nome_do_curso={curso['curso']['codigo']}.")
     params = {
         'status-enum': 'ATIVOS',
         'curso': curso['curso']['codigo']
@@ -147,6 +153,7 @@ def get_curriculo_mais_recente(codigo_do_curso: Any) -> list:
     Returns:
         Lista com informações relevantes do currículo mais recente do curso específico.
     """
+    
     print(f"Tool get_curriculo_mais_recente chamada com codigo_do_curso={codigo_do_curso}.")
     response = requests.get(f'{base_url}/curriculos?curso={codigo_do_curso}')
     
@@ -165,9 +172,10 @@ def get_estudantes(nome_do_curso: Any) -> dict:
     Returns:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
-    curso = get_codigo_curso(remove_siglas(nome_do_curso))
 
-    print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")
+    print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")    
+    curso = get_codigo_curso(remove_siglas(nome_do_curso))
+    
     params = {
         "curso": curso['curso']['codigo'],
         "situacao-do-estudante": "ATIVOS"
@@ -301,7 +309,8 @@ def get_estudantes(nome_do_curso: Any) -> dict:
         return info
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-    
+
+
 def get_curriculos(codigo_do_curso: Any) -> list:
     """
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
@@ -316,6 +325,7 @@ def get_curriculos(codigo_do_curso: Any) -> list:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
         Se a pergunta for o curriculo mais recente e tiver apenas um curriculo, traga as informações desse único curriculo como resposta.
     """
+    
     print(f"Tool get_curriculos chamada com codigo_do_curso={str(codigo_do_curso)}.")
     response = requests.get(f'{base_url}/curriculos?curso={str(codigo_do_curso)}')
     

@@ -42,6 +42,8 @@ def get_campi() -> list:
     """
     response = requests.get(f'{base_url}/campi')
 
+    print("Tool get_campi chamada")
+
     if response.status_code == 200:
         return json.loads(response.text)
     else:
@@ -55,6 +57,8 @@ def get_calendarios() -> list:
     Returns:
         Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
+    
+    print(f"Tool get_calendarios chamada")
     
     params = { 'campus': '1' }
     response = requests.get(f'{base_url}/calendarios', params=params)
@@ -72,6 +76,8 @@ def get_periodo_mais_recente() -> str:
     Returns:
         String com o período mais recente.
     """
+    
+    print("Tool get_periodo_mais_recente chamada")
     
     params = { 'campus': '1' }
     response = requests.get(f'{base_url}/calendarios', params=params)
@@ -136,5 +142,4 @@ def get_campus_most_similar(campus: str):
         """
     )
     result = processar_json_campus(response.content)
-    print(result)
     return result

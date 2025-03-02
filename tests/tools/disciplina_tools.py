@@ -29,10 +29,9 @@ def get_todas_disciplinas_curso(nome_do_curso: Any, codigo_curriculo: Any):
         Retorna uma lista de disciplinas ofertadas pelo curso.
     """
     
+    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso} e codigo_curriculo={codigo_curriculo}.")
     curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
     
-    print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}.")
-
     params = {
         'curso': curso['curso']['codigo'],
         'curriculo': codigo_curriculo
@@ -58,7 +57,9 @@ def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, codigo_curriculo: Any
     Returns:
         Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
     """
+    
     print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}.")
+    
     params = {
         'curso': str(codigo_do_curso),
         'curriculo': str(codigo_curriculo)
@@ -313,6 +314,9 @@ def get_informacoes_disciplina_grade_curso(nome_da_discplina: Any, nome_do_curso
     Returns:
         Lista com informações relevantes sobre apenas uma disciplica da grade do curso.
     """
+    
+    print(f"Tool get_informacoes_disciplina_grade_curso chamada com nome_da_disciplina={nome_da_discplina}, nome_do_curso={nome_do_curso} e curriculo={curriculo}")
+    
     nome_do_curso = str(nome_do_curso)
     dados_curso = get_codigo_curso(nome_do_curso)
     codigo_do_curso = dados_curso['curso']['codigo']
@@ -449,6 +453,8 @@ def get_plano_de_curso(nome_do_curso: Any, nome_da_disciplina: Any, curriculo: A
         Lista com informações relevantes do plano de curso de uma disciplina.
     """
     
+    print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
+    
     dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
     print(dados_curso)
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
@@ -486,7 +492,7 @@ def get_turmas(nome_da_disciplina: Any, nome_do_curso: Any, periodo: Any = "", c
         Lista com informações relevantes das turmas.
     """
     
-    print(nome_da_disciplina, nome_do_curso, periodo, codigo_curriculo)
+    print(f"Tool get_turmas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, periodo={periodo} e codigo_curriculo={codigo_curriculo}")
     
     if (str(periodo) == ""):
         periodo = get_periodo_mais_recente()
@@ -579,6 +585,8 @@ def pre_requisitos_disciplinas(nome_da_disciplina:Any, nome_do_curso:Any, codigo
         Se o retorno for uma lista vazia, então informe que a disciplina em questão não possui requisitos.
     """
     
+    print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso} e codigo_curriculo={codigo_curriculo}")
+    
     dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(codigo_curriculo))
 
@@ -623,6 +631,8 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_da_disciplina: Any, turma:
     Returns:
         Retorna uma lista de horários das aulas da disciplina.
     """
+    
+    print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
     dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
     curriculo = get_curriculos(dados_curso["curso"]["codigo"], curriculo=curriculo)[-1]
@@ -681,6 +691,8 @@ def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any
     Returns:
         Dicionário com o intervalo das médias das notas de dada disciplina de uma turma.
     """
+    
+    print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
 
     dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
     curriculo = get_curriculos(dados_curso["curso"]["codigo"], curriculo=curriculo)[-1]
