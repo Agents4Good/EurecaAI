@@ -9,7 +9,7 @@ import numpy as np
 import requests
 import json, unicodedata
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
@@ -75,7 +75,7 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
 
     top_5_cursos = [{"codigo_do_curso": cursos[idx]["codigo_do_curso"], "descricao": cursos[idx]["nome"], "similaridade": similarities[idx]} for idx in top_5_indices]
 
-    print(top_5_cursos)
+    #print(top_5_cursos)
     possiveis_cursos = []
     for curso in top_5_cursos:
         if curso['similaridade'] >= 0.65:
@@ -86,9 +86,8 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     
     lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
     
-    print(lista_tratada)
     if len(lista_tratada) == 0:
-        return "Não foi encontrado um curso com esse nome"
+        return {"AskHuman": "Não foi encontrado um curso com o nome o informado", "choice": top_5_cursos}
         
     response = model.invoke(
         f"""
@@ -123,8 +122,8 @@ def get_informacoes_curso(nome_do_curso: Any) -> list:
     Returns:
         Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
-    curso = get_codigo_curso(remove_siglas(nome_do_curso))
-
+    curso = get_codigo_curso(nome_do_curso)
+    print(curso)
     print(f"Tool get_informacoes_curso chamada com nome_do_curso={curso['curso']['codigo']}.")
     params = {
         'status-enum': 'ATIVOS',
