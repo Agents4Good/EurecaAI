@@ -107,8 +107,6 @@ def get_campus_most_similar(campus: str):
     similarities = cosine_similarity(embeddings, embedding_query).flatten()
     top_3_indices = np.argsort(similarities)[-3:][::-1]
     
-    print(top_3_indices)
-
     top_3_cursos = [{
         "nome": campi[idx]["descricao"], 
         "codigo": campi[idx]["campus"], 
@@ -117,7 +115,6 @@ def get_campus_most_similar(campus: str):
         for idx in top_3_indices
     ]
 
-    print(top_3_cursos)
     possiveis_cursos = []
     for curso in top_3_cursos:
         if curso['similaridade'] >= 0.65:
@@ -128,7 +125,6 @@ def get_campus_most_similar(campus: str):
     
     lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
     
-    print(lista_tratada)
     if len(lista_tratada) == 0:
         return "Não foi encontrado um campus com esse nome"
         

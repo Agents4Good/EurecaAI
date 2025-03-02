@@ -32,7 +32,7 @@ tools = [
 
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.1:8b", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 

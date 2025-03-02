@@ -208,7 +208,6 @@ def get_estagios(nome_do_campus: Any, nome_do_centro_unidade: Any, ano: Any = ""
     
     if str(ano) == "":
         ano = str(datetime.now().year)
-        print(ano)
     
     params = {
         "inicio-de": str(ano),
@@ -219,7 +218,6 @@ def get_estagios(nome_do_campus: Any, nome_do_centro_unidade: Any, ano: Any = ""
 
     if response.status_code == 200:
         estagiarios = json.loads(response.text)
-        print(estagiarios)
         professores = get_professores(setor_centro_unidade["setor"]["nome"], campus=nome_do_campus)
         professores = [professor['matricula_do_docente'] for professor in professores]
 
