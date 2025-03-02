@@ -22,7 +22,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-tools = [get_disciplina, get_disciplinas_curso, get_informacoes_disciplina]
+tools = [
+    get_informacoes_disciplina_grade_curso, 
+    get_todas_disciplinas_curso, 
+    get_plano_de_curso, 
+    get_turmas, 
+    get_plano_de_aulas, 
+    pre_requisitos_disciplinas,
+    get_horarios_disciplinas,
+    get_media_notas_turma_disciplina
+]
 
 tool_node = ToolNode(tools)
 
@@ -92,6 +101,6 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Quais as cargas horárias de FMCC2?")]}, stream_mode="values"
+    {"messages": [("human", "Como foi o desempenho dos estudantes na disciplina de inteligencia artificial do curso de ciencia da computacao?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

@@ -20,7 +20,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-tools = [get_cursos, get_codigo_curso, get_informacoes_curso, get_estudantes] # tools para testar aqui
+tools = [
+    get_cursos, 
+    get_codigo_curso, 
+    get_informacoes_curso, 
+    get_estudantes,
+    get_curriculos
+] # tools para testar aqui
 tool_node = ToolNode(tools)
 
 class AskHuman(BaseModel):
