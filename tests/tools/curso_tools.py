@@ -13,7 +13,6 @@ model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
-
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
 def get_cursos() -> list:

@@ -7,7 +7,6 @@ from typing import Any
 from .campus_tools import *
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
-
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
 
 def get_setores(campus: Any = "") -> list:
@@ -33,8 +32,6 @@ def get_setores(campus: Any = "") -> list:
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-
 
 
 def processar_json_setor(json_str: str):
@@ -116,7 +113,6 @@ def get_setor_most_similar(setor: Any, campus: Any, filtro: str = ""):
     return result
 
 
-
 # Reportar esse problema a fubica
 def get_professores(setor_centro: Any, campus: Any = "") -> list:
     """
@@ -147,21 +143,6 @@ def get_professores(setor_centro: Any, campus: Any = "") -> list:
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def extrair_insights_estagios(estagiarios, uf):

@@ -15,7 +15,6 @@ model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
-
 format = """{'disciplina': {'codigo': '', 'nome': ''}}"""
 
 def get_todas_disciplinas_curso(nome_do_curso: Any, codigo_curriculo: Any):
@@ -46,7 +45,6 @@ def get_todas_disciplinas_curso(nome_do_curso: Any, codigo_curriculo: Any):
         return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
         
 
 def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, codigo_curriculo: Any) -> list:
@@ -73,6 +71,7 @@ def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, codigo_curriculo: Any
         return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
 
 def get_disciplina(codigo_do_curso: Any, nome_disciplina: Any, codigo_curriculo: Any = "") -> dict:
     """
@@ -197,20 +196,6 @@ def get_informacoes_disciplina(nome_da_discplina: Any, nome_do_curso: Any, curri
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def get_disciplinas_grade_curso(codigo_do_curso: Any, codigo_curriculo: Any) -> list:
@@ -379,12 +364,6 @@ def get_informacoes_disciplina_grade_curso(nome_da_discplina: Any, nome_do_curso
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-
-
-
-
-
-
 def get_todos_curriculos(codigo_do_curso: Any) -> list:
     """
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
@@ -403,11 +382,10 @@ def get_todos_curriculos(codigo_do_curso: Any) -> list:
     response = requests.get(f'{base_url}/curriculos?curso={str(codigo_do_curso)}')
     
     if response.status_code == 200:
-        print("okkkkkkkkk")
         return json.loads(response.text)
     else:
-        print("Errooooooooo")
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
 
 def get_curriculos(codigo_do_curso: Any, curriculo: Any = ""): 
     """
@@ -439,17 +417,6 @@ def get_curriculos(codigo_do_curso: Any, curriculo: Any = ""):
     return todos_curriculos_disponiveis
 
 
-
-
-
-
-
-
-
-
-
-
-
 def get_periodo_mais_recente() -> str:
     """
     Buscar o período mais recente da universidade.
@@ -466,6 +433,7 @@ def get_periodo_mais_recente() -> str:
         return json.loads(response.text)[-1]['periodo']
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
 
 def get_plano_de_curso(nome_do_curso: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """
@@ -502,21 +470,6 @@ def get_plano_de_curso(nome_do_curso: Any, nome_da_disciplina: Any, curriculo: A
             "error_status": response.status_code, 
             "msg": f"Não foi possível obter informação da disciplina de {nome_da_disciplina} por não existir para esse período ou por ser chamada de outro nome."
         }]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def get_turmas(nome_da_disciplina: Any, nome_do_curso: Any, periodo: Any = "", codigo_curriculo: Any = "") -> list:
@@ -598,19 +551,6 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_da_disciplina: Any, periodo: Any
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def get_disciplina_for_tool(codigo_da_disciplina):
@@ -669,21 +609,6 @@ def pre_requisitos_disciplinas(nome_da_disciplina:Any, nome_do_curso:Any, codigo
         [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def get_horarios_disciplinas(nome_do_curso: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = ""):
     """
     Busca os horários e a sala de uma disciplina de uma turma especificada (caso não seja, busca de todas as turmas).
@@ -740,23 +665,6 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_da_disciplina: Any, turma:
         return filtros_horarios
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:

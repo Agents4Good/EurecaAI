@@ -16,9 +16,7 @@ model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
-
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
-
 
 def processar_json_campus(json_str: str):
     try:
@@ -58,9 +56,7 @@ def get_calendarios() -> list:
         Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
     
-    params = {
-        'campus': '1'
-    }
+    params = { 'campus': '1' }
     response = requests.get(f'{base_url}/calendarios', params=params)
 
     if response.status_code == 200:
@@ -77,9 +73,7 @@ def get_periodo_mais_recente() -> str:
         String com o período mais recente.
     """
     
-    params = {
-        'campus': '1'
-    }
+    params = { 'campus': '1' }
     response = requests.get(f'{base_url}/calendarios', params=params)
 
     if response.status_code == 200:
