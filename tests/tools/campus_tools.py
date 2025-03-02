@@ -2,7 +2,38 @@ import requests
 import json
 from langchain_core.tools import tool
 
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity
+from langchain_ollama import ChatOllama
+from .utils.preprocess_text import remove_siglas
+from typing import Any
+from .curso_tools import *
+
+import numpy as np
+
+model = ChatOllama(model="llama3.2:3b", temperature=0)
+model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
+
+format = """{'campus': {'codigo': '', 'nome': ''}}"""
+
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
+
+
+def processar_json_campus(json_str: str):
+    try:
+        result = json.loads(json_str.replace("'", '"'))
+
+        if 'campus' not in result or not isinstance(result['campus'], dict):
+            return "Erro: Estrutura do JSON inválida. A chave 'campus' deve ser um dicionário."
+        if 'codigo' not in result['campus'] or not result['campus']['codigo']:
+            return "Erro: O campo 'codigo' está ausente ou vazio."
+        '''if 'nome' not in result['campus'] or not result['campus']['nome']:
+            return "Erro: O campo 'nome' está ausente ou vazio."'''
+        return result
+    except json.JSONDecodeError:
+        raise ValueError("Erro: A string fornecida não é um JSON válido.")
+
 
 def get_campi() -> list:
     """
@@ -55,3 +86,65 @@ def get_periodo_mais_recente() -> str:
         return json.loads(response.text)[-1]['periodo']
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
+
+def get_campus_most_similar(campus: str):
+    """
+    Busca o código do campus pelo nome dele.
+
+    Args:
+        campus: nome do campus.
+
+    Returns:
+        dict: dicionário contendo código, representação e o nome do campus.
+    """
+    campi = get_campi()
+
+    sentences = [campus["descricao"] for campus in campi]
+    embeddings = model_sentence.encode(sentences)
+    embedding_query = model_sentence.encode(campus).reshape(1, -1)
+
+    similarities = cosine_similarity(embeddings, embedding_query).flatten()
+    top_3_indices = np.argsort(similarities)[-3:][::-1]
+    
+    print(top_3_indices)
+
+    top_3_cursos = [{
+        "nome": campi[idx]["descricao"], 
+        "codigo": campi[idx]["campus"], 
+        "representacao": campi[idx]["representacao"], 
+        "similaridade": similarities[idx]} 
+        for idx in top_3_indices
+    ]
+
+    print(top_3_cursos)
+    possiveis_cursos = []
+    for curso in top_3_cursos:
+        if curso['similaridade'] >= 0.65:
+            possiveis_cursos.append(f"{curso['nome']} - código: {curso['codigo']}")
+    
+    def remover_acentos(texto):
+        return ''.join(c for c in unicodedata.normalize('NFD', texto) if unicodedata.category(c) != 'Mn')
+    
+    lista_tratada = [remover_acentos(item) for item in possiveis_cursos]
+    
+    print(lista_tratada)
+    if len(lista_tratada) == 0:
+        return "Não foi encontrado um campus com esse nome"
+        
+    response = model.invoke(
+        f"""
+        Para o campus de nome: '{campus}', quais desses possíveis cursos abaixo é mais similar ao campus do nome informado?
+        
+        {lista_tratada}
+        
+        Responda no seguinte formato:
+        
+        {format}
+        
+        Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
+        """
+    )
+    result = processar_json_campus(response.content)
+    print(result)
+    return result
