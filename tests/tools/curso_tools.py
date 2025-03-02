@@ -4,6 +4,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
 from .utils.preprocess_text import remove_siglas
 from typing import Any
+from .campus_tools import * 
 
 import numpy as np
 import requests
@@ -15,23 +16,25 @@ model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 
-def get_cursos() -> list:
+def get_cursos(nome_do_campus: Any = "") -> list:
     """
-    Buscar todos os cursos da UFCG. Importante para saber os códigos e nomes desses cursos.
+    Busca por todos os cursos da UFCG por campus.
 
     Args:
-        A função não recebe argumentos.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
     
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'nome'.
     """
     
-    print("Tool get_cursos chamada")
+    print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
+    
+    campus = get_campus_most_similar(str(nome_do_campus))
     
     url_cursos = f'{base_url}/cursos'
     params = {
         'status-enum':'ATIVOS',
-        'campus': '1'
+        'campus': campus["campus"]["codigo"]
     }
     response = requests.get(url_cursos, params=params)
 
@@ -40,6 +43,7 @@ def get_cursos() -> list:
         return [{'codigo_do_curso': data['codigo_do_curso'], 'nome': data['descricao']} for data in data_json]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+
 
 def processar_json(json_str: str):
     try:
@@ -55,25 +59,27 @@ def processar_json(json_str: str):
     except json.JSONDecodeError:
         raise ValueError("Erro: A string fornecida não é um JSON válido.")
 
-def get_codigo_curso(nome_do_curso: str) -> dict:
+
+def get_codigo_curso(nome_do_curso: Any, nome_do_campus: Any) -> dict:
     """
     Busca o código do curso pelo nome dele.
 
     Args:
-        nome_do_curso: str, nome do curso.
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
 
     Returns:
         dict: dicionário contendo código do curso e nome do curso.
     """
     
-    print(f"Tool get_codigo_curso chamada com nome_do_curso {nome_do_curso}")
+    print(f"Tool get_codigo_curso chamada com nome_do_curso {nome_do_curso} e nome_do_campus={nome_do_campus}")
     
     #nome_curso = remove_siglas(nome_do_curso)
-    cursos = get_cursos()
+    cursos = get_cursos(nome_do_campus=str(nome_do_campus))
 
     sentences = [curso["nome"] for curso in cursos]
     embeddings = model_sentence.encode(sentences)
-    embedding_query = model_sentence.encode(nome_do_curso).reshape(1, -1)
+    embedding_query = model_sentence.encode(str(nome_do_curso)).reshape(1, -1)
 
     similarities = cosine_similarity(embeddings, embedding_query).flatten()
     top_5_indices = np.argsort(similarities)[-5:][::-1]
@@ -117,19 +123,21 @@ def get_codigo_curso(nome_do_curso: str) -> dict:
     result = processar_json(response.content)
     return result
 
-def get_informacoes_curso(nome_do_curso: Any) -> list:
+
+def get_informacoes_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     Buscar informação de um curso da UFCG a partir do nome do curso.
 
     Args:
         nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
     
     Returns:
         Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
     
-    print(f"Tool get_informacoes_curso chamada com nome_do_curso={nome_do_curso}.")
-    curso = get_codigo_curso(remove_siglas(nome_do_curso))
+    print(f"Tool get_informacoes_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
+    curso = get_codigo_curso(remove_siglas(nome_do_curso), str(nome_do_campus))
 
     params = {
         'status-enum': 'ATIVOS',
@@ -143,43 +151,57 @@ def get_informacoes_curso(nome_do_curso: Any) -> list:
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
-def get_curriculo_mais_recente(codigo_do_curso: Any) -> list:
+
+def get_curriculo_mais_recente(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     Buscar o currículo mais recente de um curso.
 
     Args:
-        codigo_do_curso: código do curso.
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
     
     Returns:
         Lista com informações relevantes do currículo mais recente do curso específico.
     """
     
-    print(f"Tool get_curriculo_mais_recente chamada com codigo_do_curso={codigo_do_curso}.")
-    response = requests.get(f'{base_url}/curriculos?curso={codigo_do_curso}')
+    print(f"Tool get_curriculo_mais_recente chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
+    
+    curso = get_codigo_curso(remove_siglas(nome_do_curso), str(nome_do_campus))
+    response = requests.get(f'{base_url}/curriculos?curso={curso["curso"]["codigo"]}')
     
     if response.status_code == 200:
         return json.loads(response.text)[-1]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
-def get_estudantes(nome_do_curso: Any) -> dict:
+
+def get_estudantes(nome_do_curso: Any = "", nome_do_campus: Any = "") -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no curso.
 
     Args:
-        nome_do_curso: str, nome do curso.
+        nome_do_curso: nome do curso (se quiser todos os estudantes da UFCG (de todas as universidades), use a string vazia '' para obter os estudantes de todos os cursos).
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
     
     Returns:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
 
-    print(f"Tool get_estudantes chamada com codigo_do_curso={nome_do_curso}.")    
-    curso = get_codigo_curso(remove_siglas(nome_do_curso))
+    print(f"Tool get_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_cmapus={nome_do_campus}.")    
+    curso = get_codigo_curso(remove_siglas(nome_do_curso), nome_do_campus=str(nome_do_campus))
     
     params = {
-        "curso": curso['curso']['codigo'],
         "situacao-do-estudante": "ATIVOS"
     }
+    
+    if (str(nome_do_curso) != "" and str(nome_do_campus != "")):
+        curso = get_codigo_curso(remove_siglas(nome_do_curso), nome_do_campus=str(nome_do_campus))
+        params["curso"] = curso['curso']['codigo']
+    elif (str(nome_do_curso) == "" and str(nome_do_campus != "")):
+        campus = get_campus_most_similar(campus=str(nome_do_campus))
+        params["campus"] = campus['campus']['codigo']
+    elif (str(nome_do_curso) != "" and str(nome_do_campus == "")):
+        return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
 
     response = requests.get(f'{base_url}/estudantes', params=params)
 
@@ -311,23 +333,22 @@ def get_estudantes(nome_do_curso: Any) -> dict:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_curriculos(codigo_do_curso: Any) -> list:
+def get_curriculos(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
 
     Args:
-        codigo_do_curso: código do curso.
-    
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        
     Returns:
         Lista com informações relevantes dos currículos do curso específico.
-    
-    Nota:
-        Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
-        Se a pergunta for o curriculo mais recente e tiver apenas um curriculo, traga as informações desse único curriculo como resposta.
     """
     
-    print(f"Tool get_curriculos chamada com codigo_do_curso={str(codigo_do_curso)}.")
-    response = requests.get(f'{base_url}/curriculos?curso={str(codigo_do_curso)}')
+    print(f"Tool get_curriculos chamada com nome_do_curso={str(nome_do_curso)} e nome_do_campus={nome_do_campus}.")
+    
+    curso = get_codigo_curso(remove_siglas(nome_do_curso), str(nome_do_campus))
+    response = requests.get(f'{base_url}/curriculos?curso={str(curso["curso"]["codigo"])}')
     
     if response.status_code == 200:
         return json.loads(response.text)

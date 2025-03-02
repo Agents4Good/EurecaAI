@@ -21,7 +21,8 @@ tools = [
     get_cursos, 
     get_codigo_curso, 
     get_informacoes_curso, 
-    get_estudantes
+    get_estudantes,
+    get_curriculos
 ] # tools para testar aqui
 tool_node = ToolNode(tools)
 

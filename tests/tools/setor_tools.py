@@ -5,6 +5,7 @@ from langchain_core.tools import tool
 from datetime import datetime
 from typing import Any
 from .campus_tools import *
+import unicodedata
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 format = """{'setor': {'codigo': '', 'nome': ''}}"""

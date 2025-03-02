@@ -17,20 +17,26 @@ model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"
 format = """{'disciplina': {'codigo': '', 'nome': ''}}"""
 
-def get_todas_disciplinas_curso(nome_do_curso: Any, codigo_curriculo: Any):
+
+# Tool Call
+def get_todas_disciplinas_curso(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = ""):
     """
     Busca todas as discplinas de um curso.
 
     Args:
         nome_do_curso: nome do curso.
-        codigo_curriculo: valor inteiro do ano.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Retorna uma lista de disciplinas ofertadas pelo curso.
     """
     
-    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso} e codigo_curriculo={codigo_curriculo}.")
-    curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
+    if (str(curriculo) == ""):
+        codigo_curriculo = get_curriculo_mais_recente(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+
+    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={codigo_curriculo}.")
+    curso = get_codigo_curso(nome_do_curso=str(nome_do_curso), nome_do_campus=nome_do_campus)
     
     params = {
         'curso': curso['curso']['codigo'],
@@ -44,25 +50,28 @@ def get_todas_disciplinas_curso(nome_do_curso: Any, codigo_curriculo: Any):
         return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
-        
 
-def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, codigo_curriculo: Any) -> list:
+
+def get_disciplinas_curso_por_codigo(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any) -> list:
     """
     Buscar todas as disciplinas de um curso.
 
     Args:
-        codigo_do_curso: codigo do curso.
-        codigo_curriculo: valor inteiro do ano.
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano.
     
     Returns:
         Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
     """
     
-    print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, codigo_curriculo={codigo_curriculo}.")
+    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e curriculo={curriculo}.")
+    
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     
     params = {
-        'curso': str(codigo_do_curso),
-        'curriculo': str(codigo_curriculo)
+        'curso': dados_curso["curso"]["codigo"],
+        'curriculo': str(curriculo)
     }
 
     response = requests.get(f'{base_url}/disciplinas', params=params)
@@ -74,20 +83,25 @@ def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, codigo_curriculo: Any
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_disciplina(codigo_do_curso: Any, nome_disciplina: Any, codigo_curriculo: Any = "") -> dict:
+def get_disciplina(nome_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> dict:
     """
     Buscar o nome e o código de uma disciplina.
 
     Args:
         nome_disciplina: nome da disciplina.
-        codigo_curriculo: valor inteiro do ano.
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
 
     Returns:
         dict: dicionário contendo o nome e código da disciplina ou uma mensagem de erro.
     """
     
+    print(f"Tool get_disciplina chamada com nome_da_disciplina={nome_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e curriculo={curriculo}")
+    
     nome_disciplina = remove_siglas(str(nome_disciplina)).lower()
-    disciplinas = get_disciplinas_curso_por_codigo(str(codigo_do_curso), codigo_curriculo=str(codigo_curriculo))
+    dados_curso = get_codigo_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+    disciplinas = get_disciplinas_curso_por_codigo(dados_curso["curso"]["codigo"], codigo_curriculo=str(curriculo))
 
     sentences = [disciplina["nome"].lower() for disciplina in disciplinas]
     embeddings = model_sentence.encode(sentences)
@@ -141,21 +155,25 @@ def processar_json(json_str: str):
         raise ValueError("Erro: A string fornecida não é um JSON válido.")
 
 
-def get_informacoes_disciplina(nome_da_discplina: Any, nome_do_curso: Any, curriculo: Any = "") -> list:    
+def get_informacoes_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:    
     """
     Buscar as informações específicas de uma disciplina do curso.
     É possível obter informações como: nome do setor, campus, carga horária, créditos.
 
     Args:
-        nome_da_discplina: nome da disciplina específica.
+        nome_da_disciplina: nome da disciplina específica.
         nome_do_curso: nome do curso.
-        curriculo: valor inteiro do ano.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
 
     Returns:
         Lista com informações relevantes sobre uma disciplica específica.
     """
+    
+    print(f"Tool get_informacoes_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")    
+    
     nome_do_curso = str(nome_do_curso)
-    dados_curso = get_codigo_curso(nome_do_curso)
+    dados_curso = get_codigo_curso(nome_do_curso, nome_do_campus=nome_do_campus)
     codigo_do_curso = dados_curso['curso']['codigo']
 
     if (str(curriculo) == ""):
@@ -181,7 +199,7 @@ def get_informacoes_disciplina(nome_da_discplina: Any, nome_do_curso: Any, curri
         codigo_do_curriculo = curriculo
         
     try:
-        disciplina = get_disciplina(codigo_do_curso=codigo_do_curso, nome_disciplina=nome_da_discplina, codigo_curriculo=codigo_do_curriculo)
+        disciplina = get_disciplina(codigo_do_curso=codigo_do_curso, nome_disciplina=nome_da_disciplina, codigo_curriculo=codigo_do_curriculo)
     except Exception as e:
         return [{"error_status": response.status_code, "msg": str(e)}]
 
@@ -199,24 +217,28 @@ def get_informacoes_disciplina(nome_da_discplina: Any, nome_do_curso: Any, curri
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_disciplinas_grade_curso(codigo_do_curso: Any, codigo_curriculo: Any) -> list:
+def get_disciplinas_grade_curso(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """
     Buscar todas as disciplinas do curso que estão na grade do curso.
 
     Args:
-        codigo_do_curso: codigo do curso.
-        codigo_curriculo: valor inteiro do ano.
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
-    
-    Nota:
-        Se você não souber, o código do curriculo, passe a string vazia.
     """
-    print(f"Tool get_disciplinas_curso chamada com base_url={base_url}, curso={str(codigo_do_curso)} codigo_curriculo={codigo_curriculo}.")
+    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso} e curriculo={curriculo}.")
+    
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    
+    if (str(curriculo) == ""):
+        curriculo = get_curriculo_mais_recente()
+    
     params = {
-        'curso': str(codigo_do_curso),
-        'curriculo': str(codigo_curriculo)
+        'curso': dados_curso["curso"]["codigo"],
+        'curriculo': str(curriculo)
     }
 
     response = requests.get(f'{base_url}/disciplinas-por-curriculo', params=params)
@@ -228,6 +250,7 @@ def get_disciplinas_grade_curso(codigo_do_curso: Any, codigo_curriculo: Any) -> 
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
+## ---------------------------------------------------------------
 def get_disciplina_curriculo(codigo_do_curso: Any, curriculo: Any, codigo_da_disciplina: Any):
     params = {
         'curso': str(codigo_do_curso),
@@ -301,24 +324,26 @@ def get_disciplina_grade_curso(codigo_do_curso: Any, nome_disciplina: Any, codig
     return result
 
 
-def get_informacoes_disciplina_grade_curso(nome_da_discplina: Any, nome_do_curso: Any, curriculo: Any = "") -> list:    
+# Tool Call
+def get_informacoes_disciplina_grade_curso(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:    
     """
     Buscar as informações de uma disciplina da grade do curso.
     É possível obter informações como: nome do setor, campus, carga horária, créditos.
 
     Args:
-        nome_da_discplina: nome da disciplina.
+        nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
-        curriculo: valor inteiro do ano.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Lista com informações relevantes sobre apenas uma disciplica da grade do curso.
     """
     
-    print(f"Tool get_informacoes_disciplina_grade_curso chamada com nome_da_disciplina={nome_da_discplina}, nome_do_curso={nome_do_curso} e curriculo={curriculo}")
+    print(f"Tool get_informacoes_disciplina_grade_curso chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e curriculo={curriculo}")
     
     nome_do_curso = str(nome_do_curso)
-    dados_curso = get_codigo_curso(nome_do_curso)
+    dados_curso = get_codigo_curso(nome_do_curso, nome_do_campus=nome_do_campus)
     codigo_do_curso = dados_curso['curso']['codigo']
     
     if (str(curriculo) == ""):
@@ -344,7 +369,7 @@ def get_informacoes_disciplina_grade_curso(nome_da_discplina: Any, nome_do_curso
         codigo_do_curriculo = curriculo
         
     try:
-        disciplina = get_disciplina_grade_curso(codigo_do_curso, nome_da_discplina, codigo_curriculo=codigo_do_curriculo)
+        disciplina = get_disciplina_grade_curso(codigo_do_curso, nome_da_disciplina, codigo_curriculo=codigo_do_curriculo)
     except Exception as e:
         return [{"error_status": response.status_code, "msg": str(e)}]
         
@@ -368,22 +393,22 @@ def get_informacoes_disciplina_grade_curso(nome_da_discplina: Any, nome_do_curso
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_todos_curriculos(codigo_do_curso: Any) -> list:
+def get_todos_curriculos(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
 
     Args:
-        codigo_do_curso: código do curso.
-    
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+
     Returns:
         Lista com informações relevantes dos currículos do curso específico.
-    
-    Nota:
-        Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` e recuperar o código do curso.
-        Se a pergunta for o curriculo mais recente e tiver apenas um curriculo, traga as informações desse único curriculo como resposta.
     """
-    print(f"Tool get_curriculos chamada com codigo_do_curso={codigo_do_curso}.")
-    response = requests.get(f'{base_url}/curriculos?curso={str(codigo_do_curso)}')
+    
+    print(f"Tool get_curriculos chamada com nome_do_curso={nome_do_curso}.")
+    
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    response = requests.get(f'{base_url}/curriculos?curso={str(dados_curso["curso"]["codigo"])}')
     
     if response.status_code == 200:
         return json.loads(response.text)
@@ -391,21 +416,22 @@ def get_todos_curriculos(codigo_do_curso: Any) -> list:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_curriculos(codigo_do_curso: Any, curriculo: Any = ""): 
+def get_curriculos(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = ""): 
     """
     Busca os curriculos disponiveis de um curso.
      
     Args:
-        codigo_do_curso: codigo do curso.
-        curriculo: curriculo do curso.
-        
+        nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
+    
     Returns:
         Retorna o(s) curriculo(s) de um curso.
     """
     
-    print(codigo_do_curso, curriculo)
+    print(nome_do_curso, nome_do_campus, curriculo)
     
-    curriculos = get_todos_curriculos(codigo_do_curso=codigo_do_curso)
+    curriculos = get_todos_curriculos(codigo_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     existe_curriculo = False
     todos_curriculos_disponiveis = []
         
@@ -439,23 +465,25 @@ def get_periodo_mais_recente() -> str:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_plano_de_curso(nome_do_curso: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
+# Tool Call
+def get_plano_de_curso(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """
     Busca o plano de curso de uma disciplina.
 
     Args:
         nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
-        curriculo: valor inteiro do ano (opcional, usar se tiver).
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
         periodo: periodo.
     
     Returns:
         Lista com informações relevantes do plano de curso de uma disciplina.
     """
     
-    print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
+    print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
     
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     print(dados_curso)
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
     print(disciplina)
@@ -478,27 +506,29 @@ def get_plano_de_curso(nome_do_curso: Any, nome_da_disciplina: Any, curriculo: A
         }]
 
 
-def get_turmas(nome_da_disciplina: Any, nome_do_curso: Any, periodo: Any = "", codigo_curriculo: Any = "") -> list:
+# Tool Call
+def get_turmas(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = "", curriculo: Any = "") -> list:
     """
     Busca todas as turmas de uma disciplina.
     
     Args:
         nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
-        periodo: período (se não souber não coloque nada aqui).
-        codigo_curriculo: valor inteiro do ano (se não souber não coloque nada aqui).
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        periodo: período (se não souber não coloque nada aqui para obter o período mais recente).
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Lista com informações relevantes das turmas.
     """
     
-    print(f"Tool get_turmas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, periodo={periodo} e codigo_curriculo={codigo_curriculo}")
+    print(f"Tool get_turmas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo={periodo} e codigo_curriculo={curriculo}")
     
     if (str(periodo) == ""):
         periodo = get_periodo_mais_recente()
     
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
-    disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(codigo_curriculo))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=nome_da_disciplina, codigo_curriculo=curriculo)
 
     params = {
         "periodo-de": str(periodo),
@@ -514,7 +544,8 @@ def get_turmas(nome_da_disciplina: Any, nome_do_curso: Any, periodo: Any = "", c
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da disciplina porque a disciplina não existe para esse período."}]
 
 
-def get_plano_de_aulas(nome_do_curso: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
+# Tool Call
+def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
     """
     Buscar plano de aulas de uma turma de uma disciplina. 
     Use quando quiser buscar informação do tema abordado na aula em um dia específico. 
@@ -522,10 +553,11 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_da_disciplina: Any, periodo: Any
 
     Args:
         nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
         periodo: período letivo (passe a string vazia se não souber).
         numero_da_turma: valor numérico da turma (se não souber, use a turma '01' como turma padrão).
-        curriculo: curriculo do curso (passe a string vazia se não souber).
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
 
     Returns:
         Lista com informações relevantes do plano de aulas da turma de uma disciplina.
@@ -534,9 +566,9 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_da_disciplina: Any, periodo: Any
         Se não souber o periodo, passe a string vazia "".
         Se não souber o curriculo, passe a string vazia "".
     """
-    print(f"Tool get_plano_de_aulas chamada com codigo_disciplina={nome_da_disciplina}, periodo={periodo} e numero_turma={numero_da_turma}.")
+    print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
     
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
     
     if (str(periodo) == ""):
@@ -571,27 +603,30 @@ def get_disciplina_for_tool(codigo_da_disciplina):
     else:
         return None
 
-def pre_requisitos_disciplinas(nome_da_disciplina:Any, nome_do_curso:Any, codigo_curriculo:Any = "") -> dict:
+
+# Tool Call
+def pre_requisitos_disciplinas(nome_da_disciplina:Any, nome_do_curso:Any, nome_do_campus: Any, curriculo: Any = "") -> dict:
     """
     Busca as disciplinas que são pré-requisitos ou requisitos da disciplina perhguntada.
     
     Args:
         nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
-        codigo_curriculo: valor inteiro do ano (se não souber, passar a string vazia).
-
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
+    
     Returns:
         Lista contentdo o nome de cada disciplina que é requisito para a disciplina desejada. 
         Se o retorno for uma lista vazia, então informe que a disciplina em questão não possui requisitos.
     """
     
-    print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso} e codigo_curriculo={codigo_curriculo}")
+    print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")
     
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
-    disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(codigo_curriculo))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
 
     print("disciplina", disciplina)
-    curriculo = get_curriculos(dados_curso["curso"]["codigo"], codigo_curriculo)[-1]
+    curriculo = get_curriculos(dados_curso["curso"]["codigo"], curriculo)[-1]
 
     print("curriculo", curriculo)
     params = {
@@ -617,24 +652,26 @@ def pre_requisitos_disciplinas(nome_da_disciplina:Any, nome_do_curso:Any, codigo
         [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_horarios_disciplinas(nome_do_curso: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = ""):
+# Tool Call
+def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = ""):
     """
     Busca os horários e a sala de uma disciplina de uma turma especificada (caso não seja, busca de todas as turmas).
 
     Args:
         nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
         turma: número da turma (se não souber usar o valor '01').
         periodo: período do curso (se não souber, então use a string vazia '').
-        curriculo: curriculo do curso (se não souber, então use a string vazia '').
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Retorna uma lista de horários das aulas da disciplina.
     """
     
-    print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
+    print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     curriculo = get_curriculos(dados_curso["curso"]["codigo"], curriculo=curriculo)[-1]
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
     
@@ -677,24 +714,26 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_da_disciplina: Any, turma:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
 
-def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:
+# Tool Call
+def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:
     """
     Busca as notas/desempenho dos estudantes em uma turma de uma disciplina.
 
     Args:
         nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... (Se o usuário não informou o campus de Campina Grande)
         turma: valor numérico da turma da disciplina (se não foi informada, então passe a strig vazia '').
         periodo: periodo do curso (se não foi informado, então passe a string vazia '').
-        curriculo: curriculo do curso (se não foi informado, então passe a string vazia '').
+        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:
         Dicionário com o intervalo das médias das notas de dada disciplina de uma turma.
     """
     
-    print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
+    print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
 
-    dados_curso = get_codigo_curso(nome_do_curso=str(nome_do_curso))
+    dados_curso = get_codigo_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     curriculo = get_curriculos(dados_curso["curso"]["codigo"], curriculo=curriculo)[-1]
     disciplina = get_disciplina(dados_curso["curso"]["codigo"], nome_disciplina=str(nome_da_disciplina), codigo_curriculo=str(curriculo))
     
@@ -729,4 +768,4 @@ def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any
             len([media for media in medias if float(media) >= 8.5 and float(media) <= 10])
         }
     else:
-      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

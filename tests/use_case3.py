@@ -35,7 +35,7 @@ tools = [
 
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.1:8b", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
@@ -101,6 +101,6 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Como foi o desempenho dos estudantes na disciplina de teoria da computação do curso de ciencia da computacao?")]}, stream_mode="values"
+    {"messages": [("human", "Como foi o desempenho dos estudantes na disciplina de inteligencia artificial do curso de ciencia da computacao?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()
