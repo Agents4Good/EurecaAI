@@ -11,7 +11,7 @@ import numpy as np
 import requests
 import json
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
 base_url = "https://eureca.lsd.ufcg.edu.br/das/v2"

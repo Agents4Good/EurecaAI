@@ -13,6 +13,8 @@ import unicodedata
 
 import numpy as np
 
+import unicodedata
+
 model = ChatOllama(model="llama3.2:3b", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 

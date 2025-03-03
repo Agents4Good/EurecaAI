@@ -7,8 +7,8 @@ from langchain.schema import SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from tools.disciplina_tools import *
-from prompts.prompts import *
+from .tools.disciplina_tools import *
+from .prompts.prompts import *
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
@@ -35,7 +35,7 @@ tools = [
 
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
