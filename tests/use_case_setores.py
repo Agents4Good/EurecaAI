@@ -1,30 +1,43 @@
+# use case para testar as ferramentas com rag
+
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain.schema import SystemMessage
+from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from src.tools.eureca.curso_tools import *
-from .prompts.prompts import *
+from tools.setor.get_estagios import get_estagios
+from tools.setor.get_professores_setor import get_professores_setor
+from tools.setor.get_todos_setores import get_todos_setores
+from tools.setor.utils import get_setor_most_similar
 
-from langchain_community.chat_models import ChatLiteLLM
+from prompts.prompts import *
+
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
+from langchain.chains import LLMChain
 
 import uuid, json
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
-tools = [get_cursos_ativos, get_curso, get_estudantes] # tools para testar aqui
+tools = [
+    get_estagios,
+    get_professores_setor,
+    get_todos_setores,
+    get_setor_most_similar
+]
+
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.1:8b", temperature=0).bind_tools(tools)
-#model_with_tools = ChatOpenAI(model="gpt-4o-mini").bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
+#model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
-
 
 def should_continue(state: MessagesState):
     messages = state["messages"]
@@ -52,16 +65,16 @@ def extract_tool_calls(response):
 def call_model(state: MessagesState):
     messages = state["messages"]
 
+    #print("MSG ",messages)
     system_prompt = SystemMessage(
-        content=FEW_SHOT_PROMPT1
+        content=ZERO_SHOT_PROMPT2
     )
 
     if not messages or not isinstance(messages[0], SystemMessage):
         messages.insert(0, system_prompt)
     
-    response = model_with_tools.invoke(messages)
+    response =  model_with_tools.invoke(messages)
     response = extract_tool_calls(response)
-    print({"messages": [response]})
     return {"messages": [response]}
 
 workflow = StateGraph(MessagesState)
@@ -83,6 +96,11 @@ with open(file, "wb") as f:
     f.write(img)'''
 
 for chunk in app.stream(
-    {"messages": [("human", "Me de informações sobre os estudantes Engenharia de Petroleo")]}, stream_mode="values"
+    #{"messages": [("human", "Qual a quantia de estudantes pardos em ciência da computação?")]}, stream_mode="values"
+    #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
+    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
+    #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
+    #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
+    {"messages": [("human", "Quais são os professores de ciencia da computacao do campus de campina grande?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

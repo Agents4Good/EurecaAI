@@ -7,13 +7,21 @@ from langchain.schema import SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from .tools.disciplina_tools import *
-from .prompts.prompts import *
+from prompts.prompts import *
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 from langchain.chains import LLMChain
+
+from tools.disciplina.utils import get_disciplina_most_similar
+from tools.disciplina.get_disciplina import get_disciplina
+from tools.disciplina.get_horarios_disciplina import get_horarios_disciplinas
+from tools.disciplina.get_notas_turma_disciplina import get_media_notas_turma_disciplina
+from tools.disciplina.get_plano_aulas_turma import get_plano_aulas_turma
+from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
+from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 
 import uuid, json
 
@@ -23,19 +31,19 @@ from dotenv import load_dotenv
 load_dotenv()
 
 tools = [
-    get_informacoes_disciplina_grade_curso, 
-    get_todas_disciplinas_curso, 
-    get_plano_de_curso, 
-    get_turmas, 
-    get_plano_de_aulas, 
-    pre_requisitos_disciplinas,
+    get_disciplina_most_similar, 
+    get_disciplina, 
+    get_plano_aulas_turma, 
+    get_plano_de_curso_disciplina, 
+    get_turmas_disciplina, 
+    get_pre_requisitos_disciplina,
     get_horarios_disciplinas,
     get_media_notas_turma_disciplina
 ]
 
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 

@@ -7,9 +7,11 @@ from langchain.schema import SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from tools.disciplina_tools import *
-from tools.campus_tools import *
 from prompts.prompts import *
+from tools.campus.get_campi import get_campi
+from tools.campus.get_calendarios import get_calendarios
+from tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
+from tools.campus.utils import get_campus_most_similar
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
@@ -26,7 +28,8 @@ load_dotenv()
 tools = [
     get_campi,
     get_calendarios,
-    get_periodo_mais_recente
+    get_periodo_mais_recente,
+    get_campus_most_similar
 ]
 
 tool_node = ToolNode(tools)
@@ -97,6 +100,6 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Quais periodos ja ocorreram na ufcg?")]}, stream_mode="values"
+    {"messages": [("human", "Qual é o código do curso de ciencia da computacao do campus de campina grande?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

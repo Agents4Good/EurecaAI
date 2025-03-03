@@ -5,8 +5,14 @@ from langgraph.types import interrupt, Command
 from langchain.schema import SystemMessage
 from langchain_core.messages import HumanMessage, ToolMessage
 
-from .tools.curso_tools import *
-from .prompts.prompts import *
+from prompts.prompts import *
+
+from tools.curso.get_cursos import get_cursos
+from tools.curso.get_curso import get_curso
+from tools.curso.get_estudantes_curso import get_estudantes_curso
+from tools.curso.get_todos_curriculos_curso import get_todos_curriculos_curso
+from tools.curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
+from tools.curso.utils import get_curso_most_similar
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
@@ -21,12 +27,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 tools = [
+    get_curso,
     get_cursos, 
-    get_codigo_curso, 
-    get_informacoes_curso, 
-    get_estudantes,
-    get_curriculos
+    get_estudantes_curso,
+    get_todos_curriculos_curso,
+    get_curriculo_mais_recente_curso,
+    get_curso_most_similar
 ] # tools para testar aqui
+
 tool_node = ToolNode(tools)
 
 class AskHuman(BaseModel):
@@ -34,7 +42,7 @@ class AskHuman(BaseModel):
     Perguntar ao usuário.
     """
 
-model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools + [AskHuman])
+model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools + [AskHuman])
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools + [AskHuman])
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
@@ -87,7 +95,7 @@ def call_model(state: MessagesState):
     messages = state["messages"]
 
     system_prompt = SystemMessage(
-        content=ZERO_SHOT_PROMPT1
+        content=ZERO_SHOT_PROMPT2
     )
 
     if not messages or not isinstance(messages[0], SystemMessage):
@@ -128,7 +136,7 @@ async def run(app, config: dict):
         #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
         #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
         #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
-        {"messages": [("human", "qual o código do curso de economia?")]}, config, stream_mode="values"
+        {"messages": [("human", "Me de informacoes de todos os estudantes")]}, config, stream_mode="values"
     ):
         chunk["messages"][-1].pretty_print()
     
