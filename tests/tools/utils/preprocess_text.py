@@ -1,11 +1,9 @@
 
 import os
+import json
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Obtém o diretório do script atual
 path = os.path.join(BASE_DIR, "..", "utils", "siglas.json")  # Caminho relativo
-
-import json
-
 
 def remove_siglas(texto: str):
     """

@@ -4,7 +4,7 @@ from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
 from .utils.preprocess_text import remove_siglas
 from typing import Any
-from .campus_tools import * 
+from .campus_tools import *
 
 import numpy as np
 import requests

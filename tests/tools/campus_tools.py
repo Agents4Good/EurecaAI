@@ -9,6 +9,7 @@ from langchain_ollama import ChatOllama
 from .utils.preprocess_text import remove_siglas
 from typing import Any
 from .curso_tools import *
+import unicodedata
 
 import numpy as np
 
