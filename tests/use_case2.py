@@ -128,7 +128,7 @@ async def run(app, config: dict):
         #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
         #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
         #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
-        {"messages": [("human", "me traga mais detalhes de engenharia agricola, qual o nome do setor?")]}, config, stream_mode="values"
+        {"messages": [("human", "qual o código do curso de economia?")]}, config, stream_mode="values"
     ):
         chunk["messages"][-1].pretty_print()
     

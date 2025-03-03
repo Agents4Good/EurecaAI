@@ -50,6 +50,16 @@ ZERO_SHOT_PROMPT1 = """
         - Por outro lado, para as demais tools, você deve passar o nome do curso informado como args para a tool correta utilizar esse parâmetro de forma adequada.
         - Exemplo: se uma pergunta for sobre qual é o código de um curso específico, você só precisa chamar a tool get_codigo_curso para obtê-lo passando o nome do curso como args.
         - Por último, se você receber retorno com "AskHuman", você deve chamar a tool AskHuman.
+
+        Você só deve chamar uma tool que você possui, não tente chamar uma tool que não seja sua.
+
+        Suas tools são estritamente essas:
+        
+        - get_cursos
+        - get_codigo_curso
+        - get_informacoes_curso
+        - get_estudantes
+        - get_curriculos
 """
 
 ZERO_SHOT_PROMPT2 = """

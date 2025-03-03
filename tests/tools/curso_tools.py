@@ -4,11 +4,11 @@ from langchain_ollama import ChatOllama
 from langchain_core.tools import tool
 from .utils.preprocess_text import remove_siglas
 from typing import Any
-from .campus_tools import * 
+from .campus_tools import *
 
 import numpy as np
 import requests
-import json, unicodedata
+import json
 
 model = ChatOllama(model="llama3.1", temperature=0)
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
@@ -21,21 +21,25 @@ def get_cursos(nome_do_campus: Any = "") -> list:
     Busca por todos os cursos da UFCG por campus.
 
     Args:
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
-    
+    nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
+
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'nome'.
     """
     
     print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
     
-    campus = get_campus_most_similar(str(nome_do_campus))
-    
-    url_cursos = f'{base_url}/cursos'
     params = {
         'status-enum':'ATIVOS',
-        'campus': campus["campus"]["codigo"]
+        'campus': '1'
     }
+
+    if (str(nome_do_campus) != ""):
+        campus = get_campus_most_similar(str(nome_do_campus))
+        params['campus'] = campus["campus"]["codigo"]
+    
+    url_cursos = f'{base_url}/cursos'
+
     response = requests.get(url_cursos, params=params)
 
     if response.status_code == 200:
@@ -72,7 +76,7 @@ def get_codigo_curso(nome_do_curso: Any, nome_do_campus: Any) -> dict:
         dict: dicionário contendo código do curso e nome do curso.
     """
     
-    print(f"Tool get_codigo_curso chamada com nome_do_curso {nome_do_curso} e nome_do_campus={nome_do_campus}")
+    print(f"Tool get_codigo_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}")
     
     #nome_curso = remove_siglas(nome_do_curso)
     cursos = get_cursos(nome_do_campus=str(nome_do_campus))
@@ -130,8 +134,8 @@ def get_informacoes_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
 
     Args:
         nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-    
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus.
+
     Returns:
         Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
     """
@@ -159,7 +163,7 @@ def get_curriculo_mais_recente(nome_do_curso: Any, nome_do_campus: Any) -> list:
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-    
+
     Returns:
         Lista com informações relevantes do currículo mais recente do curso específico.
     """
@@ -182,7 +186,7 @@ def get_estudantes(nome_do_curso: Any = "", nome_do_campus: Any = "") -> dict:
     Args:
         nome_do_curso: nome do curso (se quiser todos os estudantes da UFCG (de todas as universidades), use a string vazia '' para obter os estudantes de todos os cursos).
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
-    
+
     Returns:
         Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
     """
@@ -340,7 +344,7 @@ def get_curriculos(nome_do_curso: Any, nome_do_campus: Any) -> list:
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-        
+
     Returns:
         Lista com informações relevantes dos currículos do curso específico.
     """
