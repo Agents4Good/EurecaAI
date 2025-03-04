@@ -119,7 +119,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
     print(disciplinas_most_similar)
     
-    response_ = model.invoke(
+    response = model.invoke(
         f"""
         Para a disciplina de nome: '{nome_da_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?
 
@@ -133,4 +133,5 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         """
     )
     
-    return processar_json(response_.content, "disciplina"), curriculo
+    print(response.content)
+    return processar_json(response.content, "disciplina"), curriculo
