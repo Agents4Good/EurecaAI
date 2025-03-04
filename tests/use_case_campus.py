@@ -1,6 +1,6 @@
 from prompts.prompts import *
-from agent.agent_tools import AgentTolls
 from langchain_ollama import ChatOllama
+from agent.agent_tools import AgentTolls
 from tools.campus.get_campi import get_campi
 from tools.campus.get_calendarios import get_calendarios
 from tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
