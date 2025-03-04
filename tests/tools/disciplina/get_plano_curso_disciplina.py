@@ -32,8 +32,7 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
-    print("ASJDLKJASKLDJASKLD")
-    print(dados_disciplina, periodo)
+
     params = {
         'disciplina': dados_disciplina['disciplina']['codigo'],
         'periodo-de': periodo,

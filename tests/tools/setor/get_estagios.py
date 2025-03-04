@@ -71,11 +71,9 @@ def get_estagios(nome_do_campus: Any, nome_do_centro_unidade: Any, ano: Any) -> 
         professores = get_professores_setor(nome_do_centro_setor=setor_centro_unidade["setor"]["nome"], nome_do_campus=dados_campus["campus"]["nome"])
         professores = [professor['matricula_do_docente'] for professor in professores]
 
-        estagiarios_unidade = [
-            estagiario for estagiario in estagiarios
-            if (estagiario['matricula_do_docente'] in professores)
-        ]
+        estagiarios_unidade = [estagiario for estagiario in estagiarios if (estagiario['matricula_do_docente'] in professores)]
         estados = list({estagiario['uf_concedente'] for estagiario in estagiarios_unidade})
+        
         estados_res = {}
         for uf in estados:
             estados_res[uf] = extrair_insights_estagios(estagiarios=estagiarios_unidade, uf=uf)

@@ -5,7 +5,6 @@ from ..utils.base_url import URL_BASE
 from ..campus.get_campi import get_campi
 from ..campus.utils import get_campus_most_similar
 
-mapper = {"nome": "descricao", "codigo": "campus"}
 def get_cursos(nome_do_campus: Any = "") -> list:
     """
     Busca por todos os cursos da UFCG por campus.

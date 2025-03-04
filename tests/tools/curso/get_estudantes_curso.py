@@ -26,13 +26,10 @@ def get_estudantes_curso(nome_do_curso: Any, nome_do_campus: Any) -> dict:
     nome_do_curso = str(nome_do_curso)
     
     if (nome_do_curso != "" and nome_do_campus != ""):
-        print("Buscando estudantes pelos cursos")
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        print(dados_curso)
         params["curso"] = dados_curso['curso']['codigo']
     
     elif (nome_do_curso == "" and nome_do_campus != ""):
-        print("Buscando estudantes pelo campus")
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params["campus"] = dados_campus['campus']['codigo']
     

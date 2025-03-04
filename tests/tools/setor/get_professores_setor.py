@@ -19,6 +19,7 @@ def get_professores_setor(nome_do_centro_setor: Any, nome_do_campus: Any = "") -
     nome_do_campus=str(nome_do_campus)
     nome_do_centro_setor=str(nome_do_centro_setor)
     print(f"Tool get_professores chamada com nome_do_centro_setor={nome_do_centro_setor} e nome_do_campus={nome_do_campus}")
+    
     params = { "status": "ATIVO" }
     
     if (nome_do_centro_setor != ""):

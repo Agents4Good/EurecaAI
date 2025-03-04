@@ -5,7 +5,6 @@ from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 
 def get_disciplina_for_tool(codigo_da_disciplina):
-    
     params = { 'disciplina': codigo_da_disciplina }
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
     

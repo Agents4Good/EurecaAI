@@ -1,8 +1,8 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
+from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 
 def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:
@@ -29,7 +29,7 @@ def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome
     curriculo=str(curriculo)
     
     print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
-    disciplina = get_disciplina(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
@@ -37,7 +37,7 @@ def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
-        "disciplina": disciplina[0]["codigo_da_disciplina"],
+        "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma
     }
 
@@ -58,6 +58,6 @@ def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome
             "medias_maior_ou_igual_a_8.5_e_menor_ou_igual_a_10": 
             len([media for media in medias if float(media) >= 8.5 and float(media) <= 10])
         }
-        
+    
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

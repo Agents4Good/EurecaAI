@@ -66,5 +66,6 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome_da_disciplina).
         """
     )
-    print(response)
+    
+    print(response.content)
     return processar_json(response.content, "disciplina"), curriculo

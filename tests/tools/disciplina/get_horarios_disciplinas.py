@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina
+from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
@@ -30,13 +30,13 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_di
     
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
-    disciplina = get_disciplina(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
     params = {
-        "disciplina": disciplina[0]["codigo_da_disciplina"],
+        "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma,
         "periodo-de": periodo,
         "periodo-ate": periodo
