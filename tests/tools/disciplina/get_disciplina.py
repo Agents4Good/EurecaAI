@@ -28,7 +28,7 @@ def get_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: 
     try:
         dados_disciplina, curriculo = get_disciplina_grade_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, nome_da_disciplina=nome_da_disciplina, curriculo=curriculo)
     except Exception as e:
-        return [{"error_status": response.status_code, "msg": str(e)}]
+        return [{"error_status": 500, "msg": str(e)}]
 
     params = {
         'curriculo': curriculo,
