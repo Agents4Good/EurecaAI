@@ -1,13 +1,13 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina_grade_most_similar
+from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
 def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """
-    Busca o plano de curso de uma disciplina, como os temas abordados na disciplina como todo, provas, exercícios, metodologia e livros usados na disciplia.
+    Busca o plano de curso de uma disciplina, como os temas abordados na disciplina como um todo, provas, exercícios, metodologia e livros usados na disciplina.
 
     Args:
         nome_do_curso: nome do curso.
@@ -28,11 +28,12 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     
     print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
     
-    dados_disciplina = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
-    
+    print("ASJDLKJASKLDJASKLD")
+    print(dados_disciplina, periodo)
     params = {
         'disciplina': dados_disciplina['disciplina']['codigo'],
         'periodo-de': periodo,

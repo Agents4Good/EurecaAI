@@ -34,9 +34,9 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_di
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
-
+    
     params = {
-        "disciplina": disciplina["disciplina"]["codigo"],
+        "disciplina": disciplina[0]["codigo_da_disciplina"],
         "turma": turma,
         "periodo-de": periodo,
         "periodo-ate": periodo

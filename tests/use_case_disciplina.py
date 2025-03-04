@@ -5,20 +5,19 @@ from langchain.schema import SystemMessage
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
-from prompts.prompts import *
-from tools.disciplina.get_disciplina import get_disciplina
-from tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
-from tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
-from tools.disciplina.get_plano_aulas_turma import get_plano_aulas_turma
-from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
-from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
-from tools.disciplina.get_todas_disciplinas_grade import get_todas_disciplinas_grade
-from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
+from .prompts.prompts import *
+from .tools.disciplina.get_disciplina import get_disciplina
+from .tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
+from .tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
+from .tools.disciplina.get_plano_aulas import get_plano_aulas
+from .tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
+from .tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
+from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
-from langchain.chains import LLMChain
 
 import uuid, json
 
@@ -29,23 +28,18 @@ load_dotenv()
 
 tools = [
     get_disciplina, 
-    get_plano_aulas_turma, 
+    get_plano_aulas, 
     get_plano_de_curso_disciplina, 
     get_turmas_disciplina, 
     get_pre_requisitos_disciplina,
     get_horarios_disciplinas,
     get_notas_turma_disciplina,
-    get_todas_disciplinas_grade,
+    get_todas_disciplinas,
 ]
-
-#get_todas_disciplinas_curso
-#get_disciplina_grade_most_similar
-#get_todas_disciplinas_curso,
-#get_disciplina_most_similar
 
 tool_node = ToolNode(tools)
 
-model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
+model_with_tools = ChatOllama(model="llama3.1", temperature=0).bind_tools(tools)
 #model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
 #model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
 
@@ -106,11 +100,11 @@ with open(file, "wb") as f:
     f.write(img)'''
 
 for chunk in app.stream(
-    #{"messages": [("human", "Qual a quantia de estudantes pardos em ciência da computação?")]}, stream_mode="values"
-    #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
-    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
-    #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
-    #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Me dê informações da disciplina de compiladores do curso de ciencia da computacao do campus de campina grande?")]}, stream_mode="values"
+    #{"messages": [("human", "Me dê informações da disciplina compiladores")]}, stream_mode="values"
+    #{"messages": [("human", "quais são os horários de compiladores do curso de ciência da computação")]}, stream_mode="values"
+    #{"messages": [("human", "quais as notas da disciplina de compiladores do curso de ciência da computação")]}, stream_mode="values"
+    #{"messages": [("human", "qual o plano de aulas de teoria da computação do curso de ciência da computação da turma 1")]}, stream_mode="values"
+    #{"messages": [("human", "qual o pré requisito de teoria da computação do curso de ciência da computação curriculo 2022")]}, stream_mode="values"
+    {"messages": [("human", "quais são as turmas de teoria da computação de cieência da computação")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

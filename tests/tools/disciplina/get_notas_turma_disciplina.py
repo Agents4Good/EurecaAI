@@ -33,11 +33,11 @@ def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
-
+    
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
-        "disciplina": disciplina["disciplina"]["codigo"],
+        "disciplina": disciplina[0]["codigo_da_disciplina"],
         "turma": turma
     }
 

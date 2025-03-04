@@ -6,7 +6,7 @@ from ..utils.base_url import URL_BASE
 
 def get_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:    
     """
-    Buscar as informações de apenas uma unica disciplina.
+    Buscar as informações de apenas uma única disciplina.
 
     Args:
         nome_da_disciplina: nome da disciplina.
@@ -18,7 +18,7 @@ def get_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: 
         Lista com informações relevantes sobre uma disciplica específica.
     """
     
-    print(f"Tool get_informacoes_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")    
+    print(f"Tool get_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")    
     
     nome_da_disciplina = str(nome_da_disciplina)
     nome_do_curso = str(nome_do_curso)

@@ -1,11 +1,11 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina
+from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_plano_aulas_turma(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
+def get_plano_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
     """
     Busca o plano de aulas de uma turma de uma disciplina. 
     Use quando quiser buscar informação do tema abordado na aula em um dia específico. 
@@ -31,7 +31,7 @@ def get_plano_aulas_turma(nome_do_curso: Any, nome_do_campus: Any, nome_da_disci
     periodo=str(periodo)
     
     print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
-    dados_disciplina = get_disciplina(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (str(periodo) == ""):
         periodo = get_periodo_mais_recente()

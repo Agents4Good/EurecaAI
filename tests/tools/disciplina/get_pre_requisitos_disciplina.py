@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina
+from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 
 def get_disciplina_for_tool(codigo_da_disciplina):
@@ -36,8 +36,8 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     
     print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")
     
-    dados_disciplina = get_disciplina(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
-
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    
     params = {
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'curriculo': curriculo
