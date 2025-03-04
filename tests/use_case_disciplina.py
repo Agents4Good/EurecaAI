@@ -1,14 +1,14 @@
 from prompts.prompts import *
-from agent.agent_tools import AgentTolls
 from langchain_ollama import ChatOllama
+from agent.agent_tools import AgentTolls
 from tools.disciplina.get_disciplina import get_disciplina
-from tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
-from tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
 from tools.disciplina.get_plano_aulas import get_plano_aulas
-from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
-from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
 from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
+from tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
+from tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
+from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 
 tools = [
     get_disciplina, 
