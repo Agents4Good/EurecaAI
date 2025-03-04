@@ -25,4 +25,3 @@ agent = AgentTolls(LLM=ChatOllama, model="llama3.2:3b", tools=tools, temperatura
 
 question = "Quais são as turmas de teoria da computação de cieência da computação?"
 agent.run(question=question)
-
