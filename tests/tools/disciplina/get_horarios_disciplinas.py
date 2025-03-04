@@ -7,14 +7,14 @@ from ..utils.base_url import URL_BASE
 
 def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = "") -> list:
     """
-    Busca os horários e a sala de uma disciplina de uma turma especificada (caso não seja, busca de todas as turmas).
+    Busca os horários e a número da sala de uma disciplina de uma turma.
 
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
-        turma: número da turma (se não souber usar o valor '01').
-        periodo: período do curso (se não souber, então use a string vazia '').
+        turma: número da turma (se for para todas as turmas usar a string vazia).
+        periodo: período do curso (se não souber, então use a string vazia '' para usar o período mais recente).
         curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
     
     Returns:

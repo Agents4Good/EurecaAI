@@ -1,5 +1,3 @@
-# use case para testar as ferramentas com rag
-
 from langchain_core.messages import AIMessage
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
@@ -8,20 +6,19 @@ from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage
 
 from prompts.prompts import *
+from tools.disciplina.get_disciplina import get_disciplina
+from tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
+from tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
+from tools.disciplina.get_plano_aulas_turma import get_plano_aulas_turma
+from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
+from tools.disciplina.get_todas_disciplinas_grade import get_todas_disciplinas_grade
+from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
 from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 from langchain.chains import LLMChain
-
-from tools.disciplina.utils import get_disciplina_most_similar
-from tools.disciplina.get_disciplina import get_disciplina
-from tools.disciplina.get_horarios_disciplina import get_horarios_disciplinas
-from tools.disciplina.get_notas_turma_disciplina import get_media_notas_turma_disciplina
-from tools.disciplina.get_plano_aulas_turma import get_plano_aulas_turma
-from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
-from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
-from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 
 import uuid, json
 
@@ -31,15 +28,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 tools = [
-    get_disciplina_most_similar, 
     get_disciplina, 
     get_plano_aulas_turma, 
     get_plano_de_curso_disciplina, 
     get_turmas_disciplina, 
     get_pre_requisitos_disciplina,
     get_horarios_disciplinas,
-    get_media_notas_turma_disciplina
+    get_notas_turma_disciplina,
+    get_todas_disciplinas_grade,
 ]
+
+#get_todas_disciplinas_curso
+#get_disciplina_grade_most_similar
+#get_todas_disciplinas_curso,
+#get_disciplina_most_similar
 
 tool_node = ToolNode(tools)
 
@@ -109,6 +111,6 @@ for chunk in app.stream(
     #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
     #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
     #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Como foi o desempenho dos estudantes na disciplina de inteligencia artificial do curso de ciencia da computacao?")]}, stream_mode="values"
+    {"messages": [("human", "Me dê informações da disciplina de compiladores do curso de ciencia da computacao do campus de campina grande?")]}, stream_mode="values"
 ):
     chunk["messages"][-1].pretty_print()

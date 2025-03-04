@@ -5,9 +5,9 @@ from .get_disciplina import get_disciplina
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_media_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:
+def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> dict:
     """
-    Busca as notas/desempenho dos estudantes em uma turma de uma disciplina.
+    Busca as notas / desempenho dos estudantes em uma turma de uma disciplina.
 
     Args:
         nome_da_disciplina: nome da disciplina.

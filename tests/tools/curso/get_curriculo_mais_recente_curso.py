@@ -16,9 +16,12 @@ def get_curriculo_mais_recente_curso(nome_do_curso: Any, nome_do_campus: Any) ->
         Lista com informações relevantes do currículo mais recente do curso específico.
     """
     
+    nome_do_curso=str(nome_do_curso)
+    nome_do_campus=str(nome_do_campus)
+    
     print(f"Tool get_curriculo_mais_recente chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
     
-    dados_curso = get_curso_most_similar(str(nome_do_curso), str(nome_do_campus))
+    dados_curso = get_curso_most_similar(nome_do_curso, nome_do_campus)
     response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
     
     if response.status_code == 200:

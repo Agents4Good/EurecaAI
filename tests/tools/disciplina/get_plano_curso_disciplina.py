@@ -1,20 +1,20 @@
 import json
 import requests
 from typing import Any
-from .get_disciplina import get_disciplina_most_similar
+from .get_disciplina import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
 def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """
-    Busca o plano de curso de uma disciplina.
+    Busca o plano de curso de uma disciplina, como os temas abordados na disciplina como todo, provas, exercícios, metodologia e livros usados na disciplia.
 
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
         curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
-        periodo: periodo.
+        periodo: periodo (se não souber, passe a string vazia '' para buscar pelo período mais recente).
     
     Returns:
         Lista com informações relevantes do plano de curso de uma disciplina.
@@ -28,7 +28,7 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     
     print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
     
-    dados_disciplina = get_disciplina_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()

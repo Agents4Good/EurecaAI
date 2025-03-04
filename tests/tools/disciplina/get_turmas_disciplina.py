@@ -7,7 +7,7 @@ from ..utils.base_url import URL_BASE
 
 def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = "", curriculo: Any = "") -> list:
     """
-    Busca todas as turmas de uma disciplina.
+    Busca todas as turmas de uma unica disciplina.
     
     Args:
         nome_da_disciplina: nome da disciplina.

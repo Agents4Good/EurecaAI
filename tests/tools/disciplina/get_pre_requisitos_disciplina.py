@@ -16,7 +16,7 @@ def get_disciplina_for_tool(codigo_da_disciplina):
 
 def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """
-    Busca as disciplinas que são pré-requisitos ou requisitos da disciplina perhguntada.
+    Busca as disciplinas que são pré-requisitos ou requisitos da disciplina perguntada.
     
     Args:
         nome_da_disciplina: nome da disciplina.

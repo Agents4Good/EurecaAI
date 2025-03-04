@@ -14,7 +14,7 @@ mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 
 def get_disciplina_most_similar(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> tuple:
     """
-    Buscar o nome e o código de uma disciplina.
+    Buscar o nome e o código de uma unica disciplina.
 
     Args:
         nome_da_disciplina: nome da disciplina.
@@ -23,7 +23,7 @@ def get_disciplina_most_similar(nome_da_disciplina: Any, nome_do_curso: Any, nom
         curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
 
     Returns:
-        dict: dicionário contendo o nome e código da disciplina ou uma mensagem de erro.
+        dict: dicionário contendo o nome e código da disciplina.
     """
     
     nome_da_disciplina = remove_siglas(str(nome_da_disciplina)).lower()
@@ -69,19 +69,18 @@ def get_disciplina_most_similar(nome_da_disciplina: Any, nome_do_curso: Any, nom
         """
     )
     
-    return processar_json(response.content), curriculo
+    return processar_json(response.content, "disciplina"), curriculo
 
 
 
-
-def get_disciplina_grade_curso(nome_do_campus: Any, nome_do_curso: Any, nome_disciplina: Any, curriculo: Any) -> dict:
+def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any, curriculo: Any) -> dict:
     """
     Buscar o nome e o código de uma disciplina da grade do curso.
 
     Args:
         nome_do_campus: nome do campus.
         nome_do_curso: nome do curso.
-        nome_disciplina: nome da disciplina.
+        nome_da_disciplina: nome da disciplina.
         curriculo: valor inteiro do ano.
 
     Returns:
@@ -114,12 +113,15 @@ def get_disciplina_grade_curso(nome_do_campus: Any, nome_do_curso: Any, nome_dis
         if not existe_curriculo:
             return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis}" }]
         
+    print(curriculo)
     todas_disciplinas_curso = get_todas_disciplinas_grade(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
+    print(todas_disciplinas_curso)
     disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
+    print(disciplinas_most_similar)
     
-    response = model.invoke(
+    response_ = model.invoke(
         f"""
-        Para a disciplina de nome: '{nome_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?
+        Para a disciplina de nome: '{nome_da_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?
 
         {disciplinas_most_similar}
         
@@ -130,4 +132,5 @@ def get_disciplina_grade_curso(nome_do_campus: Any, nome_do_curso: Any, nome_dis
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
-    return processar_json(response.content), curriculo
+    
+    return processar_json(response_.content, "disciplina"), curriculo

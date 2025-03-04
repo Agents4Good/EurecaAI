@@ -148,3 +148,4 @@ def get_estagios(ano: str, setor_centro_unidade: str) -> list:
         return estados_res
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+    

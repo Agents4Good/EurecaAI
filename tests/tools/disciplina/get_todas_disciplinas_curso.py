@@ -7,7 +7,7 @@ from ..utils.base_url import URL_BASE
 
 def get_todas_disciplinas_curso(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """
-    Busca todas as discplinas de um curso.
+    Busca todas as discplinas ofertadas de um curso. Usar apenas quando for perguntado sobre apenas as disciplinas que o curso oferece.
 
     Args:
         nome_do_curso: nome do curso.
@@ -37,19 +37,18 @@ def get_todas_disciplinas_curso(nome_do_curso: Any, nome_do_campus: Any, curricu
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:
-        res = json.loads(response.text)
-        return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
+        return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
     
 
 def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, curriculo: Any) -> list:
     """
-    Buscar todas as disciplinas de um curso.
+    Buscar todas as disciplinas de um curso. Usar apenas se tiver o código da disciplina.
 
     Args:
         codigo_do_curso: codigo do curso.
-        curriculo: valor inteiro do ano.
+        curriculo: valor inteiro do ano (se não tiver, use a string vazia '').
     
     Returns:
         Lista de disciplinas com 'codigo_da_disciplina' e 'nome'.
@@ -58,7 +57,7 @@ def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, curriculo: Any) -> li
     codigo_do_curso = str(codigo_do_curso)
     curriculo = str(curriculo)
     
-    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={codigo_do_curso} e curriculo={curriculo}.")    
+    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={codigo_do_curso} e curriculo={curriculo}.")
     
     params = {
         'curso': codigo_do_curso,
@@ -68,7 +67,6 @@ def get_disciplinas_curso_por_codigo(codigo_do_curso: Any, curriculo: Any) -> li
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:
-        res = json.loads(response.text)
-        return [{'codigo_da_disciplina': data['codigo_da_disciplina'], 'nome': data['nome']} for data in res]
+        return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

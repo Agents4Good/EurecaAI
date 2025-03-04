@@ -20,7 +20,9 @@ def get_cursos_ativos() -> list:
         'status-enum':'ATIVOS',
         'campus': '1'
     }
+    
     print("chamando a tool get_cursos_ativos.")
+    
     response = requests.get(url_cursos, params=params)
 
     if response.status_code == 200:
@@ -43,7 +45,9 @@ def get_curso(codigo_do_curso: Any) -> list:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos`.
     """
+    
     print(f"Tool get_curso chamada com codigo_do_curso={codigo_do_curso}.")
+    
     params = {
         'status-enum': 'ATIVOS',
         'curso': codigo_do_curso
@@ -115,7 +119,9 @@ def get_estudantes(codigo_do_curso: Any) -> dict:
     Nota:
         Para usar este método, se o 'codigo_do_curso' não tiver sido informado pelo usuário, ele deve ser obtido previamente por `get_cursos_ativos` para recuperar o código do curso.
     """
+    
     print(f"Tool get_estudantes chamada com codigo_do_curso={codigo_do_curso}.")
+    
     params = {
         "curso": codigo_do_curso,
         "situacao-do-estudante": "ATIVOS"
