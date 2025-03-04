@@ -18,9 +18,9 @@ def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
-    print(f"Tool get_informacoes_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
+    print(f"Tool get_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
+    
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-    print(dados_curso)
 
     params = {
         'status-enum': 'ATIVOS',

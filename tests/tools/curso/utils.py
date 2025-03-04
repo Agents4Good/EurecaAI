@@ -4,7 +4,7 @@ from ..utils.preprocess_text import remove_siglas
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.2", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 
@@ -22,10 +22,8 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
-    print(f"Tool get_codigo_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}")
     
     cursos = get_cursos(nome_do_campus=nome_do_campus)
-    print(cursos)
     cursos_most_similar, _ = get_most_similar(lista_a_comparar=cursos, dado_comparado=nome_do_curso, top_k=5, mapper=mapper_curso, limiar=0.5)
 
     response = model.invoke(

@@ -2,7 +2,7 @@ import json
 import requests
 from typing import Any
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
-from .get_disciplina import get_disciplina
+from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 
 def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = "", curriculo: Any = "") -> list:
@@ -30,7 +30,7 @@ def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_c
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
-    dados_disciplina = get_disciplina(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
 
     params = {
         "periodo-de": periodo,
