@@ -6,7 +6,7 @@ from tools.campus.get_calendarios import get_calendarios
 from tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
 
 tools = [
-    get_campi, 
+    get_campi,
     get_calendarios, 
     get_periodo_mais_recente
 ]
