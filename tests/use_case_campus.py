@@ -1,105 +1,72 @@
-# use case para testar as ferramentas com rag
-
-from langchain_core.messages import AIMessage
+import uuid, json
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain.schema import SystemMessage
-from langchain.prompts import PromptTemplate
-from langchain_core.messages import HumanMessage
-
 from prompts.prompts import *
+from langchain_ollama import ChatOllama
 from tools.campus.get_campi import get_campi
 from tools.campus.get_calendarios import get_calendarios
 from tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
-from tools.campus.utils import get_campus_most_similar
-
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
-from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
-from langchain.chains import LLMChain
-
-import uuid, json
-
 from dotenv import load_dotenv
-
-
 load_dotenv()
 
-tools = [
-    get_campi,
-    get_calendarios,
-    get_periodo_mais_recente,
-    get_campus_most_similar
-]
-
-tool_node = ToolNode(tools)
-
-model_with_tools = ChatOllama(model="llama3.2:3b", temperature=0).bind_tools(tools)
-#model_with_tools = ChatOpenAI(model="gpt-4o-mini", temperature=0).bind_tools(tools)
-#model_with_tools = ChatNVIDIA(model="meta/llama-3.3-70b-instruct").bind_tools(tools)
-
-def should_continue(state: MessagesState):
-    messages = state["messages"]
-    last_message = messages[-1]
-    if last_message.tool_calls:
-        return "tools"
-    return END
-
-def extract_tool_calls(response):
-    try:
-        content_data = json.loads(response.content)
-        if "tool_calls" in content_data:
-            tool_calls = content_data["tool_calls"]
-
-            for tool_call in tool_calls:
-                tool_call.setdefault("id", str(uuid.uuid4()))  # Gera um UUID único se não existir
-                tool_call.setdefault("type", "tool_call")  # Define o tipo
-            
-            response.tool_calls = tool_calls
-            response.content = content_data.get("content", "")
-    except json.JSONDecodeError:
-        pass
-    return response
-
-def call_model(state: MessagesState):
-    messages = state["messages"]
-
-    #print("MSG ",messages)
-    system_prompt = SystemMessage(
-        content=ZERO_SHOT_PROMPT2
-    )
-
-    if not messages or not isinstance(messages[0], SystemMessage):
-        messages.insert(0, system_prompt)
+class AgentToll:
+    def __init__(self, LLM, model: str, tools: list, prompt: str, temperatura: int = 0):
+        self.model = LLM(model=model, temperature=temperatura).bind_tools(tools)
+        self.tools = ToolNode(tools)
+        self.prompt = prompt
+        self.app = self.build()
     
-    response =  model_with_tools.invoke(messages)
-    response = extract_tool_calls(response)
-    return {"messages": [response]}
+    
+    def call_model(self, state: MessagesState):
+        messages = state["messages"]
+        if not messages or not isinstance(messages[0], SystemMessage):
+            messages.insert(0, SystemMessage(content=self.prompt))
+        return {"messages": [self.extract_tool_calls(self.model.invoke(messages))]}
+    
+    
+    def build(self):
+        workflow = StateGraph(MessagesState)
+        workflow.add_node("agent", self.call_model)
+        workflow.add_node("tools", self.tools)
+        workflow.add_edge(START, "agent")
+        workflow.add_conditional_edges("agent", self.should_continue, ["tools", END])
+        workflow.add_edge("tools", "agent")
+        return workflow.compile()
 
-workflow = StateGraph(MessagesState)
+        
+    def should_continue(self, state: MessagesState):
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools"
+        return END
+    
+    
+    def extract_tool_calls(self, response):
+        try:
+            content_data = json.loads(response.content)
+            if "tool_calls" in content_data:
+                tool_calls = content_data["tool_calls"]
 
-workflow.add_node("agent", call_model)
-workflow.add_node("tools", tool_node)
+                for tool_call in tool_calls:
+                    tool_call.setdefault("id", str(uuid.uuid4()))
+                    tool_call.setdefault("type", "tool_call")
+                
+                response.tool_calls = tool_calls
+                response.content = content_data.get("content", "")
+        
+        except json.JSONDecodeError:
+            pass
+        return response
+    
+    
+    def run(self, question: str):
+        for chunk in self.app.stream({"messages": [("human", question)]}, stream_mode="values"):
+            chunk["messages"][-1].pretty_print()
 
-workflow.add_edge(START, "agent")
-workflow.add_conditional_edges("agent", should_continue, ["tools", END])
-workflow.add_edge("tools", "agent")
 
-app = workflow.compile()
-
-'''from IPython.display import Image
-
-file = "grafo.png"
-img = app.get_graph().draw_mermaid_png()
-with open(file, "wb") as f:
-    f.write(img)'''
-
-for chunk in app.stream(
-    #{"messages": [("human", "Qual a quantia de estudantes pardos em ciência da computação?")]}, stream_mode="values"
-    #{"messages": [("human", "Qual o código do curso de história diurno?")]}, stream_mode="values"
-    #{"messages": [("human", "qual o nome do setor e o seu código para o curso de historia diurno")]}, stream_mode="values"
-    #{"messages": [("human", "Qual o nome do setor e o seu código para o curso de historia diurno, ciência da computação e engenharia civil?")]}, stream_mode="values"
-    #{"messages": [("human", "Traga informações sobre a disciplina calculo avançado")]}, stream_mode="values"
-    {"messages": [("human", "Qual é o código do curso de ciencia da computacao do campus de campina grande?")]}, stream_mode="values"
-):
-    chunk["messages"][-1].pretty_print()
+question = "Quais são os campus da UFCG?"
+tools = [get_campi, get_calendarios, get_periodo_mais_recente]
+agent = AgentToll(LLM=ChatOllama, model="llama3.2:3b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent.run(question=question)
