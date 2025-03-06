@@ -25,7 +25,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         dict: dicionário contendo o nome e código da disciplina ou uma mensagem de erro.
     """
     
-    nome_da_disciplina = get_most_similar_acronym(str(nome_da_disciplina), "disciplinas")
+    nome_da_disciplina = get_most_similar_acronym(str(nome_da_disciplina), "disciplina")
     nome_do_curso = str(nome_do_curso)
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
@@ -69,3 +69,6 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     
     print(response.content)
     return processar_json(response.content, "disciplina"), curriculo
+
+
+print(get_disciplina_grade_most_similar("Campina Grande", "ciência da computação", "fm cc 2", "2023"))

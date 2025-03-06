@@ -23,7 +23,9 @@
         "IC": "introduçao à computação",
         "IA": "inteligência artificial",
         "ES": "engenharia de software",
-        "ATAL": "análise e técnica de algoritmos"
+        "ATAL": "análise e técnica de algoritmos",
+        "C1": "cálculo 1",
+        "C2": "cálculo 2"
         
     },
     "curso": {
