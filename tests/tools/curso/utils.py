@@ -1,10 +1,10 @@
 from .get_cursos import get_cursos
 from langchain_ollama import ChatOllama
-from ..utils.preprocess_text import remove_siglas
+from ..utils.preprocess_text import get_most_similar_acronym
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
 
-model = ChatOllama(model="llama3.2", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 

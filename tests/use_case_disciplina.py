@@ -23,5 +23,5 @@ tools = [
 
 agent = AgentTolls(LLM=ChatOllama, model="llama3.2:3b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
-question = "Quais são as turmas de teoria da computação de cieência da computação?"
+question = "Traga informações sobre a disciplina fm cc 2"
 agent.run(question=question)

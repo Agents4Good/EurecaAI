@@ -8,7 +8,7 @@ path = os.path.join(BASE_DIR, "..", "utils", "siglas.json")  # Caminho relativo
 
 def get_most_similar_acronym(sigla: str, context: str):
     """
-        Função que utiliza difflib para encontrar a sigla mais similar à sigla informada
+        Função que utiliza difflib para encontrar a sigla mais similar à sigla informada.
 
         Args:
             sigla: sigla desejada.
