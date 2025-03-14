@@ -10,10 +10,10 @@ def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
 
     Args:
         nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus. Se o nome do campus não tiver sido fornecido, use 'campina grande' por padrão.
 
     Returns:
-        Lista com informações relevantes do curso específico, como código do inep, código e nome do setor desse curso, período de início, etc.
+        Lista com informações relevantes do curso específico, como código do curso, código do inep, código e nome do setor desse curso, período de início, etc.
     """
     
     nome_do_campus=str(nome_do_campus)
@@ -21,6 +21,9 @@ def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     print(f"Tool get_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
     
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+
+    if 'AskHuman' in dados_curso:
+        return dados_curso
 
     params = {
         'status-enum': 'ATIVOS',

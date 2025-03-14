@@ -7,13 +7,13 @@ from ..campus.utils import get_campus_most_similar
 
 def get_cursos(nome_do_campus: Any = "") -> list:
     """
-    Busca por todos os cursos da UFCG por campus.
+    Busca por todos os cursos da UFCG por campus, apenas o código dele e o nome.
 
     Args:
-    nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''. 
+    nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
 
     Returns:
-        Lista de cursos com 'codigo_do_curso' e 'nome'.
+        Lista de cursos com 'codigo_do_curso' e 'descricao' que representa o nome e o turno do curso.
     """
     
     nome_do_campus=str(nome_do_campus)
