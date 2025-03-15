@@ -32,9 +32,7 @@ ZERO_SHOT_PROMPT1 = """
         
         - get_curso (use essa tool para obter informações relevantes de um curso, como nome do setor e código, turno, período/ano de origem, inep, etc)
         - get_cursos (use essa tool para obter uma lista de todos os cursos fornecidos)
-        - get_estudantes_curso
-        - get_curriculos (use essa tool apenas para obter todos currículos e todos os anos de um curso)
-        - get_curriculo_mais_recente_curso (use essa tool apenas para obter o ano mais recente do currículo de um curso ou a carga horária, créditos, disciplinas, atividades complementares, etc)
+        - get_estudantes_curso (use essa tool para obter informações relevantes sobre os estudantes/alunos de um curso)
 
         **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
 """

@@ -27,7 +27,7 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     cursos_most_similar, top_k = get_most_similar(lista_a_comparar=cursos, dado_comparado=nome_do_curso, top_k=5, mapper=mapper_curso, limiar=0.5)
 
     if len(cursos_most_similar) == 0:
-        top_k = [top['nome'] for top in top_k]
+        #top_k = [top['nome'] for top in top_k]
         return {"AskHuman": "Não foi encontrado um curso com o nome o informado", "choice": top_k}
 
     response = model.invoke(

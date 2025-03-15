@@ -1,7 +1,8 @@
-import uuid, json, re
+import uuid, json
+from typing import TypedDict, Annotated
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
-from langchain.schema import SystemMessage
+from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
 from ..tools.utils.most_similar import get_most_similar
 from ..tools.curso.get_cursos import get_cursos
@@ -9,6 +10,28 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_ollama import ChatOllama
+
+def reduce_messages(left: list[AnyMessage], right: list[AnyMessage]) -> list[AnyMessage]:
+    # assign ids to messages that don't have them
+    for message in right:
+        if not message.id:
+            message.id = str(uuid.uuid4())
+    # merge the new messages with the existing messages
+    merged = left.copy()
+    for message in right:
+        for i, existing in enumerate(merged):
+            # replace any existing messages with the same id
+            if existing.id == message.id:
+                merged[i] = message
+                break
+        else:
+            # append any new messages to the end
+            merged.append(message)
+    return merged
+
+class AgentState(TypedDict):
+    messages: Annotated[list[AnyMessage], reduce_messages]
+
 
 class AgentTools:
     def __init__(self, LLM, model: str, tools: list, prompt: str, temperatura: int = 0):
@@ -18,22 +41,24 @@ class AgentTools:
         self.app = self.build()
     
     
-    def call_model(self, state: MessagesState):
+    def call_model(self, state: AgentState):
         messages = state["messages"]
-        if not messages or not isinstance(messages[-1], SystemMessage):
-            messages.insert(0, SystemMessage(content=self.prompt))
-        return {"messages": [self.extract_tool_calls(self.model.invoke(messages))]}
+        if self.prompt:
+            messages = [SystemMessage(content=self.prompt)] + messages
+        message = self.model.invoke(messages)
+        return {'messages': [message]}
     
 
-    def processa_entrada_node(self, state: MessagesState):
+    def processa_entrada_node(self, state: AgentState):
         messages = state["messages"]
         model_extra = ChatOllama(model="gemma3", temperature=0)
-        if not messages or not isinstance(messages[0], SystemMessage):
-            messages.insert(0, SystemMessage(content=AGENTE_ENTRADA_PROMPT))
-        resposta = model_extra.invoke(messages)
-        return {"messages": [resposta.content]}
+        messages = [SystemMessage(content=AGENTE_ENTRADA_PROMPT)] + messages
+        response = model_extra.invoke(messages)
+        human_msg_id = messages[-1].id
+        return {'messages': [HumanMessage(content=response.content, id=human_msg_id)]}
     
-    def processa_entrada_rag_node(self, state: MessagesState):
+    
+    def processa_entrada_rag_node(self, state: AgentState):
         messages = state["messages"]
         pergunta = messages[-1].content
 
@@ -56,18 +81,15 @@ class AgentTools:
         {top_cursos}
         """
 
-        #model_extra = ChatOllama(model="llama3.1", temperature=0.2)
         model_extra = ChatOllama(model="gemma3", temperature=0)
         if not messages or not isinstance(messages[0], SystemMessage):
             messages.insert(0, SystemMessage(content=AGENTE_ENTRADA_PROMPT2))
-        print(messages)
         resposta = model_extra.invoke(messages)
-        print(resposta)
         return {"messages": [resposta.content]}
     
     
     def build(self):
-        workflow = StateGraph(MessagesState)
+        workflow = StateGraph(AgentState)
         workflow.add_node("processa_entrada", self.processa_entrada_node)
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
@@ -78,7 +100,7 @@ class AgentTools:
         return workflow.compile()
 
         
-    def should_continue(self, state: MessagesState):
+    def should_continue(self, state: AgentState):
         messages = state["messages"]
         last_message = messages[-1]
         if last_message.tool_calls:
@@ -105,12 +127,8 @@ class AgentTools:
     
     
     def run(self, question: str):
-        '''from IPython.display import Image
-
-        file = "grafo.png"
-        img = self.app.get_graph().draw_mermaid_png()
-        with open(file, "wb") as f:
-            f.write(img)'''
-        
-        for chunk in self.app.stream({"messages": [("human", question)]}, stream_mode="values"):
+        thread = {"configurable": {"thread_id": "1"}}
+        '''for chunk in self.app.stream({"messages": [("human", question)]}, thread, stream_mode="values"):
+            chunk["messages"][-1].pretty_print()'''
+        for chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
             chunk["messages"][-1].pretty_print()
