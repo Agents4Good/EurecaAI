@@ -13,7 +13,7 @@ tools = [
     get_setor_most_similar
 ]
 
-agent = AgentTolls(LLM=ChatOllama, model="llama3.2:3b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgentTolls(LLM=ChatOllama, model="llama3.2", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"
 agent.run(question=question)

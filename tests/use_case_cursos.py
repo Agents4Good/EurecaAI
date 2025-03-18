@@ -15,7 +15,7 @@ tools = [
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
-question = "Qual o nome do setor e o seu código para letras inglês e francês?"
+question = "Quantos cursos tem a UFCG?"
 #question = "quais são os cursos de letras da ufcg do campus de campina grande?"
 #question = "quero saber a carga horária e os créditos do curso de ciência da computação"
 agent.run(question=question)
