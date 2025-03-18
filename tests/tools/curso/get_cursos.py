@@ -5,26 +5,27 @@ from ..utils.base_url import URL_BASE
 from ..campus.get_campi import get_campi
 from ..campus.utils import get_campus_most_similar
 from langchain_ollama import ChatOllama
+import sqlite3
 
 prompt_sql_cursos = """
 Você é um agente especialista em gerar comando SQL!
 
 Curso (
-    codigo_do_curso Number,
-    descricao Text, // Nome do curso
-    grau_do_curso Text, // Pode ser "LICENCIATURA" ou "BACHAREL"
-    codigo_do_setor Number,
+    codigo_do_curso INTEGER,
+    descricao Text, -- Nome do curso
+    grau_do_curso Text, -- Pode ser "LICENCIATURA" ou "BACHAREL"
+    codigo_do_setor INTEGER,
     nome_do_setor Text
-    campus Number,
+    campus INTEGER,
     nome_do_campus Text,
-    turno Text, // Pode ser MATUTINO, VESPERTINO E NOTURNO
-    periodo_de_inicio Double,
-    data_de_funcionamento Text, // Date em formato de Texto
-    codigo_inep Number,
-    modalidade_academica" Text, // Pode ser "BACHARELADO" ou "LICENCIATURA"
-    curriculo_atual Number,
-    area_de_retencao Number,
-    ciclo_enade Number
+    turno Text, -- Pode ser MATUTINO, VESPERTINO E NOTURNO
+    periodo_de_inicio REAL,
+    data_de_funcionamento Text, -- Date em formato de Texto
+    codigo_inep INTEGER,
+    modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
+    curriculo_atual INTEGER,
+    area_de_retencao INTEGER,
+    ciclo_enade INTEGER
 )
 
 Gere apenas o comando SQL e mais nada!
@@ -61,12 +62,76 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
+        db_name = "db_cursos.sqlite"
+        save_db(data_json=data_json, db_name=db_name)
 
-        model = ChatOllama(model="llama3.1:8b", temperature=0)
-        response = model.invoke(prompt_sql_cursos.format("Quantos cursos tem a UFCG?"))
+        model = ChatOllama(model="llama3.2:latest", temperature=0)
+        response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
         sql = response.content
-
+        return execute_sql(sql, db_name)
         
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+    
+def save_db(data_json, db_name):
+    """Salva os cursos em um banco de dados SQLite."""
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS Curso (
+        codigo_do_curso INTEGER PRIMARY KEY,
+        descricao TEXT,
+        grau_do_curso TEXT,
+        codigo_do_setor INTEGER,
+        nome_do_setor TEXT,
+        campus INTEGER,
+        nome_do_campus TEXT,
+        turno TEXT,
+        periodo_de_inicio REAL,
+        data_de_funcionamento TEXT,
+        codigo_inep INTEGER,
+        modalidade_academica TEXT,
+        curriculo_atual INTEGER,
+        area_de_retencao INTEGER,
+        ciclo_enade INTEGER
+    )
+    """)
+
+    for curso in data_json:
+        cursor.execute("""
+        INSERT OR IGNORE INTO Curso VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            curso["codigo_do_curso"],
+            curso["descricao"],
+            curso["grau_do_curso"],
+            curso["codigo_do_setor"],
+            curso["nome_do_setor"],
+            curso["campus"],
+            curso["nome_do_campus"],
+            curso["turno"],
+            curso["periodo_de_inicio"],
+            curso["data_de_funcionamento"],
+            curso["codigo_inep"],
+            curso["modalidade_academica"],
+            curso["curriculo_atual"],
+            curso["area_de_retencao"],
+            curso["ciclo_enade"]
+        ))
+
+    conn.commit()
+    conn.close()
+
+def execute_sql(sql: str, db_name: str):
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        conn.close()
+        return results
+    except sqlite3.Error as e:
+        conn.close()
+        return [{"error": str(e)}]
