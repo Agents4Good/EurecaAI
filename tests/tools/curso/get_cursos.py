@@ -10,20 +10,21 @@ import sqlite3
 prompt_sql_cursos = """
 Você é um agente especialista em gerar comando SQL!
 
+A seguinte tabela é dos cursos de graduação:
+
 Curso (
     codigo_do_curso INTEGER,
     descricao Text, -- Nome do curso
-    grau_do_curso Text, -- Pode ser "LICENCIATURA" ou "BACHAREL"
     codigo_do_setor INTEGER,
     nome_do_setor Text
     campus INTEGER,
     nome_do_campus Text,
     turno Text, -- Pode ser MATUTINO, VESPERTINO E NOTURNO
-    periodo_de_inicio REAL,
+    periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
     data_de_funcionamento Text, -- Date em formato de Texto
     codigo_inep INTEGER,
     modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
-    curriculo_atual INTEGER,
+    curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
     area_de_retencao INTEGER,
     ciclo_enade INTEGER
 )
@@ -31,7 +32,7 @@ Curso (
 Gere apenas o comando SQL e mais nada!
 
 Dado a tabela a acima, responda:
-"{pergunta}"
+"{pergunta_feita}"
 """
 
 def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
@@ -39,18 +40,19 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
     Busca por todos os cursos da UFCG por campus, apenas o código dele e o nome.
 
     Args:
-    nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
+        pergunta_feita: pergunta feita pelo usuário.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
 
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'descricao' que representa o nome e o turno do curso.
     """
     
     nome_do_campus=str(nome_do_campus)
-    pergunta=str(pergunta)
+    pergunta_feita=str(pergunta_feita)
     print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
     
     params = {
-        'status-enum':'ATIVOS',
+        'status':'ATIVOS',
     }
 
     if (nome_do_campus != ""):
@@ -62,15 +64,16 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
+        print(len(data_json))
         db_name = "db_cursos.sqlite"
         save_db(data_json=data_json, db_name=db_name)
 
-        model = ChatOllama(model="llama3.2:latest", temperature=0)
+        model = ChatOllama(model="llama3.1", temperature=0)
         response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
         sql = response.content
+        print(sql)
         return execute_sql(sql, db_name)
-        
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
     
@@ -98,6 +101,8 @@ def save_db(data_json, db_name):
         ciclo_enade INTEGER
     )
     """)
+
+    cursor.execute("DELETE FROM Curso")
 
     for curso in data_json:
         cursor.execute("""
@@ -135,3 +140,28 @@ def execute_sql(sql: str, db_name: str):
     except sqlite3.Error as e:
         conn.close()
         return [{"error": str(e)}]
+
+def get_lista_cursos(nome_do_campus: Any = "") -> list:
+    """
+    Busca por todos os cursos da UFCG por campus, apenas o código dele e o nome.
+    """
+    
+    nome_do_campus=str(nome_do_campus)
+    print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
+    
+    params = {
+        'status-enum':'ATIVOS',
+    }
+
+    if (nome_do_campus != ""):
+        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+        params['campus'] = dados_campus["campus"]["codigo"]
+    
+    url_cursos = f'{URL_BASE}/cursos'
+    response = requests.get(url_cursos, params=params)
+
+    if response.status_code == 200:
+        data_json = json.loads(response.text)
+        return [{'codigo_do_curso': data['codigo_do_curso'], 'nome_do_curso': data['descricao']} for data in data_json]
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

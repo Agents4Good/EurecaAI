@@ -5,7 +5,7 @@ from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
 from ..tools.utils.most_similar import get_most_similar
-from ..tools.curso.get_cursos import get_cursos
+from ..tools.curso.get_cursos import get_lista_cursos
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -64,7 +64,7 @@ class AgentTools:
 
         mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 
-        cursos = get_cursos()
+        cursos = get_lista_cursos()
         _, top_cursos = get_most_similar(lista_a_comparar=cursos, dado_comparado=pergunta, top_k=5, mapper=mapper_curso, limiar=0.5)
 
         top_cursos = [curso['nome'] for curso in top_cursos]
@@ -85,7 +85,8 @@ class AgentTools:
         if not messages or not isinstance(messages[0], SystemMessage):
             messages.insert(0, SystemMessage(content=AGENTE_ENTRADA_PROMPT2))
         resposta = model_extra.invoke(messages)
-        return {"messages": [resposta.content]}
+        human_msg_id = messages[-1].id
+        return {"messages": [HumanMessage(content=resposta.content, id=human_msg_id)]}
     
     
     def build(self):
