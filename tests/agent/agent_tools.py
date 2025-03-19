@@ -48,15 +48,6 @@ class AgentTools:
         message = self.model.invoke(messages)
         return {'messages': [message]}
     
-
-    def processa_entrada_node(self, state: AgentState):
-        messages = state["messages"]
-        model_extra = ChatOllama(model="gemma3", temperature=0)
-        messages = [SystemMessage(content=AGENTE_ENTRADA_PROMPT)] + messages
-        response = model_extra.invoke(messages)
-        human_msg_id = messages[-1].id
-        return {'messages': [HumanMessage(content=response.content, id=human_msg_id)]}
-    
     
     def processa_entrada_rag_node(self, state: AgentState):
         messages = state["messages"]
@@ -91,11 +82,9 @@ class AgentTools:
     
     def build(self):
         workflow = StateGraph(AgentState)
-        workflow.add_node("processa_entrada", self.processa_entrada_node)
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
-        workflow.add_edge(START, "processa_entrada")
-        workflow.add_edge("processa_entrada", "agent")
+        workflow.add_edge(START, "agent")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", END])
         workflow.add_edge("tools", "agent")
         return workflow.compile()

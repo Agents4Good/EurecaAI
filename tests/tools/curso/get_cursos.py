@@ -6,6 +6,7 @@ from ..campus.get_campi import get_campi
 from ..campus.utils import get_campus_most_similar
 from langchain_ollama import ChatOllama
 import sqlite3
+import re
 
 prompt_sql_cursos = """
 Você é um agente especialista em gerar comando SQL!
@@ -13,22 +14,22 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é dos cursos de graduação:
 
 Curso (
-    codigo_do_curso INTEGER,
-    descricao Text, -- Nome do curso
+    nome_do_curso Text, -- Nome do curso
     codigo_do_setor INTEGER,
-    nome_do_setor Text
-    campus INTEGER,
-    nome_do_campus Text,
-    turno Text, -- Pode ser MATUTINO, VESPERTINO E NOTURNO
+    nome_do_setor Text,
+    campus INTEGER, -- Usar número inteiro se informar o campus em representação romana
+    nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
+    turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral"
     periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
-    data_de_funcionamento Text, -- Date em formato de Texto
+    data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD 00:00:00.0" (usar esses zeros), deve converter em date
     codigo_inep INTEGER,
     modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
-    area_de_retencao INTEGER,
-    ciclo_enade INTEGER
+    ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
 )
 
+Selecione o(s) atributo(s) necessários para responder a pergunta (descricao (nome) do curso seria obrigatório voce trazer). Só retorne tudo se o usuário pedir informações gerais.
+Selecione tambem os atributos que voce escolheu para retornar no select e traga sempre o nome do curso no select.
 Gere apenas o comando SQL e mais nada!
 
 Dado a tabela a acima, responda:
@@ -37,7 +38,8 @@ Dado a tabela a acima, responda:
 
 def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
     """
-    Busca por todos os cursos da UFCG por campus, apenas o código dele e o nome.
+    Use quando precisar de informações de curso(s) em geral envolvendo:
+    Essa tool tem informações sobre o nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
 
     Args:
         pergunta_feita: pergunta feita pelo usuário.
@@ -73,7 +75,22 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
 
         sql = response.content
         print(sql)
-        return execute_sql(sql, db_name)
+        result = execute_sql(sql, db_name)
+        dados = [[] for _ in range(len(result))]
+
+        match = re.search(r"SELECT (.*?) FROM", sql)
+        if match:
+            campos = [campo.strip() for campo in match.group(1).split(",")]
+            for r in range(len(result)):
+                for i in range(len(campos)):
+                    if i < len(result[r]):
+                        if campos[i].strip() == "ciclo_enade":
+                            dados[r].append(f"{campos[i].strip()}: A cada {result[r][i]} períodos")
+                        else:
+                            dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
+
+        print(dados)
+        return dados
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
     
@@ -85,7 +102,7 @@ def save_db(data_json, db_name):
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS Curso (
         codigo_do_curso INTEGER PRIMARY KEY,
-        descricao TEXT,
+        nome_do_curso TEXT,
         grau_do_curso TEXT,
         codigo_do_setor INTEGER,
         nome_do_setor TEXT,
@@ -117,12 +134,12 @@ def save_db(data_json, db_name):
             curso["nome_do_campus"],
             curso["turno"],
             curso["periodo_de_inicio"],
-            curso["data_de_funcionamento"],
+            curso["data_de_funcionamento"].split(" ")[0] if curso["data_de_funcionamento"] else "00-00-0000",
             curso["codigo_inep"],
             curso["modalidade_academica"],
             curso["curriculo_atual"],
             curso["area_de_retencao"],
-            curso["ciclo_enade"]
+            curso['ciclo_enade']
         ))
 
     conn.commit()
@@ -143,7 +160,8 @@ def execute_sql(sql: str, db_name: str):
 
 def get_lista_cursos(nome_do_campus: Any = "") -> list:
     """
-    Busca por todos os cursos da UFCG por campus, apenas o código dele e o nome.
+    Busca por todos os cursos da UFCG por campus, apenas o código do curos e o nome do curso.
+    Usar apenas quando for perguntado sobre o código do curso.
     """
     
     nome_do_campus=str(nome_do_campus)
