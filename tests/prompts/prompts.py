@@ -30,9 +30,11 @@ ZERO_SHOT_PROMPT1 = """
 
         Suas tools são estritamente essas:
         
-        - get_curso (use essa tool para obter informações relevantes de um curso, como nome do setor e código, turno, período/ano de origem, inep, etc)
-        - get_cursos (use essa tool para obter uma lista de todos os cursos fornecidos)
-        - get_estudantes_curso (use essa tool para obter informações relevantes sobre os estudantes/alunos de um curso)
+        - get_curso (use essa tool para obter informações relevantes de um curso, como nome do setor e código, turno, período/ano de origem, inep, etc);
+        - get_cursos (use essa tool para obter uma lista de todos os cursos fornecidos);
+        - get_carga_horaria (use essa tool para obter informações relevantes sobre as cargas horárias de cada curso);
+        - get_creditos (use essa tool para obter o número de créditos relacionados a cada curso específico);
+        - get_estudantes_curso (use essa tool para obter informações relevantes sobre os estudantes/alunos de um curso).
 
         **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
 """
