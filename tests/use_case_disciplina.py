@@ -1,14 +1,14 @@
-from prompts.prompts import *
+from .prompts.prompts import *
 from langchain_ollama import ChatOllama
-from agent.agent_tools import AgentTolls
-from tools.disciplina.get_disciplina import get_disciplina
-from tools.disciplina.get_plano_aulas import get_plano_aulas
-from tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
-from tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
-from tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
-from tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
-from tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
-from tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
+from .agent.agent_tools import AgentTools
+from .tools.disciplina.get_disciplina import get_disciplina
+from .tools.disciplina.get_plano_aulas import get_plano_aulas
+from .tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
+from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
+from .tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
+from .tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
+from .tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 
 tools = [
     get_disciplina, 
@@ -21,7 +21,7 @@ tools = [
     get_todas_disciplinas,
 ]
 
-agent = AgentTolls(LLM=ChatOllama, model="llama3.2", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
-question = "Traga informações sobre a disciplina fm cc 2"
+question = "Quais foram a médoa das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação?"
 agent.run(question=question)

@@ -5,9 +5,9 @@ from .get_todas_disciplinas import get_todas_disciplinas
 from ..utils.processar_json import processar_json
 from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
-from ..curso.get_todos_curriculos_curso import get_todos_curriculos_curso
+from ..curso.get_todos_curriculos_curso import get_curriculos
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 
@@ -34,7 +34,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         curriculo = curriculo['codigo_do_curriculo']
     else:
-        curriculos = get_todos_curriculos_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+        curriculos = get_curriculos(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         
         existe_curriculo = False
         todos_curriculos_disponiveis = []

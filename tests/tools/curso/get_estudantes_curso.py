@@ -16,33 +16,32 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é dos estudantes:
 
 Estudante (
-        nome_do_curso TEXT,
-        turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
-        codigo_do_curriculo INTEGER,
-        nome_do_campus TEXT,
-        estado_civil TEXT,
-        sexo TEXT,
-        forma_de_ingresso TEXT,
-        nacionalidade TEXT,
-        local_de_nascimento TEXT,
-        naturalidade TEXT,
-        cor TEXT,
-        deficiencias TEXT,
-        ano_de_conclusao_ensino_medio INTEGER,
-        tipo_de_ensino_medio TEXT,
-        politica_afirmativa TEXT,
-        cra REAL,
-        mc REAL,
-        iea REAL,
-        periodos_completados INTEGER,
-        prac_atualizado TEXT,
-        prac_renda_per_capita_ate REAL,
-        prac_deficiente TEXT --ENUM que pode ser "Sim" ou "Não"
+matricula_do_estudante TEXT,
+turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
+codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
+estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
+sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
+forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
+nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
+local_de_nascimento TEXT, Nome da cidade onde nasceu.
+naturalidade TEXT, -- Sigla do estado do estudante.
+cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
+deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
+ano_de_conclusao_ensino_medio INTEGER, 
+tipo_de_ensino_medio TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
+cra REAL, -- Coeficiente de rendimento acadêmico.
+mc REAL, -- Média de conclusão de curso.
+iea REAL, --Indice de eficiência acadêmica.
+periodos_completados INTEGER, 
+prac_renda_per_capita_ate REAL
 )
 
-Selecione o(s) atributo(s) necessários para responder a pergunta. Só retorne tudo se o usuário pedir informações gerais.
-Selecione tambem os atributos que voce escolheu para retornar no select.
-Gere apenas o comando SQL e mais nada!
+<ATENÇÂO>
+- Ignore o curso e o campus caso haja na pergunta (assuma que esses alunos já são o esperado).
+- Selecione apenas o atributo que o usuário perguntou para responder a pergunta na clausula WHERE.
+- NÃO use atributos da tabela que o usuários não forneceu. Use apenas o que ele forneceu.
+- Gere apenas o comando SQL e mais nada!
+</ATENÇÂO>
 
 Dado a tabela a acima, responda:
 "{pergunta_feita}"
@@ -58,7 +57,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         pergunta_feita: Perfeita feita pelo usuário.
 
     Returns:
-        Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo) e assim por diante.
+        Dicionário com informações como 'sexo', 'nacionalidades', 'idade' (míninma, máxima, média), 'estados' (siglas), renda_per_capita (quantidade de salário mínimo), tipo de escola, e assim por diante.
     """
 
     print(f"Tool get_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
@@ -123,6 +122,7 @@ def save_estudantes(data_json, db_name):
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS Estudante (
+        matricula_do_estudante TEXT,
         nome_do_curso TEXT,
         turno_do_curso TEXT,
         codigo_do_curriculo INTEGER,
@@ -147,24 +147,23 @@ def save_estudantes(data_json, db_name):
         periodos_completados INTEGER,
         prac_atualizado TEXT,
         prac_renda_per_capita_ate REAL,
-        prac_deficiente TEXT
+        deficiente TEXT
     )
     """)
 
     cursor.execute("DELETE FROM Estudante")
 
     for estudante in data_json:
-        # Convertendo a lista de deficiências e deficiências no formato texto adequado
-
         cursor.execute("""
         INSERT OR IGNORE INTO Estudante (
-            nome_do_curso, turno_do_curso, codigo_do_curriculo, nome_do_campus, estado_civil, sexo, situacao, 
+            matricula_do_estudante, nome_do_curso, turno_do_curso, codigo_do_curriculo, nome_do_campus, estado_civil, sexo, situacao, 
             motivo_de_evasao, periodo_de_evasao, forma_de_ingresso, periodo_de_ingresso, nacionalidade, 
             local_de_nascimento, naturalidade, cor, ano_de_conclusao_ensino_medio, 
             tipo_de_ensino_medio, politica_afirmativa, cra, mc, iea, periodos_completados, 
-            prac_atualizado, prac_renda_per_capita_ate, prac_deficiente
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            prac_atualizado, prac_renda_per_capita_ate, deficiente
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            estudante["matricula_do_estudante"],
             estudante["nome_do_curso"],
             estudante["turno_do_curso"],
             estudante["codigo_do_curriculo"],
@@ -189,7 +188,7 @@ def save_estudantes(data_json, db_name):
             estudante["periodos_completados"],
             estudante["prac_atualizado"],
             estudante["prac_renda_per_capita_ate"],
-            estudante["prac_deficiente"]
+            "Sim" if len(estudante["deficiencias"]) > 0 else "Não"
         ))
 
     conn.commit()

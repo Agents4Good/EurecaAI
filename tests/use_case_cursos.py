@@ -1,9 +1,7 @@
 from .prompts.prompts import *
 from .agent.agent_tools import AgentTools
-from langchain_openai import ChatOpenAI
 from langchain_ollama import ChatOllama
 from .tools.curso.get_curso import get_curso
-#from .tools.curso.get_cursos import get_cursos
 from .tools.curso.get_cursos import get_cursos
 from .tools.curso.get_estudantes_curso import get_estudantes
 
@@ -12,22 +10,6 @@ tools = [
     get_estudantes,
     get_cursos
 ]
-
-"""
-codigo_do_curso INTEGER,
-    descricao Text, -- Nome do curso
-    codigo_do_setor INTEGER,
-    nome_do_setor Text,
-    campus INTEGER, -- Usar número inteiro se informar o campus em representação romana
-    nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
-    turno Text, -- Turno do curso pode ser "MATUTINO", "VESPERTINO" E "NOTURNO"
-    periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
-    data_de_funcionamento Text, -- Date em formato de Texto que indica a data quando o curso foi criado YYYY-MM-DD HH:MM:SS.0 (usar horas, minutos e segundos como 0)
-    codigo_inep INTEGER,
-    modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
-    curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
-    ciclo_enade INTEGER -- De quantos em quantos períodos ocorre a prova do enade
-"""
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
@@ -43,6 +25,15 @@ agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0,
 #question = "Quantos cursos noturnos tem no campus de patos?"
 #question = "Quantos cursos noturnos tem na ufcg e que foram criados depois de 2007?"
 #question = "Quais são os curriculos atuais, turnos e código do inep de cada curso do campus de pombal?"
-question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"
+#question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"
+#question = "Quantas estudantes mulheres tem no curso de engenharia mecanica do campus de campina grande"
+#question = "Quantas estudantes mulheres tem CRA acima de 8,5 no curso de engenharia eletica do campus de campina grande"
+#question = "Existe algum deficiente no curso de ciencia da computação do campus de campina grande"
+#question = "Quantos estudantes que estudam durante a noite no campus de campina grande?"
+#question = "Existem estudantes que estudam durante a noite no campus de pombal?"
+#question = "Existem quantos estudantes casados e solteiros no curso de enhenharia de materiais do campus de campina grande?" # Erro
+#question = "Existem quantos estudantes de escola pública?"
+#question = "Quantos estudantes de escola pública existem no curso de medicina no campus de campina grande?"
+question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
 
 agent.run(question=question)
