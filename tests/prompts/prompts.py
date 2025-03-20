@@ -55,4 +55,5 @@ Recebe uma pergunta de um usuário e deve identificar se há menção de múltip
 Se houver mais de um curso, você deve reformular a pergunta para deixar claro que cada um é tratado separadamente.
 Reformule apenas adicionando a palavra 'curso' seguido do nome deste curso, faça isso para cada curso que você identificar.
 Apenas reformule a pergunta e **retorne apenas a nova versão da pergunta, sem explicações adicionais ou comentários**.
+IMPORTANTE: raciocine se na pergunta possui de fato algum nome de curso sendo perguntado, caso não tenha você NÃO DEVE MODIFICAR A PERGUNTA.
 """

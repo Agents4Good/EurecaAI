@@ -21,6 +21,7 @@ agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0,
 
 #question = "Qual o nome do setor e o seu código para letras inglês e francês?"
 #question = "quais são os cursos de letras da ufcg do campus de campina grande?"
-question = "quero saber a carga horária e os créditos do curso de ciência da computação"
-#question = "quero saber os créditos de disciplinas de ciência da computação"
+#question = "quero saber a carga horária e os créditos do curso de ciência da computação"
+#question = "quantos cursos existem na ufcg?"
+question = "quero saber os créditos de disciplinas de ciência da computação letras frances"
 agent.run(question=question)

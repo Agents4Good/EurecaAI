@@ -9,7 +9,8 @@ from .tools.curso.get_curso import get_curso
 from .tools.curso.get_cursos import get_cursos
 from .tools.curso.get_estudantes_curso import get_estudantes_curso
 from .tools.curso.get_todos_curriculos_curso import get_curriculos
-from .tools.curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
+from .tools.curso.get_carga_horaria import get_carga_horaria
+from .tools.curso.get_creditos import get_creditos
 from .prompts.prompts import *
 
 from langchain_nvidia_ai_endpoints import ChatNVIDIA
@@ -28,8 +29,8 @@ tools = [
     get_curso,
     get_cursos,
     get_estudantes_curso,
-    get_curriculos,
-    get_curriculo_mais_recente_curso,
+    get_carga_horaria,
+    get_creditos
 ]
 tool_node = ToolNode(tools)
 

@@ -1,4 +1,4 @@
-import uuid, json
+import uuid, json, getpass, os, re
 from typing import TypedDict, Annotated
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
@@ -7,25 +7,37 @@ from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
 from ..tools.utils.most_similar import get_most_similar
 from ..tools.curso.get_cursos import get_cursos
 from dotenv import load_dotenv
-load_dotenv()
 
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_core.prompts import PromptTemplate
+
+load_dotenv()
+
+template = """
+Você é um assistente inteligente que ajuda a reformular perguntas. 
+Recebe uma pergunta de um usuário e deve identificar se há menção de múltiplos cursos. 
+Se houver mais de um curso, você deve reformular a pergunta para deixar claro que cada um é tratado separadamente.
+Reformule apenas adicionando a palavra 'curso' seguido do nome deste curso, faça isso para cada curso que você identificar.
+Apenas reformule a pergunta e **retorne apenas a nova versão da pergunta, sem explicações adicionais ou comentários**.
+IMPORTANTE: raciocine se na pergunta possui de fato algum nome de curso sendo perguntado, caso não tenha você NÃO DEVE MODIFICAR A PERGUNTA.
+
+Pergunta: {question}
+"""
 
 def reduce_messages(left: list[AnyMessage], right: list[AnyMessage]) -> list[AnyMessage]:
-    # assign ids to messages that don't have them
     for message in right:
         if not message.id:
             message.id = str(uuid.uuid4())
-    # merge the new messages with the existing messages
+
     merged = left.copy()
     for message in right:
         for i, existing in enumerate(merged):
-            # replace any existing messages with the same id
             if existing.id == message.id:
                 merged[i] = message
                 break
         else:
-            # append any new messages to the end
             merged.append(message)
     return merged
 
@@ -50,12 +62,20 @@ class AgentTools:
     
 
     def processa_entrada_node(self, state: AgentState):
+        if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
+            os.environ["HUGGINGFACEHUB_API_TOKEN"] = getpass.getpass("Enter your token: ")
+
+        prompt_template = PromptTemplate(template=template, input_variables=["question"])
+
+        llm = HuggingFaceEndpoint(repo_id="maritaca-ai/sabia-7b", task="text-generation", temperature=0.1)
         messages = state["messages"]
-        model_extra = ChatOllama(model="gemma3", temperature=0)
-        messages = [SystemMessage(content=AGENTE_ENTRADA_PROMPT)] + messages
-        response = model_extra.invoke(messages)
+
+        llm_chain = prompt_template | llm
+        question = messages[0].content
+        response = llm_chain.invoke({"question": question})
+        response_text = re.sub(r"^Resposta:\s*", "", response.strip())
         human_msg_id = messages[-1].id
-        return {'messages': [HumanMessage(content=response.content, id=human_msg_id)]}
+        return {'messages': [HumanMessage(content=response_text, id=human_msg_id)]}
     
     
     def processa_entrada_rag_node(self, state: AgentState):
@@ -69,23 +89,29 @@ class AgentTools:
 
         top_cursos = [curso['nome'] for curso in top_cursos]
 
+        print(top_cursos)
+
         AGENTE_ENTRADA_PROMPT2 = f"""
         Você é um assistente inteligente que reformula perguntas para garantir clareza ao tratar múltiplos cursos.  
-        Recebe uma pergunta de um usuário e uma lista de cursos disponíveis.  
-        Se a pergunta mencionar múltiplos cursos, reformule-a para deixar claro que cada um deve ser tratado separadamente.  
+        Recebe uma pergunta de um usuário e uma lista de cursos disponíveis.
+        Se a pergunta mencionar múltiplos cursos, reformule-a para deixar claro que cada um deve ser tratado separadamente.
         Use a lista de cursos fornecida para garantir que a reformulação esteja correta e consistente com os cursos disponíveis.  
         Apenas reformule a pergunta e **retorne apenas a nova versão da pergunta, sem explicações adicionais ou comentários**.
         Modifique apenas o nome dos cursos na pergunta, não o objetivo dela.
 
         Lista de cursos disponíveis:
         {top_cursos}
+
+        IMPORTANTE: raciocine se na pergunta possui de fato algum nome de curso sendo perguntado, caso não tenha você NÃO DEVE MODIFICAR A PERGUNTA.
         """
 
-        model_extra = ChatOllama(model="gemma3", temperature=0)
+        #model_extra = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        model_extra = ChatOllama(model="llama3.1", temperature=0)
         if not messages or not isinstance(messages[0], SystemMessage):
             messages.insert(0, SystemMessage(content=AGENTE_ENTRADA_PROMPT2))
-        resposta = model_extra.invoke(messages)
-        return {"messages": [resposta.content]}
+        response = model_extra.invoke(messages)
+        human_msg_id = messages[-1].id
+        return {'messages': [HumanMessage(content=response.content, id=human_msg_id)]}
     
     
     def build(self):
