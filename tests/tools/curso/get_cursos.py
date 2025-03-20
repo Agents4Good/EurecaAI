@@ -21,7 +21,7 @@ Curso (
     nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
     turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral"
     periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
-    data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD 00:00:00.0" (usar esses zeros), deve converter em date
+    data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date
     codigo_inep INTEGER,
     modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
