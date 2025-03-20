@@ -180,6 +180,6 @@ def get_lista_cursos(nome_do_campus: Any = "") -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
-        return [{'codigo_do_curso': data['codigo_do_curso'], 'nome_do_curso': data['descricao']} for data in data_json]
+        return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

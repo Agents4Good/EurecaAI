@@ -43,6 +43,6 @@ agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0,
 #question = "Quantos cursos noturnos tem no campus de patos?"
 #question = "Quantos cursos noturnos tem na ufcg e que foram criados depois de 2007?"
 #question = "Quais são os curriculos atuais, turnos e código do inep de cada curso do campus de pombal?"
-question = "Quantos estudantes existem na UFCG no campo de Cuite?"
+question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"
 
 agent.run(question=question)

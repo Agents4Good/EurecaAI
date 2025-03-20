@@ -6,6 +6,7 @@ from ..curso.utils import get_curso_most_similar
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 import sqlite3
 import re
 
@@ -17,25 +18,25 @@ A seguinte tabela é dos estudantes:
 Estudante (
         nome_do_curso TEXT,
         turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
-        codigo_do_curriculo INTEGER, -- Ano do curriculo do curso que o aluno está participando.
-        nome_do_campus TEXT, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
-        estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
-        sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
-        forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-        nacionalidade TEXT, -- ENUM que pode ser "Brasileira" ou "Estrangeira".
-        local_de_nascimento TEXT, -- nome da cidade com todas as letras em maiúsculo.
-        naturalidade TEXT, -- Sigla do estado com duas letras e ambas maiusculas.
-        cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela"
-        deficiencias TEXT, -- ENUM que pode ser "Sim" ou "Não".
-        ano_de_conclusao_ensino_medio INTEGER, -- Ano em que o estudante concluiu o ensino médio.
-        tipo_de_ensino_medio TEXT, ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
-        politica_afirmativa TEXT, ENUM que pode ser "-" (sem cotas), "L1", "L2", "L5", "L6", "L9", "L10", "L13", "L14", "LB_PPI", "LB_Q", "PB_PCD", "LB_EP", "LI_PPI", "LI_Q", "LI_PCD", "LI_EP", "Bônus Estadual".
-        cra REAL, -- Valor que representa o Coeficiente de Rendimento Acadêmico do Estudante.
-        mc REAL, -- Valor que representa a média de conclusão do curso. 
-        iea REAL, -- Valor que representa o Indice de Eficiencia Acadêmica.
-        periodos_completados INTEGER, -- Quantos perídos o alunos já concluiu ou período em que o aluno está.
-        prac_atualizado TEXT, -- ENUM que pode ser "Sim" ou "Não".
-        prac_renda_per_capita_ate REAL, -- Valor que representa a renda do aluno em número de salários mínimos.
+        codigo_do_curriculo INTEGER,
+        nome_do_campus TEXT,
+        estado_civil TEXT,
+        sexo TEXT,
+        forma_de_ingresso TEXT,
+        nacionalidade TEXT,
+        local_de_nascimento TEXT,
+        naturalidade TEXT,
+        cor TEXT,
+        deficiencias TEXT,
+        ano_de_conclusao_ensino_medio INTEGER,
+        tipo_de_ensino_medio TEXT,
+        politica_afirmativa TEXT,
+        cra REAL,
+        mc REAL,
+        iea REAL,
+        periodos_completados INTEGER,
+        prac_atualizado TEXT,
+        prac_renda_per_capita_ate REAL,
         prac_deficiente TEXT --ENUM que pode ser "Sim" ou "Não"
 )
 
@@ -76,19 +77,27 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params["campus"] = dados_campus['campus']['codigo']
     
-    elif (nome_do_curso == "" and nome_do_campus != ""):
+    elif (nome_do_curso == "" and nome_do_campus == ""):
+        pass
+    else:
         return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
     
     response = requests.get(f'{URL_BASE}/estudantes', params=params)
 
     if response.status_code == 200:
         estudantes = json.loads(response.text)
+        print(len(estudantes))
         db_name = "estudantes_db.sqlite"
         save_estudantes(estudantes, db_name)
 
         model = ChatOllama(model="llama3.1", temperature=0)
-        response = model.invoke(prompt_sql_estudantes.format(pergunta_feita=pergunta_feita))        
+        #model = ChatOpenAI(model="gpt-4o", temperature=0)
+        prompt = prompt_sql_estudantes.format(pergunta_feita=pergunta_feita)
+        response = model.invoke(prompt)
+        print(prompt)
         sql = response.content
+
+        print(sql)
 
         result = execute_sql(sql, db_name=db_name)
         dados = [[] for _ in range(len(result))]
