@@ -21,7 +21,7 @@ tools = [
     get_todas_disciplinas,
 ]
 
-agent = AgentTolls(LLM=ChatOllama, model="llama3.2", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgentTolls(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "Traga informações sobre a disciplina fm cc 2"
 agent.run(question=question)

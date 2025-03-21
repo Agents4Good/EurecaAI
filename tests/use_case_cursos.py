@@ -14,7 +14,7 @@ tools = [
 ]
 
 """
-codigo_do_curso INTEGER,
+    codigo_do_curso INTEGER,
     descricao Text, -- Nome do curso
     codigo_do_setor INTEGER,
     nome_do_setor Text,
@@ -30,7 +30,7 @@ codigo_do_curso INTEGER,
 """
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
+agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_CURSOS_SQL)
 
 #question = "quais cursos da ufcg são de bacharelado curriculo?"
 #question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
@@ -43,6 +43,9 @@ agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0,
 #question = "Quantos cursos noturnos tem no campus de patos?"
 #question = "Quantos cursos noturnos tem na ufcg e que foram criados depois de 2007?"
 #question = "Quais são os curriculos atuais, turnos e código do inep de cada curso do campus de pombal?"
-question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"
+#question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"
+#question = "Quais são todos os cursos do campus Campina Grande?" 
+#question = "Quais são todos os cursos do campus 3" 
+question = "Traga todos os cursos do campus 1 com turno noturno?"
 
 agent.run(question=question)

@@ -11,7 +11,7 @@ tools = [
     get_periodo_mais_recente
 ]
 
-agent = AgentTolls(LLM=ChatOllama, model="llama3.2:3b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgentTolls(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "Quais são os campus da UFCG?"
 agent.run(question=question)

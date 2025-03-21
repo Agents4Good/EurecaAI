@@ -48,7 +48,7 @@ class AgentTools:
         message = self.model.invoke(messages)
         return {'messages': [message]}
     
-    
+    ## PROVAVELMENTE VAI SER EXCLUIDO
     def processa_entrada_rag_node(self, state: AgentState):
         messages = state["messages"]
         pergunta = messages[-1].content

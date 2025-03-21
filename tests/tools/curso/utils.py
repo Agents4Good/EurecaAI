@@ -2,6 +2,7 @@ from .get_cursos import get_lista_cursos
 from langchain_ollama import ChatOllama
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
+from ..utils.preprocess_text import get_most_similar_acronym
 
 model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}

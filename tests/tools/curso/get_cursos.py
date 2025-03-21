@@ -14,6 +14,7 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é dos cursos de graduação:
 
 Curso (
+    codigo_do_curso INTEGER -- código do curso
     nome_do_curso Text, -- Nome do curso
     codigo_do_setor INTEGER,
     nome_do_setor Text,
@@ -36,19 +37,22 @@ Dado a tabela a acima, responda:
 "{pergunta_feita}"
 """
 
-def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
+def get_cursos(pergunta_feita: str, nome_do_campus: str = "") -> list:
     """
     Use quando precisar de informações de curso(s) em geral envolvendo:
     Essa tool tem informações sobre o nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
 
     Args:
-        pergunta_feita: pergunta feita pelo usuário.
+        pergunta_feita: pergunta  em string feita pelo usuário.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
 
     Returns:
         Lista de cursos com 'codigo_do_curso' e 'descricao' que representa o nome e o turno do curso.
+
+    Observação:
+        Caso o campus informado seja um valor numérico, por exemplo, campus 1,2,3,..etc. O campus 1 é Campina Grande.
     """
-    
+    print("ENTREEII NA TOOOL GET_CURSOS !!!!")
     nome_do_campus=str(nome_do_campus)
     pergunta_feita=str(pergunta_feita)
     print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
@@ -73,8 +77,9 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
         model = ChatOllama(model="llama3.1", temperature=0)
         response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
+        print("REESS  ", response)
         sql = response.content
-        print(sql)
+        print("SQLLLL  ", sql)
         result = execute_sql(sql, db_name)
         dados = [[] for _ in range(len(result))]
 
@@ -89,7 +94,7 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
                         else:
                             dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
 
-        print(dados)
+        print("DADOS ", dados)
         return dados
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
