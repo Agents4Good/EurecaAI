@@ -26,7 +26,7 @@ def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
         return dados_curso
 
     params = {
-        'status-enum': 'ATIVOS',
+        'status': 'ATIVOS',
         'curso': dados_curso['curso']['codigo']
     }
     

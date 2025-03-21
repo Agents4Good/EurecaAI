@@ -2,7 +2,6 @@ from .get_cursos import get_lista_cursos
 from langchain_ollama import ChatOllama
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
-from ..utils.preprocess_text import get_most_similar_acronym
 
 model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
@@ -26,6 +25,7 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     cursos = get_lista_cursos(nome_do_campus=nome_do_campus)
     cursos_most_similar, top_k = get_most_similar(lista_a_comparar=cursos, dado_comparado=nome_do_curso, top_k=5, mapper=mapper_curso, limiar=0.5)
 
+    print("CURSOS  ", cursos_most_similar)
     if len(cursos_most_similar) == 0:
         #top_k = [top['nome'] for top in top_k]
         return {"AskHuman": "Não foi encontrado um curso com o nome o informado", "choice": top_k}

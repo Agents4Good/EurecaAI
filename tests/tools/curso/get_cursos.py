@@ -35,6 +35,10 @@ Gere apenas o comando SQL e mais nada!
 
 Dado a tabela a acima, responda:
 "{pergunta_feita}"
+
+**IMPORTANTE**
+- PENSE BEM NO COMANDO SQL QUE VOCÊ IRÁ GERAR
+- Pode ser  que seja necessário você utilizar comandos sql complexos com GROUP BY por exemplo.
 """
 
 def get_cursos(pergunta_feita: str, nome_do_campus: str = "") -> list:
@@ -83,6 +87,9 @@ def get_cursos(pergunta_feita: str, nome_do_campus: str = "") -> list:
         result = execute_sql(sql, db_name)
         dados = [[] for _ in range(len(result))]
 
+        print("RESULT SQL ", result)
+        print("DADOS ANTES  ", dados)
+
         match = re.search(r"SELECT (.*?) FROM", sql)
         if match:
             campos = [campo.strip() for campo in match.group(1).split(",")]
@@ -94,7 +101,7 @@ def get_cursos(pergunta_feita: str, nome_do_campus: str = "") -> list:
                         else:
                             dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
 
-        print("DADOS ", dados)
+        print("DADOS \n\n ", dados)
         return dados
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
@@ -173,7 +180,7 @@ def get_lista_cursos(nome_do_campus: Any = "") -> list:
     print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
     
     params = {
-        'status-enum':'ATIVOS',
+        'status':'ATIVOS',
     }
 
     if (nome_do_campus != ""):
@@ -185,6 +192,7 @@ def get_lista_cursos(nome_do_campus: Any = "") -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
+        print("DATAAA ", data_json)
         return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

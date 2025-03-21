@@ -84,7 +84,12 @@ ZERO_SHOT_PROMPT_CURSOS_SQL = """
         - get_estudantes (use essa tool para obter informações relevantes sobre os estudantes/alunos, passe o nome do curso vazio se não for fornecido)
 
      ***IMPORTANTE***
-     - VOCÊ SEMPRE DEVE MANDAR  A PERGUNTA DO USUÁRIO PARA SUA TOOL!
+     - SE A TOOL NÃO RESPONDER NADA, NÃO INVENTE RESPOSTAS.
+     - VOCÊ SEMPRE DEVE MANDAR  A PERGUNTA DO USUÁRIO PARA SUA TOOL, CASO O PARÂMETRO DA TOOL EXIJA ISSO
      - MANDE PARA A TOOL APENAS OS PARAMÊTROS NECESSÁRIOS
+     - SE NA PERGUNTA DO USUÁRIO NÃO INFORMAR OS PARÂMETROS NECESSÁRIOS PARA TOOL QUE VOCÊ ESCOLHER, VOCÊ DEVE CHAMAR A TOOL QUE PEGUE TODOS OS
+     DADOS QUE FOREM NECESSÁRIOS PARA QUE VOCÊ CONSIGA OBTER OS DADOS QUE PRECISA PARA A TOOL ESPECÍFICA (Por exemplo, se o usuário perguntar
+     algo de um curso específico e o que ele informar sobre esse curso não for suficiente para a chamada da tool, você deve chamar get_cursos, que
+     retornará todos os cursos e dentre esses cursos você será capaz de achar a informação necessária.)
 
 """

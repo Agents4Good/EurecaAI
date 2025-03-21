@@ -17,7 +17,7 @@ def get_cursos_ativos() -> list:
     """
     url_cursos = f'{base_url}/cursos'
     params = {
-        'status-enum':'ATIVOS',
+        'status':'ATIVOS',
         'campus': '1'
     }
     
@@ -27,7 +27,9 @@ def get_cursos_ativos() -> list:
 
     if response.status_code == 200:
         data_json = json.loads(response.text)
-        return [{'codigo_do_curso': data['codigo_do_curso'], 'nome': data['descricao']} for data in data_json]
+        print("DATAAA ", data_json)
+        return
+        #return [{'codigo_do_curso': data['codigo_do_curso'], 'nome': data['descricao']} for data in data_json]
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
@@ -49,7 +51,7 @@ def get_curso(codigo_do_curso: Any) -> list:
     print(f"Tool get_curso chamada com codigo_do_curso={codigo_do_curso}.")
     
     params = {
-        'status-enum': 'ATIVOS',
+        'status': 'ATIVOS',
         'curso': codigo_do_curso
     }
     url_cursos = f'{base_url}/cursos'
