@@ -82,8 +82,8 @@ def get_notas_turma_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome
         prompt = prompt_sql_disciplinas.format(pergunta_feita=pergunta_feita)
         response = model.invoke(prompt)
 
-        print(prompt)
         sql = response.content
+        sql = sql.lstrip('```sql\n').rstrip('```').strip()
         print(sql)
 
         result = execute_sql(sql, db_name=db_name)

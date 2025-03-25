@@ -5,8 +5,13 @@ from ..utils.base_url import URL_BASE
 from ..campus.get_campi import get_campi
 from ..campus.utils import get_campus_most_similar
 from langchain_ollama import ChatOllama
-import sqlite3
+from ..utils.execute_sql import execute_sql
 import re
+
+from sentence_transformers import SentenceTransformer
+import sqlite3
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 prompt_sql_cursos = """
 Você é um agente especialista em gerar comando SQL!
@@ -31,6 +36,12 @@ Curso (
 Selecione o(s) atributo(s) necessários para responder a pergunta (descricao (nome) do curso seria obrigatório voce trazer). Só retorne tudo se o usuário pedir informações gerais.
 Selecione tambem os atributos que voce escolheu para retornar no select e traga sempre o nome do curso no select.
 Gere apenas o comando SQL e mais nada!
+
+<ATENÇÂO>
+- Use operadores matemáticos do SQL se o usuário perguntar algo quantidicadores como MIN, MAX, COUNT, SUM, AVERAGE, dentre outros.
+- Use a clausula WHERE se precisar. 
+- Gere apenas UM comando SQL que reponda toda a pergunta.
+</ATENÇÂO>
 
 Dado a tabela a acima, responda:
 "{pergunta_feita}"
@@ -74,11 +85,16 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
         response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
         sql = response.content
+        sql = sql.lstrip('```sql\n').rstrip('```').strip()
         print(sql)
+        atributos_mais_similar_tabela_curso(pergunta=pergunta_feita)
+
+
         result = execute_sql(sql, db_name)
         dados = [[] for _ in range(len(result))]
-
         match = re.search(r"SELECT (.*?) FROM", sql)
+
+
         if match:
             campos = [campo.strip() for campo in match.group(1).split(",")]
             for r in range(len(result)):
@@ -88,12 +104,53 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
                             dados[r].append(f"{campos[i].strip()}: A cada {result[r][i]} períodos")
                         else:
                             dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
-
-        print(dados)
         return dados
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
     
+
+def get_lista_cursos(nome_do_campus: Any = "") -> list:
+    """
+    Busca por todos os cursos da UFCG por campus, apenas o código do curos e o nome do curso.
+    Usar apenas quando for perguntado sobre o código do curso.
+    """
+    
+    nome_do_campus=str(nome_do_campus)
+    print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
+    
+    params = {
+        'status-enum':'ATIVOS',
+    }
+
+    if (nome_do_campus != ""):
+        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+        params['campus'] = dados_campus["campus"]["codigo"]
+    
+    url_cursos = f'{URL_BASE}/cursos'
+    response = requests.get(url_cursos, params=params)
+
+    if response.status_code == 200:
+        data_json = json.loads(response.text)
+        return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def save_db(data_json, db_name):
     """Salva os cursos em um banco de dados SQLite."""
     conn = sqlite3.connect(db_name)
@@ -145,41 +202,38 @@ def save_db(data_json, db_name):
     conn.commit()
     conn.close()
 
-def execute_sql(sql: str, db_name: str):
-    conn = sqlite3.connect(db_name)
-    cursor = conn.cursor()
 
-    try:
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        conn.close()
-        return results
-    except sqlite3.Error as e:
-        conn.close()
-        return [{"error": str(e)}]
 
-def get_lista_cursos(nome_do_campus: Any = "") -> list:
-    """
-    Busca por todos os cursos da UFCG por campus, apenas o código do curos e o nome do curso.
-    Usar apenas quando for perguntado sobre o código do curso.
-    """
-    
-    nome_do_campus=str(nome_do_campus)
-    print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
-    
-    params = {
-        'status-enum':'ATIVOS',
-    }
 
-    if (nome_do_campus != ""):
-        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-        params['campus'] = dados_campus["campus"]["codigo"]
-    
-    url_cursos = f'{URL_BASE}/cursos'
-    response = requests.get(url_cursos, params=params)
+attributes = """
+nome_do_curso Text, -- Nome do curso;
+codigo_do_setor INTEGER, --;
+nome_do_setor Text, --;
+campus INTEGER, -- Usar número inteiro se informar o campus em representação romana;
+nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal";
+turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral";
+periodo_de_inicio REAL, -- período em que o curso foi criado/fundado;
+data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date;
+codigo_inep INTEGER, -- ;
+modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA";
+curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada;
+ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
+"""
 
-    if response.status_code == 200:
-        data_json = json.loads(response.text)
-        return [{'codigo_do_curso': data['codigo_do_curso'], 'descricao': data['descricao']} for data in data_json]
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+def atributos_mais_similar_tabela_curso(pergunta: str) -> list:
+    atributos_split = [atributo.replace("_", " ") for atributo in attributes.split(";")]
+    sentence_transformers = SentenceTransformer("all-MiniLM-L6-v2")
+
+    embeddings_pergunta = sentence_transformers.encode(pergunta).reshape(1, -1)
+    embeddings_atributo = sentence_transformers.encode(atributos_split)
+    similaridades = cosine_similarity(embeddings_pergunta, embeddings_atributo).flatten()
+    top_indices = np.argsort(similaridades)[::-1]
+
+    tops = [f"atributo: {atributos_split[idx].split('--')[0]} tem similaridade de {similaridades[idx]:.2f}" for idx in top_indices]
+
+    for i in tops:
+        print(i)
+
+    model = ChatOllama(model="llama3.1", temperature=0)
+    response = model.invoke(f"""Sabendo que tenho essa tabela n\n {attributes} \n\n e esses atributos \n\n {tops} tem seus devidos nomes e probabilidades para responder a pergunta. \n\n Gere um comando SQL que responda a seguinte pergunta {pergunta}. Gere apenas o comando SQL que responda a pergunta e mais nada!""")
+    print(response.content)

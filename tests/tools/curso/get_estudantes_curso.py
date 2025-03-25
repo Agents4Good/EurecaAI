@@ -9,6 +9,9 @@ from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
 import sqlite3
 import re
+from sentence_transformers import SentenceTransformer
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 prompt_sql_estudantes = """
 Você é um agente especialista em gerar comando SQL!
@@ -40,6 +43,8 @@ prac_renda_per_capita_ate REAL
 - Ignore o curso e o campus caso haja na pergunta (assuma que esses alunos já são o esperado).
 - Selecione apenas o atributo que o usuário perguntou para responder a pergunta na clausula WHERE.
 - NÃO use atributos da tabela que o usuários não forneceu. Use apenas o que ele forneceu.
+- Geralmente voce vai usar operadores SQL.
+- Se selecionar atributos para o SQL não traga tudo 
 - Gere apenas o comando SQL e mais nada!
 </ATENÇÂO>
 
@@ -93,23 +98,32 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         #model = ChatOpenAI(model="gpt-4o", temperature=0)
         prompt = prompt_sql_estudantes.format(pergunta_feita=pergunta_feita)
         response = model.invoke(prompt)
-        print(prompt)
-        sql = response.content
 
-        print(sql)
-
-        result = execute_sql(sql, db_name=db_name)
         dados = [[] for _ in range(len(result))]
 
-        match = re.search(r"SELECT (.*?) FROM", sql)
-        if match:
-            campos = [campo.strip() for campo in match.group(1).split(",")]
-            for r in range(len(result)):
-                for i in range(len(campos)):
-                    if i < len(result[r]):
-                        dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
+        sql = response.content
+        print(sql)
+        atributos_mais_similar_tabela_estudante(pergunta=pergunta_feita)
+
+        selects = re.findall(r'SELECT.*?;', sql)
+
+        resultado = []
+        for select in selects:
+
+            result = execute_sql(select, db_name=db_name)
+            dados = [[] for _ in range(len(result))]
+
+            match = re.search(r"SELECT (.*?) FROM", select)
+            if match:
+                campos = [campo.strip() for campo in match.group(1).split(",")]
+                for r in range(len(result)):
+                    for i in range(len(campos)):
+                        if i < len(result[r]):
+                            dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
+            
+            resultado.append(f"sql={sql} resultado={dados}")
         
-        return dados
+        return resultado
 
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
@@ -207,4 +221,36 @@ def execute_sql(sql: str, db_name: str):
     except sqlite3.Error as e:
         conn.close()
         return [{"error": str(e)}]
-    
+
+attributes = """
+nome_do_curso Text, -- Nome do curso;
+codigo_do_setor INTEGER, --;
+nome_do_setor Text, --;
+campus INTEGER, -- Usar número inteiro se informar o campus em representação romana;
+nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal";
+turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral";
+periodo_de_inicio REAL, -- período em que o curso foi criado/fundado;
+data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date;
+codigo_inep INTEGER, -- ;
+modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA";
+curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada;
+ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
+"""
+
+def atributos_mais_similar_tabela_estudante(pergunta: str) -> list:
+    atributos_split = [atributo.replace("_", " ") for atributo in attributes.split(";")]
+    sentence_transformers = SentenceTransformer("all-MiniLM-L6-v2")
+
+    embeddings_pergunta = sentence_transformers.encode(pergunta).reshape(1, -1)
+    embeddings_atributo = sentence_transformers.encode(atributos_split)
+    similaridades = cosine_similarity(embeddings_pergunta, embeddings_atributo).flatten()
+    top_indices = np.argsort(similaridades)[::-1]
+
+    tops = [f"atributo: {atributos_split[idx].split('--')[0]} tem similaridade de {similaridades[idx]:.2f}" for idx in top_indices]
+
+    for i in tops:
+        print(i)
+
+    model = ChatOllama(model="llama3.1", temperature=0)
+    response = model.invoke(f"""Sabendo que tenho essa tabela n\n {attributes} \n\n e esses atributos \n\n {tops} tem seus devidos nomes e probabilidades para responder a pergunta. \n\n Gere um comando SQL que responda a seguinte pergunta {pergunta}. Gere apenas o comando SQL que responda a pergunta e mais nada!""")
+    print(response.content)

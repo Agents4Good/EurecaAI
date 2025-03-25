@@ -23,5 +23,5 @@ tools = [
 
 agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
-question = "Quais foram a médoa das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação?"
+question = "Quais foram a média das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação no periodo 2023.2?"
 agent.run(question=question)
