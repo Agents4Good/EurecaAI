@@ -1,5 +1,5 @@
 from .prompts.prompts import *
-from .agent.agent_tools import AgentTools
+from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
 from .tools.curso.get_curso import get_curso
 from .tools.curso.get_cursos import get_cursos
@@ -12,7 +12,7 @@ tools = [
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
+agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_CURSOS_SQL)
 
 #question = "quais cursos da ufcg são de bacharelado curriculo?"
 #question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
@@ -40,6 +40,6 @@ agent = AgentTools(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0,
 #question = "Existem quantos estudantes casados e solteiros no curso de enhenharia de materiais do campus de campina grande?" # Erro
 #question = "Existem quantos estudantes de escola pública?"
 #question = "Quantos estudantes de escola pública existem no curso de medicina no campus de campina grande?"
-#question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
-question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
+question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
+#question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 agent.run(question=question)

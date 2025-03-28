@@ -99,7 +99,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         prompt = prompt_sql_estudantes.format(pergunta_feita=pergunta_feita)
         response = model.invoke(prompt)
 
-        dados = [[] for _ in range(len(result))]
+        dados = [[] for _ in range(len(estudantes))]
 
         sql = response.content
         print(sql)

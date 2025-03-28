@@ -14,7 +14,7 @@ load_dotenv()
 
 model = ChatOpenAI(model="gpt-4o")
 #model = ChatNVIDIA(model="meta/llama-3.1-405b-instruct")
-#model = ChatOllama(model="llama3.2")
+#model = ChatOllama(model="llama3.1")
 
 def supervisor_node(state):
     """
