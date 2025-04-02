@@ -54,7 +54,7 @@ class AgentTools:
     
     def exit_node(self, state: AgentState):
         messages = state["messages"]
-
+        
         question = messages[0].content if isinstance(messages[0], HumanMessage) else ""
         '''tool_responses = [
             str(msg.content) if isinstance(msg.content, list) else msg.content
