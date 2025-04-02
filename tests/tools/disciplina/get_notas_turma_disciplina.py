@@ -14,11 +14,11 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é de EstudanteDisciplina:
 
 EstudanteDisciplina (
-matricula_do_estudante TEXT, -- Matrícula do estudante.
-turma INTEGER, -- Número da turma da disciplina.
-status TEXT, -- Situação do estudantes e que o Enum que pode ser "Aprovado", "Trancado", "Reprovado", "Reprovado por Falta".
-media_final REAL, Nota do aluno na disciplina (sar se pedir informações de notas e médias).
-dispensou TEXT -- Enum que pode ser "Sim" ou "Não".
+matricula_do_estudante TEXT, -- Matrícula do estudante (usar se informou a matrícula do estudante).
+turma INTEGER, -- Número da turma da disciplina (usar se informou o informou a palavra "turma" seguida do número ou código da turma). Exemplo, 1, 2, ..., 9.
+status TEXT, -- Situação do estudantes e que o Enum que pode ser "Aprovado", "Trancado", "Reprovado por Nota", "Reprovado por Falta". E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use "Reprovado por Nota" OR Reprovado por Falta".
+media_final REAL, Nota do aluno na disciplina (usar se pedir informações de notas e médias).
+dispensou TEXT -- Enum que pode ser "Sim" ou "Não". (usar se perguntar sobre dispensas)
 )
 
 <ATENÇÂO>
@@ -136,7 +136,7 @@ def save_disciplinas(data_json, db_name):
             disciplina["nome_da_disciplina"],
             disciplina["periodo"],
             disciplina["turma"],
-            disciplina["status"],
+            "Reprovado por Nota" if disciplina["status"] == "Reprovado" else disciplina["status"],
             disciplina["tipo"],
             disciplina["media_final"] if type(disciplina["media_final"]) == float else 0,
             "Sim" if (disciplina["dispensas"] and len(disciplina["dispensas"] > 0)) else "Não"
