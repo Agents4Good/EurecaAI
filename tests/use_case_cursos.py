@@ -37,9 +37,13 @@ agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=
 #question = "Existe algum deficiente no curso de ciencia da computação do campus de campina grande"
 #question = "Quantos estudantes que estudam durante a noite no campus de campina grande?"
 #question = "Existem estudantes que estudam durante a noite no campus de pombal?"
-#question = "Existem quantos estudantes casados e solteiros no curso de enhenharia de materiais do campus de campina grande?" # Erro
+question = "Existem quantos estudantes casados e solteiros no curso de enhenharia de materiais do campus de campina grande?" # Erro
 #question = "Existem quantos estudantes de escola pública?"
 #question = "Quantos estudantes de escola pública existem no curso de medicina no campus de campina grande?"
-question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
+#question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
+#question = "Quantos cursos integral tem no campus de patos?"
+#question  = "Quais os cursos de graduação noturnos do campus I?"
+#question= "Traga todos os cursos do setor de computação"
+#question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciatura do campus 1?"
 agent.run(question=question)

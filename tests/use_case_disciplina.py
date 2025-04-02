@@ -24,5 +24,5 @@ tools = [
 agent = AgenteDisciplinas(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
 question = "Quais foram a média das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação no periodo 2023.2?"
-question = "Qual o código da disciplina fmcc2 do curso ciência da computação?"
+question = "Qual são os assuntos de EDA do curso ciência da computação?"
 agent.run(question=question)
