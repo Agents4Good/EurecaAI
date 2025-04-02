@@ -1,8 +1,8 @@
-import uuid, json
+import uuid, json, getpass, os, re
 from typing import TypedDict, Annotated
 from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
-from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage
+from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
 from ..tools.utils.most_similar import get_most_similar
 from ..tools.curso.get_cursos import get_lista_cursos
@@ -10,6 +10,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
+#from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from langchain_core.prompts import PromptTemplate
 
 def reduce_messages(left: list[AnyMessage], right: list[AnyMessage]) -> list[AnyMessage]:
     # assign ids to messages that don't have them
@@ -46,47 +49,55 @@ class AgentTools:
         if self.prompt:
             messages = [SystemMessage(content=self.prompt)] + messages
         message = self.model.invoke(messages)
-        return {'messages': [message]}
+        return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
     
     
-    def processa_entrada_rag_node(self, state: AgentState):
+    def exit_node(self, state: AgentState):
         messages = state["messages"]
-        pergunta = messages[-1].content
+        
+        question = messages[0].content if isinstance(messages[0], HumanMessage) else ""
+        '''tool_responses = [
+            str(msg.content) if isinstance(msg.content, list) else msg.content
+            for msg in messages if isinstance(msg, ToolMessage) and msg.content
+        ]'''
+        tool_responses = [
+            msg.content for msg in messages
+            if isinstance(msg, ToolMessage) and msg.content not in ("", "[]", "[[]]") and msg.content != []
+        ]
+        #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
+        local_model = ChatOllama(model="deepseek-r1:8b", temperature=0)
+        response = local_model.invoke(
+            f"""
+            Pergunta do usuário:
+            {question}
+            
+            Respostas encontradas pelas ferramentas:
+            {'\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."}
+            
+            Baseado nas respostas das ferramentas, faça uma interpretação para verificar se elas respondem de forma geral à pergunta do usuário. Elas não precisam responder de forma exata, só que façam sentido com a pergunta no geral.
+            - Se não, informe que não foi possível encontrar uma resposta satisfatória.
+            - Se sim, o que você deve fazer então é gerar uma resposta final clara e coesa com base nas respostas das ferramentas, você deve responder apenas com essa resposta final gerada e mais nada além disso. E não mencione que foi baseado nas ferramentas e sim nas informações que você tem à disposição.
+            - Importante: se tiver nenhuma resposta encontrada pelas ferramentas, náo tente responder a pergunta do usuário, apenas informe que não foi possível encontrar uma resposta satisfatória.
 
-        cursos = get_lista_cursos()
-        _, top_cursos = get_most_similar(lista_a_comparar=cursos, dado_comparado=pergunta, top_k=5, mapper=mapper_curso, limiar=0.5)
+            Sempre responda seguindo o modelo abaixo para a sua resposta final.
 
-        top_cursos = [curso['nome'] for curso in top_cursos]
-
-        AGENTE_ENTRADA_PROMPT2 = f"""
-        Você é um assistente inteligente que reformula perguntas para garantir clareza ao tratar múltiplos cursos.  
-        Recebe uma pergunta de um usuário e uma lista de cursos disponíveis.  
-        Se a pergunta mencionar múltiplos cursos, reformule-a para deixar claro que cada um deve ser tratado separadamente.  
-        Use a lista de cursos fornecida para garantir que a reformulação esteja correta e consistente com os cursos disponíveis.  
-        Apenas reformule a pergunta e **retorne apenas a nova versão da pergunta, sem explicações adicionais ou comentários**.
-        Modifique apenas o nome dos cursos na pergunta, não o objetivo dela.
-
-        Lista de cursos disponíveis:
-        {top_cursos}
-        """
-
-        model_extra = ChatOllama(model="gemma3", temperature=0)
-        if not messages or not isinstance(messages[0], SystemMessage):
-            messages.insert(0, SystemMessage(content=AGENTE_ENTRADA_PROMPT2))
-        resposta = model_extra.invoke(messages)
-        human_msg_id = messages[-1].id
-        return {"messages": [HumanMessage(content=resposta.content, id=human_msg_id)]}
+            <RESPOSTA>resposta final</RESPOSTA>
+            """
+        )
+        return {'messages': [AIMessage(content=response.content)]}
     
     
     def build(self):
         workflow = StateGraph(AgentState)
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
-        workflow.add_edge(START, "agent")
-        workflow.add_conditional_edges("agent", self.should_continue, ["tools", END])
+        workflow.add_node("exit", self.exit_node)
+        workflow.add_edge(START, "input")
+        workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
+        workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
+        workflow.add_edge("exit", END)
         return workflow.compile()
 
         
@@ -95,7 +106,7 @@ class AgentTools:
         last_message = messages[-1]
         if last_message.tool_calls:
             return "tools"
-        return END
+        return "exit"
     
     
     def extract_tool_calls(self, response):
@@ -118,7 +129,5 @@ class AgentTools:
     
     def run(self, question: str):
         thread = {"configurable": {"thread_id": "1"}}
-        '''for chunk in self.app.stream({"messages": [("human", question)]}, thread, stream_mode="values"):
-            chunk["messages"][-1].pretty_print()'''
-        for chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
-            chunk["messages"][-1].pretty_print()
+        for message_chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
+            message_chunk["messages"][-1].pretty_print()

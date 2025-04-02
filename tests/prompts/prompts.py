@@ -30,8 +30,8 @@ ZERO_SHOT_PROMPT1 = """
 
         Suas tools são estritamente essas:
         
-        - get_curso (use essa tool para obter informações relevantes de apenas um curso, como nome do setor e código, turno, período/ano de origem, inep, etc)
-        - get_cursos (use essa tool para obter informações específicas de todos os cursos fornecidos)
+        - get_curso (use essa tool para obter informações relevantes de cada curso especificamente, como nome do setor e código, turno, período/ano de origem, inep, etc)
+        - get_cursos (use essa tool para obter informações relevantes de todos os cursos em geral)
         - get_estudantes (use essa tool para obter informações relevantes sobre os estudantes/alunos, passe o nome do curso vazio se não for fornecido)
 
         **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
@@ -53,11 +53,9 @@ ZERO_SHOT_PROMPT_CURSOS_SQL = """
         
      Suas tools são estritamente:
      
-        - get_estudantes (obtém informações relevantes sobre os estudantes/alunos)
         - get_curso (obtém informações relevantes de apenas um curso, como nome do setor e código, turno, período/ano de origem, inep, etc)
         - get_cursos (obtém informações específicas de todos os cursos fornecidos, os argumentos dessa tool são a pergunta do usuário e o nome do campus).
-        - get_curriculo_mais_recente_curso( obtém o currículo mais recente de um curso específico)
-        - get_curriculos (obtém todos os currículos de um curso, ou seja, a grade curricular do curso)
+        - get_estudantes (obtém informações relevantes sobre os estudantes/alunos)
 
      ***IMPORTANTE***
      - SE A TOOL NÃO RESPONDER NADA, NÃO INVENTE RESPOSTAS.

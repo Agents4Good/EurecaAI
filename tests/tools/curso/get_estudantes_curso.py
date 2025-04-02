@@ -19,32 +19,32 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é dos estudantes:
 
 Estudante (
-matricula_do_estudante TEXT,
-turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
-codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
-estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
-sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
-forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-local_de_nascimento TEXT, Nome da cidade onde nasceu.
-naturalidade TEXT, -- Sigla do estado do estudante.
-cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
-deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
-ano_de_conclusao_ensino_medio INTEGER, 
-tipo_de_ensino_medio TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
-cra REAL, -- Coeficiente de rendimento acadêmico.
-mc REAL, -- Média de conclusão de curso.
-iea REAL, --Indice de eficiência acadêmica.
-periodos_completados INTEGER, 
-prac_renda_per_capita_ate REAL
+"matricula_do_estudante" TEXT,
+"turno_do_curso" TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
+"codigo_do_curriculo" INTEGER, -- curriculo do aluno no curso.
+"estado_civil" TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
+"sexo" TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
+"forma_de_ingresso" TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
+"nacionalidade" TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
+"local_de_nascimento" TEXT, Nome da cidade onde nasceu.
+"naturalidade" TEXT, -- Sigla do estado do estudante.
+"cor" TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
+"deficiente" TEXT, -- Enum que pode ser "Sim" ou "Não".
+"ano_de_conclusao_ensino_medio" INTEGER, 
+"tipo_de_ensino_medio" TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
+"cra" REAL, -- Coeficiente de rendimento acadêmico.
+"mc" REAL, -- Média de conclusão de curso.
+"iea" REAL, --Indice de eficiência acadêmica.
+"periodos_completados" INTEGER, 
+"prac_renda_per_capita_ate" REAL
 )
 
 <ATENÇÂO>
 - Ignore o curso e o campus caso haja na pergunta (assuma que esses alunos já são o esperado).
 - Selecione apenas o atributo que o usuário perguntou para responder a pergunta na clausula WHERE.
 - NÃO use atributos da tabela que o usuários não forneceu. Use apenas o que ele forneceu.
-- Geralmente voce vai usar operadores SQL.
-- Se selecionar atributos para o SQL não traga tudo 
+- Você sempre vai usar operadores SQL.
+- Preste atenção ao nome dos atributos na tabela, você não deve errar o nome do atributo que for utilizar na consulta sql.
 - Gere apenas o comando SQL e mais nada!
 </ATENÇÂO>
 
@@ -75,6 +75,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
     
     if (nome_do_curso != "" and nome_do_campus != ""):
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+        print(dados_curso)
         params["curso"] = dados_curso['curso']['codigo']
     
     elif (nome_do_curso == "" and nome_do_campus != ""):
@@ -99,7 +100,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         prompt = prompt_sql_estudantes.format(pergunta_feita=pergunta_feita)
         response = model.invoke(prompt)
 
-        dados = [[] for _ in range(len(estudantes))]
+        #dados = [[] for _ in range(len(estudantes))]
 
         # sql = response.content
         # print(sql)
@@ -131,10 +132,12 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
         selects = re.findall(r'SELECT.*?;', sql)
 
         resultado = []
+        print(selects)
         for select in selects:
 
             result = execute_sql(select, db_name=db_name)
             dados = [[] for _ in range(len(result))]
+            print(result)
 
             match = re.search(r"SELECT (.*?) FROM", select)
             if match:
@@ -144,8 +147,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
                         if i < len(result[r]):
                             dados[r].append(f"{campos[i].strip()}: {result[r][i]}")
             
-            resultado.append(f"sql={sql} resultado={dados}")
-        
+            resultado.append(f"sql={select} resultado={dados}")
         return resultado
 
     else:

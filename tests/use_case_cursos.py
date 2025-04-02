@@ -1,34 +1,27 @@
 from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from .tools.curso.get_curso import get_curso
 from .tools.curso.get_cursos import get_cursos
 from .tools.curso.get_estudantes_curso import get_estudantes
 
 tools = [
     get_curso,
-    get_estudantes,
-    get_cursos
+    get_cursos,
+    get_estudantes
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_CURSOS_SQL)
+agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
-#question = "quais cursos da ufcg são de bacharelado curriculo?"
-#question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
-#question = "Quantos cursos existem no campus de campina grande?"
-#question = "Qual é o código do curso de ciencia da computação?"
+question = "quais são os cursos em geral que tiveram o currículo renovado a partir de 2010?"
 #question = "Me fale quais foram os cursos que foram criados desde 2010"
 #question = "Quais são os cursos de gaduacao do campus de sume?"
 #question = "Quantos cursos diurnos tem no campus de patos?"
 #question = "Quantos cursos de turno integral tem no campus de patos?"
 #question = "Quantos cursos noturnos tem no campus de patos?"
-#question = "Quantos cursos noturnos tem na ufcg e que foram criados depois de 2007?"
-#question = "Quais são os curriculos atuais, turnos e código do inep de cada curso do campus de pombal?"
-#question = "Quais cursos de graduação estão disponíveis no campus de Campina Grande?"
-#question = "Qual é o turno do curso de Medicina?"
 
-#question = "Em que ano começou o curso de Arquitetura e Urbanismo?"
 #question = "O curso de Engenharia Elétrica é oferecido em qual campus?"
 
 #question = "Quais são os cinco estudantes com maior cra do curso de ciência da computação do campus campina grande?"

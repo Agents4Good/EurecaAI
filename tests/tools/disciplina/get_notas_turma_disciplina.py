@@ -26,6 +26,7 @@ dispensou TEXT -- Enum que pode ser "Sim" ou "Não".
 - Selecione apenas o atributo da tabela que o usuário perguntou para responder a pergunta na clausula WHERE.
 - NÃO use atributos da tabela que o usuário não forneceu. Use apenas o que ele forneceu.
 - Gere apenas o comando SQL e mais nada!
+- Gere o comando SQL com a sintaxe correta, preste atenção na sintaxa!
 </ATENÇÂO>
 
 Dado a tabela a acima, responda: 
