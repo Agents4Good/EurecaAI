@@ -25,6 +25,7 @@ dispensou TEXT -- Enum que pode ser "Sim" ou "Não".
 - Ignore o a discipliina, curso e o campus caso haja na pergunta (assuma que esses estudantes já são o esperado).
 - Selecione apenas o atributo da tabela que o usuário perguntou para responder a pergunta na clausula WHERE.
 - NÃO use atributos da tabela que o usuário não forneceu. Use apenas o que ele forneceu.
+- Gere o comando SQL com a sintexe SQL correta para o PostGreSQL. Preste atenção na sintaxe do comando SQL!
 - Gere apenas o comando SQL e mais nada!
 </ATENÇÂO>
 
