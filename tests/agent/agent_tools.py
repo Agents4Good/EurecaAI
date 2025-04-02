@@ -11,7 +11,7 @@ load_dotenv()
 
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
-from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+#from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 
 def reduce_messages(left: list[AnyMessage], right: list[AnyMessage]) -> list[AnyMessage]:
