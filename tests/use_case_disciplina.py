@@ -32,4 +32,5 @@ question = "Quantas pessoas reprovaram por nota na disciplina de tc do periodo 2
 question = "Quantas pessoas reprovaram por falta a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 question = "Quantas pessoas reprovaram a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 
+question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
 agent.run(question=question)

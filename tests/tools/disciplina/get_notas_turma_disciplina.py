@@ -7,6 +7,8 @@ from ..utils.base_url import URL_BASE
 import sqlite3
 from langchain_ollama import ChatOllama
 import re
+from faker import Faker
+faker = Faker('pt_BR')
 
 prompt_sql_disciplinas = """
 Você é um agente especialista em gerar comando SQL!
@@ -14,6 +16,7 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é de EstudanteDisciplina:
 
 EstudanteDisciplina (
+nome_do_estudante TEXT, -- nome do estudante
 matricula_do_estudante TEXT, -- Matrícula do estudante (usar se informou a matrícula do estudante).
 turma INTEGER, -- Número da turma da disciplina (usar se informou o informou a palavra "turma" seguida do número ou código da turma). Exemplo, 1, 2, ..., 9.
 status TEXT, -- Situação do estudantes e que o Enum que pode ser "Aprovado", "Trancado", "Reprovado por Nota", "Reprovado por Falta". E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use "Reprovado por Nota" OR Reprovado por Falta".
@@ -110,6 +113,7 @@ def save_disciplinas(data_json, db_name):
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS EstudanteDisciplina (
+        nome_do_estudante TEXT,
         matricula_do_estudante TEXT,
         codigo_da_disciplina INTEGER,
         nome_da_disciplina TEXT,
@@ -125,12 +129,14 @@ def save_disciplinas(data_json, db_name):
     cursor.execute("DELETE FROM EstudanteDisciplina")
 
     for disciplina in data_json:
+        Faker.seed(int(disciplina["matricula_do_estudante"]))
         print(disciplina["media_final"])
         cursor.execute("""
         INSERT OR IGNORE INTO EstudanteDisciplina (
-            matricula_do_estudante, codigo_da_disciplina, nome_da_disciplina, periodo, turma, status, tipo, media_final, dispensou
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            nome_do_estudante, matricula_do_estudante, codigo_da_disciplina, nome_da_disciplina, periodo, turma, status, tipo, media_final, dispensou
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            faker.name(),
             disciplina["matricula_do_estudante"],
             disciplina["codigo_da_disciplina"],
             disciplina["nome_da_disciplina"],

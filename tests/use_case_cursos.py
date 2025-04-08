@@ -1,7 +1,6 @@
 from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
-from langchain_openai import ChatOpenAI
 from .tools.curso.get_curso import get_curso
 from .tools.curso.get_cursos import get_cursos
 from .tools.curso.get_estudantes_curso import get_estudantes
@@ -39,4 +38,12 @@ question = "Existem quantos estudantes casados e solteiros no curso de enhenhari
 #question  = "Quais os cursos de graduação noturnos do campus I?"
 #question= "Traga todos os cursos do setor de computação"
 #question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciatura do campus 1?"
+question = "Qual é o grau do curso de Matemática?"
+question = "Em que campus é oferecido o curso de História?"
+question = "Qual é o turno do curso de Geografia?"
+question = "O curso de Química é oferecido em qual modalidade acadêmica?"
+question = "O curso de Ciências Sociais está disponível em qual campus?"
+question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
+question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
+question = "Os cursos de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
 agent.run(question=question)

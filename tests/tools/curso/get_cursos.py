@@ -41,7 +41,6 @@ Gere apenas o comando SQL e mais nada!
 <ATENÇÂO>
 - Use operadores matemáticos do SQL se o usuário perguntar algo quantidicadores como MIN, MAX, COUNT, SUM, AVERAGE, dentre outros.
 - Use a clausula WHERE se precisar. 
-- Gere apenas UM comando SQL que reponda toda a pergunta.
 </ATENÇÂO>
 
 Dado a tabela a acima, responda:
@@ -85,46 +84,7 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
         model = ChatOllama(model="llama3.1", temperature=0)
         response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
-        #sql_sem_rag = response.content
-        #sql_com_rag = atributos_mais_similar_tabela_curso(pergunta_feita)
-
-        #TESTE SQL COM RAG!!!!
-        #sql = atributos_mais_similar_tabela_curso(pergunta_feita)
-        #sql = sql.lstrip('```sql\n').rstrip('```').strip()
-
-        sql0 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita, prompt=prompt_sql_cursos,temperatura=0)
-        sql1 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita,prompt=prompt_sql_cursos,temperatura=0.15)
-        sql2 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita,prompt=prompt_sql_cursos,temperatura=0.3)
-        sql3 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita,prompt=prompt_sql_cursos,temperatura=0.45)
-
-        sql_rag0 = atributos_mais_similar_tabela_curso(pergunta=pergunta_feita, temperatura=0)
-        sql_rag1 = atributos_mais_similar_tabela_curso(pergunta=pergunta_feita, temperatura=0.15)
-        sql_rag2 = atributos_mais_similar_tabela_curso(pergunta=pergunta_feita, temperatura=0.3)
-        sql_rag3 = atributos_mais_similar_tabela_curso(pergunta=pergunta_feita, temperatura=0.45)
-
-        print("SQL COM T=0 ", sql0)
-        print("SQL COM T=0.15 ", sql1)
-        print("SQL COM T=0.30 ", sql2)
-        print("SQL COM T=0.45 ", sql3)
-
-        print()
-        print("SQL COM RAG T = 0 ", sql_rag0)
-        print("SQL COM RAG T = 1 ", sql_rag1)
-        print("SQL COM RAG T = 2 ", sql_rag2)
-        print("SQL COM RAG T = 3 ", sql_rag3)
-
-        sql_melhor_sem_rag = escolhe_melhor_sql(pergunta_feita=pergunta_feita, sql0=sql0, sql1=sql1, sql2=sql2, sql3=sql3)
-        sql_melhor_com_rag = escolhe_melhor_sql(pergunta_feita=pergunta_feita, sql0=sql_rag0, sql1=sql_rag1, sql2=sql_rag2, sql3=sql_rag3)
-
-        print("SQL_MELHOT_SEM_RAG ", sql_melhor_sem_rag)
-        print("SQL_MELHOR_COM_RAG ", sql_melhor_com_rag)
-
-        
-        sql  = escolhe_melhor_sql_dentre_dois(pergunta_feita=pergunta_feita, sql0 = sql_melhor_sem_rag, sql1 = sql_melhor_com_rag)
-        
-        print("SQL ESCOLHIDO= ",sql)
-        #atributos_mais_similar_tabela_curso(pergunta=pergunta_feita)
-
+        sql = response.content
 
         result = execute_sql(sql, db_name)
         print("RESSULTTT ", result)
@@ -157,7 +117,7 @@ def get_lista_cursos(nome_do_campus: Any = "") -> list:
     print(f"Tool get_cursos chamada com nome_do_campus={nome_do_campus}")
     
     params = {
-        'status-enum':'ATIVOS',
+        'status':'ATIVOS',
     }
 
     if (nome_do_campus != ""):
@@ -351,7 +311,3 @@ def teste_gerar_sql_diferentes_temperaturas(pergunta_feita: str, prompt: str, te
 
 
         return response.content
-
-
-
-

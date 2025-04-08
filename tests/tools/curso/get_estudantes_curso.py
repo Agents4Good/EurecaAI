@@ -12,6 +12,9 @@ import re
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from faker import Faker
+faker = Faker('pt_BR')
+
 
 prompt_sql_estudantes = """
 Você é um agente especialista em gerar comando SQL!
@@ -19,6 +22,7 @@ Você é um agente especialista em gerar comando SQL!
 A seguinte tabela é dos estudantes:
 
 Estudante (
+"nome_do_estudante" TEXT -- nome do estudante,
 "matricula_do_estudante" TEXT,
 "turno_do_curso" TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
 "codigo_do_curriculo" INTEGER, -- curriculo do aluno no curso.
@@ -102,32 +106,9 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
 
         #dados = [[] for _ in range(len(estudantes))]
 
-        # sql = response.content
-        # print(sql)
+        sql = response.content
+        print(sql)
         #atributos_mais_similar_tabela_estudante(pergunta=pergunta_feita)
-
-
-        sql0 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita, prompt=prompt_sql_estudantes,temperatura=0)
-        sql1 = teste_gerar_sql_diferentes_temperaturas(pergunta_feita=pergunta_feita,prompt=prompt_sql_estudantes,temperatura=0.15)
-       
-        sql_rag0 = atributos_mais_similar_tabela_estudante(pergunta=pergunta_feita, temperatura=0)
-        sql_rag1 = atributos_mais_similar_tabela_estudante(pergunta=pergunta_feita, temperatura=0.15)
-
-
-        print("SQL COM T=0 ", sql0)
-        print("SQL COM T=0.15 ", sql1)
-        
-        print()
-        print("SQL COM RAG T = 0 ", sql_rag0)
-        print("SQL COM RAG T = 0.15 ", sql_rag1)
-        
-
-        sql  = escolhe_melhor_sql(pergunta_feita=pergunta_feita, sql0=sql0, sql1=sql1, sql2=sql_rag0, sql3=sql_rag1)
-       
-        
-        print("SQL ESCOLHIDO= ",sql)
-
-        return
 
         selects = re.findall(r'SELECT.*?;', sql)
 
@@ -161,6 +142,7 @@ def save_estudantes(data_json, db_name):
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS Estudante (
+        nome_do_estudante TEXT,
         matricula_do_estudante TEXT,
         nome_do_curso TEXT,
         turno_do_curso TEXT,
@@ -195,13 +177,14 @@ def save_estudantes(data_json, db_name):
     for estudante in data_json:
         cursor.execute("""
         INSERT OR IGNORE INTO Estudante (
-            matricula_do_estudante, nome_do_curso, turno_do_curso, codigo_do_curriculo, nome_do_campus, estado_civil, sexo, situacao, 
+            nome_do_estudante, matricula_do_estudante, nome_do_curso, turno_do_curso, codigo_do_curriculo, nome_do_campus, estado_civil, sexo, situacao, 
             motivo_de_evasao, periodo_de_evasao, forma_de_ingresso, periodo_de_ingresso, nacionalidade, 
             local_de_nascimento, naturalidade, cor, ano_de_conclusao_ensino_medio, 
             tipo_de_ensino_medio, politica_afirmativa, cra, mc, iea, periodos_completados, 
             prac_atualizado, prac_renda_per_capita_ate, deficiente
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
+            faker.seed(int(estudante["matricula"])).name(),
             estudante["matricula_do_estudante"],
             estudante["nome_do_curso"],
             estudante["turno_do_curso"],
@@ -248,6 +231,7 @@ def execute_sql(sql: str, db_name: str):
         return [{"error": str(e)}]
 
 attributes = """
+nome_do_estudante TEXT,
 matricula_do_estudante TEXT,
 turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
 codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
@@ -292,6 +276,7 @@ def atributos_mais_similar_tabela_estudante(pergunta: str, temperatura: float):
 
 tabela = """
 Estudante (
+nome_do_estudante TEXT, -- Nome do estudante
 matricula_do_estudante TEXT,
 turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
 codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
@@ -381,8 +366,3 @@ def teste_gerar_sql_diferentes_temperaturas(pergunta_feita: str, prompt: str, te
 
 
         return response.content
-
-
-
-
-
