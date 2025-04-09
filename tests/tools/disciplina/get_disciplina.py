@@ -19,7 +19,6 @@ def get_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: 
     """
     
     print(f"Tool get_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")    
-    
     nome_da_disciplina = str(nome_da_disciplina)
     nome_do_curso = str(nome_do_curso)
     nome_do_campus = str(nome_do_campus)
@@ -30,11 +29,7 @@ def get_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: 
     except Exception as e:
         return [{"error_status": 500, "msg": str(e)}]
 
-    params = {
-        'curriculo': curriculo,
-        'disciplina': dados_disciplina['disciplina']['codigo']
-    }
-
+    params = { 'curriculo': curriculo, 'disciplina': dados_disciplina['disciplina']['codigo'] }
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:

@@ -19,17 +19,16 @@ def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
     print(f"Tool get_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
-    
+
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
 
     if 'AskHuman' in dados_curso:
         return dados_curso
 
-    params = {
+    params = { 
         'status-enum': 'ATIVOS',
         'curso': dados_curso['curso']['codigo']
     }
-    
     response = requests.get(f'{URL_BASE}/cursos', params=params)
 
     if response.status_code == 200:

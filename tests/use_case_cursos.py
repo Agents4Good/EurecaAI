@@ -46,4 +46,7 @@ question = "O curso de Ciências Sociais está disponível em qual campus?"
 question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
 question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
 question = "Os cursos de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
+question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
+question = "Quantos cursos tem a UFCG?"
+
 agent.run(question=question)

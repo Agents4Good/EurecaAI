@@ -17,7 +17,6 @@ def get_curriculos(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     
     print(f"Tool get_curriculos chamada com nome_do_curso={str(nome_do_curso)} e nome_do_campus={nome_do_campus}.")
-    
     dados_curso = get_curso_most_similar(str(nome_do_curso), str(nome_do_campus))
     response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
     

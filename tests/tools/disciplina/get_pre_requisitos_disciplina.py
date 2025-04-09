@@ -47,7 +47,6 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     if response.status_code == 200:
         requisitos = json.loads(response.text)
         disciplinas = []
-
         for requisito in requisitos:
             disciplina_req = get_disciplina_for_tool(requisito['condicao'])
             disciplinas.append(disciplina_req[0]['nome'])

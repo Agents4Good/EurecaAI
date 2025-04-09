@@ -6,16 +6,11 @@ from ..curso.utils import get_curso_most_similar
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 from langchain_ollama import ChatOllama
-from langchain_openai import ChatOpenAI
 import sqlite3
 import re
-from sentence_transformers import SentenceTransformer
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 from faker import Faker
+
 faker = Faker('pt_BR')
-
-
 prompt_sql_estudantes = """
 Você é um agente especialista em gerar comando SQL!
 
@@ -49,11 +44,11 @@ Estudante (
 - NÃO use atributos da tabela que o usuários não forneceu. Use apenas o que ele forneceu.
 - Você sempre vai usar operadores SQL.
 - Preste atenção ao nome dos atributos na tabela, você não deve errar o nome do atributo que for utilizar na consulta sql.
+- Use apenas os atributos perguntados no SQL e IGNORE os não perguntados;
 - Gere apenas o comando SQL e mais nada!
 </ATENÇÂO>
 
-Dado a tabela a acima, responda:
-"{pergunta_feita}"
+Dado a tabela a acima, responda: "{pergunta_feita}"
 """
 
 def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any) -> dict:
@@ -70,9 +65,7 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
     """
 
     print(f"Tool get_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
-    
     params = { "situacao-do-estudante": "ATIVOS" }
-    
     pergunta_feita = str(pergunta_feita)
     nome_do_campus = str(nome_do_campus)
     nome_do_curso = str(nome_do_curso)
@@ -95,31 +88,19 @@ def get_estudantes(nome_do_curso: Any, nome_do_campus: Any, pergunta_feita: Any)
 
     if response.status_code == 200:
         estudantes = json.loads(response.text)
-        print(len(estudantes))
         db_name = "estudantes_db.sqlite"
         save_estudantes(estudantes, db_name)
-
         model = ChatOllama(model="llama3.1", temperature=0)
-        #model = ChatOpenAI(model="gpt-4o", temperature=0)
-        prompt = prompt_sql_estudantes.format(pergunta_feita=pergunta_feita)
-        response = model.invoke(prompt)
 
-        #dados = [[] for _ in range(len(estudantes))]
-
+        response = model.invoke(prompt_sql_estudantes.format(pergunta_feita=pergunta_feita))
         sql = response.content
         print(sql)
-        #atributos_mais_similar_tabela_estudante(pergunta=pergunta_feita)
-
         selects = re.findall(r'SELECT.*?;', sql)
 
         resultado = []
-        print(selects)
         for select in selects:
-
             result = execute_sql(select, db_name=db_name)
             dados = [[] for _ in range(len(result))]
-            print(result)
-
             match = re.search(r"SELECT (.*?) FROM", select)
             if match:
                 campos = [campo.strip() for campo in match.group(1).split(",")]
@@ -172,9 +153,11 @@ def save_estudantes(data_json, db_name):
     )
     """)
 
-    cursor.execute("DELETE FROM Estudante")
+    cursor.execute("DROP TABLE Estudante")
 
     for estudante in data_json:
+        Faker.seed(int(estudante["matricula_do_estudante"]))
+
         cursor.execute("""
         INSERT OR IGNORE INTO Estudante (
             nome_do_estudante, matricula_do_estudante, nome_do_curso, turno_do_curso, codigo_do_curriculo, nome_do_campus, estado_civil, sexo, situacao, 
@@ -184,7 +167,7 @@ def save_estudantes(data_json, db_name):
             prac_atualizado, prac_renda_per_capita_ate, deficiente
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
-            faker.seed(int(estudante["matricula"])).name(),
+            faker.name(),
             estudante["matricula_do_estudante"],
             estudante["nome_do_curso"],
             estudante["turno_do_curso"],
@@ -229,140 +212,3 @@ def execute_sql(sql: str, db_name: str):
     except sqlite3.Error as e:
         conn.close()
         return [{"error": str(e)}]
-
-attributes = """
-nome_do_estudante TEXT,
-matricula_do_estudante TEXT,
-turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
-codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
-estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
-sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
-forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-local_de_nascimento TEXT, Nome da cidade onde nasceu.
-naturalidade TEXT, -- Sigla do estado do estudante.
-cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
-deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
-ano_de_conclusao_ensino_medio INTEGER, 
-tipo_de_ensino_medio TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
-cra REAL, -- Coeficiente de rendimento acadêmico.
-mc REAL, -- Média de conclusão de curso.
-iea REAL, --Indice de eficiência acadêmica.
-periodos_completados INTEGER, 
-prac_renda_per_capita_ate REAL
-"""
-
-def atributos_mais_similar_tabela_estudante(pergunta: str, temperatura: float):
-    atributos_split = [atributo.replace("_", " ") for atributo in attributes.split(";")]
-    sentence_transformers = SentenceTransformer("all-MiniLM-L6-v2")
-
-    embeddings_pergunta = sentence_transformers.encode(pergunta).reshape(1, -1)
-    embeddings_atributo = sentence_transformers.encode(atributos_split)
-    similaridades = cosine_similarity(embeddings_pergunta, embeddings_atributo).flatten()
-    top_indices = np.argsort(similaridades)[::-1]
-
-    tops = [f"atributo: {atributos_split[idx].split('--')[0]} tem similaridade de {similaridades[idx]:.2f}" for idx in top_indices]
-
-    # for i in tops:
-    #     print(i)
-
-    model = ChatOllama(model="llama3.1", temperature=temperatura)
-    response = model.invoke(f"""Sabendo que tenho essa tabela n\n {attributes} \n\n e esses atributos \n\n {tops} tem seus devidos nomes e probabilidades para responder a pergunta. \n\n Gere um comando SQL que responda a seguinte pergunta {pergunta}. Gere apenas o comando SQL que responda a pergunta e mais nada!""")
-
-
-    return response.content
-
-
-
-tabela = """
-Estudante (
-nome_do_estudante TEXT, -- Nome do estudante
-matricula_do_estudante TEXT,
-turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
-codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
-estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
-sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
-forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-local_de_nascimento TEXT, Nome da cidade onde nasceu.
-naturalidade TEXT, -- Sigla do estado do estudante.
-cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
-deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
-ano_de_conclusao_ensino_medio INTEGER, 
-tipo_de_ensino_medio TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
-cra REAL, -- Coeficiente de rendimento acadêmico.
-mc REAL, -- Média de conclusão de curso.
-iea REAL, --Indice de eficiência acadêmica.
-periodos_completados INTEGER, 
-prac_renda_per_capita_ate REAL
-)
-"""
-
-ESCOLHE_SQL_PROMPT = """
-    Você é um assistente que recebe duas consultas SQL e deve decidir qual consulta está mais correta e qual
-    responde melhor a pergunta "{pergunta_feita}".
-
-    ***IMPORTANTE***
-    - VOCÊ DEVE RETORNAR SOMENTE A CONSULTA ESCOLHIDA E MAIS NADA!.
-    - Não modifique nenhuma das consultas.
-
-    Primeira consulta: "{sql0}"
-    Segunda consulta: "{sql1}"
-    Terceira consulta: "{sql2}"
-    Quarta consulta: "{sql3}"
-
-    Tabela:
-        "{tabela}"
-
-"""
-
-ESCOLHE_SQL_DENTRE_DOIS_PROMPT = """
-    Você é um assistente que recebe duas consultas SQL e deve decidir qual consulta está mais correta e qual
-    responde melhor a pergunta "{pergunta_feita}".
-
-    ***IMPORTANTE***
-    - VOCÊ DEVE RETORNAR SOMENTE A CONSULTA ESCOLHIDA E MAIS NADA!.
-    - Não modifique nenhuma das consultas.
-
-    Primeira consulta: "{sql0}"
-    Segunda consulta: "{sql1}"
-   
-    Tabela:
-        "{tabela}"
-
-"""
-
-def escolhe_melhor_sql(pergunta_feita:str, sql0: str, sql1 : str, sql2:str, sql3: str):
-        
-        model = ChatOllama(model="llama3.1", temperature=0)
-        response = model.invoke(ESCOLHE_SQL_PROMPT.format(pergunta_feita=pergunta_feita, sql0=sql0, sql1=sql1, sql2=sql2, sql3=sql3, tabela=tabela))
-
-        return response.content
-
-
-def escolhe_melhor_sql_dentre_dois(pergunta_feita:str, sql0:str, sql1: str):
-
-        model = ChatOllama(model="llama3.1", temperature=0)
-        response = model.invoke(ESCOLHE_SQL_PROMPT.format(pergunta_feita=pergunta_feita, sql0=sql0, sql1=sql1, tabela=tabela))
-
-        return response.content
-
-
-def teste_gerar_sql_diferentes_temperaturas(pergunta_feita: str, prompt: str, temperatura: float):
-        """
-            Gera consultas SQL com a temperatura informada
-
-            Args:
-                pergunta_feita: pergunta feito pelo usuário
-                prompt: prompt que será usado no modelo internamente na função
-                temperatura: temperatura escolhida
-            
-            Returns:
-                SQL para a pergunta gerado de acordo com a temperatura informada.
-        """
-        
-        model = ChatOllama(model="llama3.1", temperature=temperatura)
-        response = model.invoke(prompt.format(pergunta_feita=pergunta_feita))
-
-
-        return response.content
