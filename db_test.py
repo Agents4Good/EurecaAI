@@ -2,6 +2,8 @@ from langchain_ollama import ChatOllama
 from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
+import warnings
+warnings.filterwarnings("ignore", message="LangSmithMissingAPIKeyWarning")
 
 class StateSQL(TypedDict):
     query: str
@@ -92,8 +94,18 @@ queries = [
     '''Qual é o percentual dos alunos reprovados na disciplina?''',
     '''Qual foi o aluno que tirou nota 9.2 na disciplina?''',
     '''Qual foi o safado que tirou 10 na disciplina?''',
-    '''Qual é a matricula de todos os estudantes da disciplina?'''
+    '''Qual é a matricula de todos os estudantes da disciplina?''',
+    '''Quais foram os estudantes que dispensaram a disciplina com nota maior que 9?''',
+    '''Quem tirou nota 8 na turma 1 de teoria da computacao?'''
 ]
 
+sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
+
+result = []
 for query in queries:
-    print(sqlGenerateLLM.write_query(query=query, tabela=tabela))
+    result.append((query, sqlGenerateLLM.write_query(query=query, tabela=tabela)))
+
+for query, result in result:
+    print(query)
+    print(result)
+    print()
