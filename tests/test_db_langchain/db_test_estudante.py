@@ -38,13 +38,13 @@ tabela = """
 CREATE TABLE IF NOT EXISTS Estudante (
     nome_do_estudante TEXT -- nome do estudante,
     matricula_do_estudante TEXT,
-    turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
+    turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Diurno", "Vespertino", "Noturno" ou "Integral".
     codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
     estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
     sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
     forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
     nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-    local_de_nascimento TEXT, Nome da cidade onde nasceu.
+    local_de_nascimento TEXT, -- Local (cidade) onde o estudante nasceu.
     naturalidade TEXT, -- Sigla do estado do estudante.
     cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
     deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS Estudante (
 """
 
 prompt = '''
-Essa tabela tem estudantes de um curso chamado "CIENCIA DA COMPUTAÇÃO - D".
+Essa tabela tem estudantes de um curso chamado "CIENCIA DA COMPUTAÇÃO - Diurno" do Campus de Campina Grande.
 Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 Use apenas a seguintes tabela a seguir:
@@ -109,8 +109,10 @@ queries = [
     '''Quantos estudantes tem CRA acima da média?''',
     '''Quantos estudantes vieram do estado da paraiba?''',
     '''De onde vem os estudantes do curso por estado? Me mostre pra cada estado do país''',
-    '''Quais são os 5 estudantes com maior cra do curso de ciencia da computacao do campus de campina grande''',
-    ''''''
+    '''Quais são os 5 estudantes com maior cra do curso de ciência da computação do campus de campina grande?''',
+    '''Quantos estudantes que estudam a noite no campus de campina grande?''',
+    '''Existem quantos estudantes casados e solteiros no curso de engenharia de materiais do campus de campina grande?''',
+    '''Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?'''
 ]
 
 sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
