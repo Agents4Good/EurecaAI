@@ -37,7 +37,7 @@ class LLMGenerateSQL:
 tabela = """
 CREATE TABLE IF NOT EXISTS Estudante (
     nome_do_estudante TEXT, -- Nome completo do estudante.
-    matricula_do_estudante TEXT, -- Número de matrícula do estudante (exatamente 9 dígitos).
+    matricula_do_estudante TEXT, -- Número de matrícula do estudante (exatamente 9 dígitos). Esse é o atributo da chave primária.
     turno_do_curso TEXT, -- Período do dia em que o curso é realizado. ENUM de possíveis valores: "Matutino", "Diurno", "Vespertino", "Noturno", "Integral".
     codigo_do_curriculo INTEGER, -- Ano de atualização da grade curricular do curso seguido do período. Por exemplo 2010.2 (ano de 2010 e segundo período).
     estado_civil TEXT, -- Estado civil do estudante. ENUM  de possíveis valores: "Solteiro" ou "Casado".
