@@ -36,30 +36,30 @@ class LLMGenerateSQL:
 
 tabela = """
 CREATE TABLE IF NOT EXISTS Estudante (
-    nome_do_estudante TEXT -- nome do estudante,
-    matricula_do_estudante TEXT,
-    turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Diurno", "Vespertino", "Noturno" ou "Integral".
-    codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
-    estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
-    sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
-    forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-    nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-    local_de_nascimento TEXT, -- Local (cidade) onde o estudante nasceu.
-    naturalidade TEXT, -- Sigla do estado do estudante.
-    cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
-    deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
-    ano_de_conclusao_ensino_medio INTEGER, 
-    tipo_de_ensino_medio TEXT, -- ENUM que pode ser "Somente escola pública" ou "Somente escola privada". 
-    cra REAL, -- Coeficiente de rendimento acadêmico.
-    mc REAL, -- Média de conclusão de curso.
-    iea REAL, --Indice de eficiência acadêmica.
-    periodos_completados INTEGER, 
-    prac_renda_per_capita_ate REAL
+    nome_do_estudante TEXT, -- Nome completo do estudante.
+    matricula_do_estudante TEXT, -- Número de matrícula do estudante (exatamente 9 dígitos).
+    turno_do_curso TEXT, -- Período do dia em que o curso é realizado. ENUM de possíveis valores: "Matutino", "Diurno", "Vespertino", "Noturno", "Integral".
+    codigo_do_curriculo INTEGER, -- Ano de atualização da grade curricular do curso seguido do período. Por exemplo 2010.2 (ano de 2010 e segundo período).
+    estado_civil TEXT, -- Estado civil do estudante. ENUM  de possíveis valores: "Solteiro" ou "Casado".
+    sexo TEXT, -- Sexo biológico. ENUM de possíveis valores: "MASCULINO" ou "FEMININO".
+    forma_de_ingresso TEXT, -- Forma de entrada na universidade. ENUM de possíveis valores: "SISU", "REOPCAO", "TRANSFERENCIA". (usar se)
+    nacionalidade TEXT, -- Nacionalidade do estudante. ENUM de possíveis valores: "Brasileira" ou "Estrangeira"
+    local_de_nascimento TEXT, -- Cidade onde o estudante nasceu. Exemplo: "Campina Grande"
+    naturalidade TEXT, -- Estado (UF) do estudante. Exemplo: "PB", "PE"
+    cor TEXT, -- Cor da pele. ENUM de possíveis valores: "Branca", "Preta", "Parda", "Indigena", "Amarela"
+    deficiente TEXT, -- Se o estudante possui alguma deficiência. ENUM de possíveis valores: "Sim" ou "Não"
+    ano_de_conclusao_ensino_medio INTEGER, -- Ano em que terminou o ensino médio. Exemplo: 2019
+    tipo_de_ensino_medio TEXT, -- Tipo de escola em que estudou no ensino médio. ENUM de possíveis valores: "Somente escola pública", "Somente escola privada"
+    cra REAL, -- Coeficiente de rendimento acadêmico do estudante / aluno. Exemplo: 7.45
+    mc REAL, -- Média de conclusão do curso do estudante / aluno. Exemplo: 8.1
+    iea REAL, -- Índice de eficiência acadêmica do estudante / aluno. Exemplo: 9.0
+    periodos_completados INTEGER, -- Quantidade de períodos cursados pelo estudante. Exemplo: 6
+    prac_renda_per_capita_ate REAL -- Renda média mensal da família (per capita). Exemplo: 645.32. Observação: Um salário mínimo é R$1528.00
 );
 """
 
-prompt = '''
-Essa tabela tem estudantes de um curso chamado "CIENCIA DA COMPUTAÇÃO - Diurno" do Campus de Campina Grande.
+prompt = """
+Essa tabela tem estudantes de uma disciplina chamada "TEORIA DA COMPUTAÇÃO - D" do cuso de "CIENCIA DA COMPUTAÇÃO - INTEGRAL".
 Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 Use apenas a seguintes tabela a seguir:
@@ -68,36 +68,37 @@ Use apenas a seguintes tabela a seguir:
 
 Siga **rigorosamente** as instruções abaixo:
 
-<RESTRIÇÕES>
+<RESTRIÇÕESS>
 - Nunca use "SELECT *" — selecione somente as colunas relevantes.
 - Utilize **apenas os nomes de colunas exatamente como descritos** no esquema:
-  - nome_do_estudante
-  - matricula_do_estudante
-  - turno_do_curso
-  - codigo_do_curriculo
-  - estado_civil
-  - sexo
-  - forma_de_ingresso
-  - nacionalidade
-  - local_de_nascimento
-  - naturalidade
-  - cor
-  - deficiente
-  - ano_de_conclusao_ensino_medio
-  - tipo_de_ensino_medio
-  - cra REAL
-  - mc REAL
-  - iea REAL
-  - periodos_completados
-  - prac_renda_per_capita_ate
+    nome_do_estudante
+    matricula_do_estudante
+    turno_do_curso
+    codigo_do_curriculo
+    estado_civil
+    sexo
+    forma_de_ingresso
+    nacionalidade
+    local_de_nascimento
+    naturalidade
+    cor
+    deficiente
+    ano_de_conclusao_ensino_medio
+    tipo_de_ensino_medio
+    cra
+    mc
+    iea
+    periodos_completados
+    prac_renda_per_capita_ate
 - Não invente ou modifique os nomes das colunas.
 - Nunca use a cláusula LIKE.
 - Ignore referências a "turma" pois não há nenhuma coluna representando isso.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 </RESTRIÇÕES>
 
-Responda com uma consulta SQL válida e mínima.
-'''
+Sua saída deve ser **apenas uma consulta SQL válida e mínima**, sem comentários nem explicações.
+Use apenas os atributos que forem pedidos na pergunta.
+"""
 
 
 sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
@@ -112,7 +113,13 @@ queries = [
     '''Quais são os 5 estudantes com maior cra do curso de ciência da computação do campus de campina grande?''',
     '''Quantos estudantes que estudam a noite no campus de campina grande?''',
     '''Existem quantos estudantes casados e solteiros no curso de engenharia de materiais do campus de campina grande?''',
-    '''Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?'''
+    '''Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?''',
+    '''Quem são os estudantes que estão no 5 período do curso?''',
+    '''Quem sao os estudantes que transferiram de curso que são da cidade de caturite?''',
+    '''Quem são os alunos de escola pública que estudam no curso de ciencia da computacao que vieram da cidade de aroeiras''',
+    '''qual é o índice de eficiência acadêmica de caique?''',
+    '''quantos estudantes sao pardos e indigenas no curso de ciencia da computacao do campus de campina grande?''',
+    '''quantas pessoas tem renda entre 1 a 10 salario minimo?'''
 ]
 
 sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
