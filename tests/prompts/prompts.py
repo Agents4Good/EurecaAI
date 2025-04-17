@@ -31,7 +31,7 @@ ZERO_SHOT_PROMPT1 = """
         Suas tools são estritamente essas:
         
         - get_curso (use essa tool para obter informações relevantes de cada curso especificamente, como nome do setor e código, turno, período/ano de origem, inep, etc)
-        - get_cursos (use essa tool para obter informações relevantes de todos os cursos em geral)
+        - get_informacoes_cursos (use essa tool para obter informações relevantes de todos os cursos em geral)
         - get_estudantes (use essa tool para obter informações relevantes sobre os estudantes/alunos, passe o nome do curso vazio se não for fornecido)
 
         **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
@@ -97,7 +97,7 @@ ZERO_SHOT_PROMPT_DISCIPLINAS_SQL = """
         - get_turmas_disciplina (obtém todas as turmas de uma unica disciplina).
         - get_pre_requisitos_disciplina (obtém as disciplinas que são pré-requisitos ou requisitos da disciplina perguntada).
         - get_horarios_disciplinas (obtém os horários e a número da sala de uma disciplina de uma turma).
-        - get_notas_turma_disciplina (obtém as notas / desempenho dos estudantes em uma turma de uma disciplina).
+        - get_informacoes_aluno_disciplina.
         - get_todas_disciplinas_do_curso (obtém todas as disciplinas ofertadas do curso que estão na grade do curso).
 
         ***IMPORTANTE***

@@ -3,16 +3,22 @@ from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIM
 from .agent_tools import AgentTools, AgentState
 from langgraph.graph import StateGraph, MessagesState, START, END
 
+from langchain_ollama import ChatOllama
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 
 template = """
-Você é um assistente inteligente que ajuda a reformular perguntas. 
-Recebe uma pergunta de um usuário e deve identificar se há menção de múltiplos cursos. 
-Se houver mais de um curso, você deve reformular a pergunta para deixar claro que cada um é tratado separadamente.
-Reformule apenas adicionando a palavra 'curso' seguido do nome deste curso, faça isso para cada curso que você identificar.
-Apenas reformule a pergunta e **retorne apenas a nova versão da pergunta, sem explicações adicionais ou comentários**.
-IMPORTANTE: raciocine se na pergunta possui de fato algum nome de curso sendo perguntado, caso não tenha você NÃO DEVE MODIFICAR A PERGUNTA.
+Você é um assistente inteligente que reformula perguntas de forma criteriosa. 
+Seu objetivo é identificar se a pergunta menciona dois ou mais cursos universitários pelo NOME. 
+Se e somente se houver múltiplos cursos claramente mencionados pelo nome (como 'Direito', 'Engenharia Civil', 'Medicina'), você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
+
+Regras IMPORTANTES:
+- NÃO adicione ou invente nomes de cursos que não estão mencionados explicitamente.
+- Se a pergunta falar apenas de uma instituição (como 'Quantos cursos tem a UFCG?'), NÃO modifique a pergunta.
+- Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
+- Reformule a pergunta apenas se houver mais de um curso com nome claro.
+
+Agora, reformule a seguinte pergunta obedecendo estritamente às regras:
 
 Pergunta: {question}
 """
@@ -29,6 +35,7 @@ class AgenteCursos(AgentTools):
         prompt_template = PromptTemplate(template=template, input_variables=["question"])
 
         llm = HuggingFaceEndpoint(repo_id="maritaca-ai/sabia-7b", task="text-generation", temperature=0.1)
+        #llm = ChatOllama(model="llama3.1", temperature=0)
         llm_chain = prompt_template | llm
 
         messages = state["messages"]
@@ -53,7 +60,7 @@ class AgenteCursos(AgentTools):
         workflow.add_edge("exit", END)
         return workflow.compile()
     
-    def run(self, question: str):
+    """def run(self, question: str):
         thread = {"configurable": {"thread_id": "1"}}
         '''output_file = "grafo.png"
         graph_image = self.app.get_graph().draw_mermaid_png()
@@ -63,4 +70,4 @@ class AgenteCursos(AgentTools):
         
         for message_chunk, metadata in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="messages"):
             if message_chunk.content:
-                print(message_chunk.content, end="", flush=True)
+                print(message_chunk.content, end="", flush=True)"""

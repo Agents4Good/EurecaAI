@@ -77,6 +77,7 @@ def get_cursos(pergunta_feita: Any, nome_do_campus: Any = "") -> list:
         response = model.invoke(prompt_sql_cursos.format(pergunta_feita=pergunta_feita))
 
         sql = response.content
+        print(sql)
 
         result = execute_sql(sql, db_name)
         print(result)

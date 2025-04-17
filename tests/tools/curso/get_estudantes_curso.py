@@ -153,7 +153,7 @@ def save_estudantes(data_json, db_name):
     )
     """)
 
-    cursor.execute("DROP TABLE Estudante")
+    cursor.execute("DELETE FROM Estudante")
 
     for estudante in data_json:
         Faker.seed(int(estudante["matricula_do_estudante"]))

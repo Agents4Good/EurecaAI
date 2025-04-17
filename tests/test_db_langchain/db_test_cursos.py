@@ -36,7 +36,7 @@ class LLMGenerateSQL:
 
 tabela = """
 CREATE TABLE IF NOT EXISTS Curso (
-    codigo_do_curso INTEGER -- Codigo do curso (ID: chave primária)
+    codigo_do_curso INTEGER, -- Codigo do curso (ID: chave primária)
     nome_do_curso Text, -- Nome do curso
     codigo_do_setor INTEGER, -- Código do setor ao qual o curso pertence
     nome_do_setor Text, -- Nome do setor ao qual o curso pertence
@@ -45,14 +45,14 @@ CREATE TABLE IF NOT EXISTS Curso (
     periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
     data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date
     codigo_inep INTEGER, -- Código INEP do curso 
-    modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
+    modalidade_academica Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
-    ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
+    ciclo_enade INTEGER, -- De quantos em quantos semestres ocorre a prova do enade 
 );
 """
 
 prompt = '''
-Essa tabela tem cursos chamado "CIÊNCIA DA CUMPUTAÇÃO - D" localizado no campus da cidade de "Campina Grande".
+Essa tabela tem cursos chamado "Geografia - D" que é do turno 'Diurno' e localizado no campus da cidade de "Campina Grande".
 Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 Use apenas a seguintes tabela a seguir:
@@ -68,7 +68,6 @@ Siga **rigorosamente** as instruções abaixo:
   - nome_do_curso
   - codigo_do_setor
   - nome_do_setor
-  - campus
   - nome_do_campus
   - turno
   - periodo_de_inicio
@@ -79,7 +78,6 @@ Siga **rigorosamente** as instruções abaixo:
   - ciclo_enade
 - Não invente ou modifique os nomes das colunas.
 - Nunca use a cláusula LIKE.
-- Ignore referências a "turma" pois não há nenhuma coluna representando isso.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 </RESTRIÇÕES>
 
@@ -96,8 +94,16 @@ queries = [
    '''Quero saber todos os nome e código dos cursos da UFCG''',
    '''Quando o enade irá ocorrer em ciencia da computação?''',
    '''Quando o curso de ciencia da computação foi criado?''',
-   '''Quais são os cursos que ocorrem a noite e que sao bacharel?'''
-
+   '''Quais são os cursos que ocorrem a noite e que sao bacharel?''',
+   '''Quais são os cursos que ocorrem a noite?''',
+   '''Quantos cursos integral tem no campus de patos?''',
+   '''Quantos cursos diurno tem no campus de sume?''',
+   '''Qual o código do setor dos cursos que ocorrem a noite?''',
+   '''quais são os cursos que tiveram o currículo renovado a partir de 2010?''',
+   '''quais são os cursos que tiveram o currículo renovado mais recentemente?''',
+   '''em que turno ocorre os cursos de licenciatura?''',
+   '''Qual é o turno do curso de Geografia?''',
+   '''Qual é o turno do curso de Geografia e curso de ciência da computação?'''
 ]
 
 sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)

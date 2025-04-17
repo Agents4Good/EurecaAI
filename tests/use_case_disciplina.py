@@ -7,6 +7,7 @@ from .tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
 from .tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
 from .tools.disciplina.get_notas_turma_disciplina import get_notas_turma_disciplina
+from .tools.disciplina.get_informacoes_aluno_disciplina import get_informacoes_aluno_disciplina
 from .tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 
@@ -17,7 +18,7 @@ tools = [
     get_turmas_disciplina, 
     get_pre_requisitos_disciplina,
     get_horarios_disciplinas,
-    get_notas_turma_disciplina,
+    get_informacoes_aluno_disciplina,
     get_todas_disciplinas,
 ]
 
@@ -32,5 +33,6 @@ question = "Quantas pessoas reprovaram por nota na disciplina de tc do periodo 2
 question = "Quantas pessoas reprovaram por falta a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 question = "Quantas pessoas reprovaram a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 
-question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
+#question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
+question = "Qual foi a menor nota dos alunos na disciplina de teoria da computação do curso de ciência da computação em 2023.2?"
 agent.run(question=question)
