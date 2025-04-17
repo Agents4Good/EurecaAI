@@ -29,8 +29,8 @@ def get_plano_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina:
     curriculo=str(curriculo)
     numero_da_turma=str(numero_da_turma)
     periodo=str(periodo)
-    
     print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
+    
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (str(periodo) == ""):

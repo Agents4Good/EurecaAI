@@ -3,9 +3,6 @@ from langchain_core.messages import HumanMessage
 from .agent_tools import AgentTools, AgentState
 from langgraph.graph import StateGraph, START, END
 
-from langchain_huggingface import HuggingFaceEndpoint
-from langchain_core.prompts import PromptTemplate
-
 class AgenteDisciplinas(AgentTools):
 
     def __init__ (self, LLM, model: str, tools: list, prompt: str, temperatura: float = 0):
@@ -32,7 +29,7 @@ class AgenteDisciplinas(AgentTools):
         with open(output_file, "wb") as f:
             f.write(graph_image)
         '''
-        
+        s
         for message_chunk, metadata in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="messages"):
             if message_chunk.content:
                 print(message_chunk.content, end="", flush=True)"""

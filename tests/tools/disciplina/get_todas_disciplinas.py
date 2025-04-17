@@ -21,7 +21,6 @@ def get_todas_disciplinas(nome_do_curso: Any, nome_do_campus: Any, curriculo: An
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
     curriculo=str(curriculo)
-    
     print(f"Tool get_todas_disciplinas chamada com nome_do_campus={nome_do_campus} nome_do_curso={nome_do_curso} e curriculo={curriculo}.")
     
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)

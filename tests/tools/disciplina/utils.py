@@ -69,6 +69,3 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     
     print(response.content)
     return processar_json(response.content, "disciplina"), curriculo
-
-
-print(get_disciplina_grade_most_similar("Campina Grande", "ciência da computação", "fm cc 2", "2023"))

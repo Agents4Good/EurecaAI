@@ -21,7 +21,6 @@ def get_todas_disciplinas_curso(nome_do_curso: Any, nome_do_campus: Any, curricu
     curriculo = str(curriculo)
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)
-    
     print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
     
     if (curriculo == ""):

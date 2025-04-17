@@ -96,7 +96,8 @@ queries = [
     '''Qual foi o safado que tirou 10 na disciplina?''',
     '''Qual é a matricula de todos os estudantes da disciplina?''',
     '''Quais foram os estudantes que dispensaram a disciplina com nota maior que 9?''',
-    '''Quem tirou nota 8 na turma 1 de teoria da computacao?'''
+    '''Quem tirou nota 8 na turma 1 de teoria da computacao?''',
+    '''Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2'''
 ]
 
 sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)

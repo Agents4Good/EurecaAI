@@ -24,7 +24,6 @@ def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_c
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
     curriculo=str(curriculo)
-    
     print(f"Tool get_turmas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo={periodo} e codigo_curriculo={curriculo}")
     
     if (periodo == ""):

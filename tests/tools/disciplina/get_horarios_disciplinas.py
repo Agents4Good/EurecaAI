@@ -27,8 +27,8 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_di
     turma=str(turma)
     periodo=str(periodo)
     curriculo=str(curriculo)
-    
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
+    
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
     if (periodo == ""):
