@@ -1,21 +1,22 @@
 TABELA_CURSO = """
 CREATE TABLE IF NOT EXISTS Curso (
-    codigo_do_curso INTEGER -- Codigo do curso
-    nome_do_curso Text, -- Nome do curso
+    codigo_do_curso INTEGER, -- Codigo do curso
+    descricao TEXT, -- Nome do curso
+    grau_do_curso TEXT, -- ENUM que pode ser "BACHARELADO" ou "LICENCIATURA"
+    nome_do_curso TEXT, -- Nome do curso
     codigo_do_setor INTEGER,
-    nome_do_setor Text,
+    nome_do_setor TEXT,
     campus INTEGER, -- Usar número inteiro se informar o campus em representação romana
-    nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
-    turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral"
+    nome_do_campus TEXT, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
+    turno TEXT, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral"
     periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
-    data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date
+    data_de_funcionamento TEXT, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date
     codigo_inep INTEGER,
-    modalidade_academica" Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
+    modalidade_academica TEXT, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
     ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
 );
 """
-
 
 TABELA_ESTUDANTE_CURSO = """
 CREATE TABLE IF NOT EXISTS Estudante (

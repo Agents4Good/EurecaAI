@@ -35,6 +35,9 @@ def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: 
     if (nome_do_curso != ""):
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         params['curso'] = dados_curso['curso']['codigo']
+        PROMPT_SQL_CURSOS_AUX = f'Esses dados se tratam do curso de código "{dados_curso["curso"]["codigo"]}"\n' + PROMPT_SQL_CURSOS
+
+    print(PROMPT_SQL_CURSOS_AUX)
     
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
@@ -46,6 +49,6 @@ def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: 
         print("CURSOS: ", cursos)
         save_cursos(cursos, db_name)
         print("SALVEIIIII!!!")
-        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
+        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS_AUX, TABELA_CURSO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
