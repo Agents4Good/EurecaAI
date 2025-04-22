@@ -38,7 +38,6 @@ PROMPT_SQL_ESTUDANTES = """
 Você é um agente especialista em gerar comando SQL!
 
 A seguinte tabela é dos estudantes:
-
 {table_info}
 
 Siga **rigorosamente** as instruções abaixo:
