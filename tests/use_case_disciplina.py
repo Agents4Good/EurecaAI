@@ -3,7 +3,7 @@ from langchain_ollama import ChatOllama
 from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_disciplina import get_disciplina
 from .tools.disciplina.get_plano_aulas import get_plano_aulas
-from .tools.disciplina.get_todas_disciplinas import get_todas_disciplinas
+from .tools.disciplina.get_todas_disciplinas_curso_por_curriculo import get_todas_disciplinas_por_curriculo
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
 from .tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
 from .tools.disciplina.get_informacoes_aluno_disciplina import get_informacoes_aluno_disciplina
@@ -19,8 +19,8 @@ tools = [
     get_plano_aulas, 
     get_plano_de_curso_disciplina, 
     get_pre_requisitos_disciplina,
+    get_todas_disciplinas_por_curriculo,
     get_todas_disciplinas_curso,
-    get_todas_disciplinas,
     get_turmas_disciplina,
     get_disciplinas_curso_por_codigo
 ]

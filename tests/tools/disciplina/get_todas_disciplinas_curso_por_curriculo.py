@@ -5,7 +5,7 @@ from ..curso.utils import get_curso_most_similar
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..utils.base_url import URL_BASE
 
-def get_todas_disciplinas(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
+def get_todas_disciplinas_por_curriculo(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """
     Busca por todas as disciplinas ofertadas do curso que estão na grade do curso.
 

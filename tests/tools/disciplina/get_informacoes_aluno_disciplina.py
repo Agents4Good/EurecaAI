@@ -7,8 +7,8 @@ from ..utils.base_url import URL_BASE
 from ..utils.obter_dados_sql import obter_dados_sql
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
-from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT
-from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA
+from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
+from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
 from faker import Faker
 faker = Faker('pt_BR')
 
@@ -29,9 +29,11 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
         Informações relacionados aos estudantes da disciplina.
     """
     query=str(query)
+    
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
+
     turma=str(turma)
     periodo=str(periodo)
     curriculo=str(curriculo)
@@ -58,6 +60,6 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
         matriculas = json.loads(response.text)
         db_name = "db_disciplina.sqlite"
         save_disciplinas(matriculas, db_name)
-        return obter_dados_sql(query, db_name, PROMPT, TABELA, temperature=0)
+        return obter_dados_sql(query, db_name, PROMPT_DISCIPLINA, TABELA_DISCIPLINA, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
