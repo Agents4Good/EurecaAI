@@ -25,7 +25,7 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
 
     print(f"Tool get_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
     params = { "situacao-do-estudante": "ATIVOS" }
-    pergunta_feita = str(pergunta_feita)
+    query = str(query)
     nome_do_campus = str(nome_do_campus)
     nome_do_curso = str(nome_do_curso)
     
@@ -39,11 +39,11 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
         pass
     else:
         return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
-    
+
     response = requests.get(f'{URL_BASE}/estudantes', params=params)
     if response.status_code == 200:
         estudantes = json.loads(response.text)
-        db_name = "estudantes_db.sqlite"
+        db_name = "db_estudantes.sqlite"
         save_estudantes_cursos(estudantes, db_name)
         return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES, TABELA_ESTUDANTE_CURSO, temperature=0)
     else:

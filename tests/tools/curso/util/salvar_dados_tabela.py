@@ -48,19 +48,14 @@ def save_estudantes_cursos(data_json, db_name):
 
     for estudante in data_json:
         cursor.execute("""
-        INSERT OR IGNORE INTO Estudante VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO Estudante VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             faker.name(),
             estudante["matricula_do_estudante"],
-            estudante["nome_do_curso"],
             estudante["turno_do_curso"],
             estudante["codigo_do_curriculo"],
-            estudante["nome_do_campus"],
             estudante["estado_civil"],
             estudante["sexo"],
-            estudante["situacao"],
-            estudante["motivo_de_evasao"],
-            estudante["periodo_de_evasao"],
             estudante["forma_de_ingresso"],
             estudante["periodo_de_ingresso"],
             estudante["nacionalidade"],
@@ -68,13 +63,10 @@ def save_estudantes_cursos(data_json, db_name):
             estudante["naturalidade"],
             estudante["cor"],
             estudante["ano_de_conclusao_ensino_medio"],
-            estudante["tipo_de_ensino_medio"],
-            estudante["politica_afirmativa"],
             estudante["cra"],
             estudante["mc"],
             estudante["iea"],
             estudante["periodos_completados"],
-            estudante["prac_atualizado"],
             estudante["prac_renda_per_capita_ate"],
             "Sim" if len(estudante["deficiencias"]) > 0 else "Não"
         ))

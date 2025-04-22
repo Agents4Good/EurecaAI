@@ -27,28 +27,32 @@ def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: 
     nome_do_curso=str(nome_do_curso)
     print(f"Tool get_informacoes_cursos chamada com nome_do_campus={nome_do_campus} e nome_do_curso={nome_do_curso}")  
 
+    campus, curso = False, False
     params = { 'status':'ATIVOS' }
-
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params['campus'] = dados_campus["campus"]["codigo"]
+        campus = True
+    
     if (nome_do_curso != ""):
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         params['curso'] = dados_curso['curso']['codigo']
-        PROMPT_SQL_CURSOS_AUX = f'Esses dados se tratam do curso de código "{dados_curso["curso"]["codigo"]}"\n' + PROMPT_SQL_CURSOS
+        curso = True
 
-    print(PROMPT_SQL_CURSOS_AUX)
-    
+    prompt_sql = PROMPT_SQL_CURSOS
+    if not campus and curso:
+        prompt_sql = f'''Essa tabela tem cursos chamado "{dados_curso["curso"]["nome"]}"\n\n''' + prompt_sql
+    elif campus and not curso:
+        prompt_sql = f'''Essa tabela tem cursos localizado no campus da cidade de {dados_campus["campus"]["nome"]}.\n\n''' + prompt_sql
+    elif campus and curso:
+        prompt_sql = f'''Essa tabela tem cursos chamado "{dados_curso["curso"]["nome"]}", localizado no campus da cidade de {dados_campus["campus"]["nome"]}.\n\n''' + prompt_sql
+
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
-    print("RECEBIIIIIII!!!!!!\n")
     if response.status_code == 200:
         cursos = json.loads(response.text)
         db_name = "db_cursos.sqlite"
-        print("TESTANDO AQUI")
-        print("CURSOS: ", cursos)
         save_cursos(cursos, db_name)
-        print("SALVEIIIII!!!")
-        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS_AUX, TABELA_CURSO, temperature=0)
+        return obter_dados_sql(query, db_name, prompt_sql, TABELA_CURSO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

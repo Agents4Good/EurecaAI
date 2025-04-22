@@ -12,7 +12,7 @@ def get_most_similar(lista_a_comparar: list, dado_comparado: str, top_k: int, ma
 
     similarities = cosine_similarity(embeddings, embedding_query).flatten()
     top_k_indices = np.argsort(similarities)[-top_k:][::-1]
-        
+    
     top_k = [{"nome": lista_a_comparar[idx][mapper["nome"]], "codigo": lista_a_comparar[idx][mapper["codigo"]], "similaridade_cosseno": similarities[idx]} for idx in top_k_indices]
 
     possiveis_k = []

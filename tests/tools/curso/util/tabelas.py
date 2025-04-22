@@ -20,15 +20,15 @@ CREATE TABLE IF NOT EXISTS Curso (
 
 TABELA_ESTUDANTE_CURSO = """
 CREATE TABLE IF NOT EXISTS Estudante (
-    nome_do_estudante TEXT -- nome do estudante,
+    nome_do_estudante TEXT, -- nome do estudante
     matricula_do_estudante TEXT,
     turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".
     codigo_do_curriculo INTEGER, -- curriculo do aluno no curso.
     estado_civil TEXT, -- ENUM que pode ser "Solteiro" ou "Casado".
     sexo TEXT, -- ENUM que pode ser "MASCULINO" ou "FEMININO".
     forma_de_ingresso TEXT, -- ENUM que pode ser "SISU", "REOPCAO" OU "TRANSFERENCIA".
-    nacionalidade TEXT, ENUM que pode ser "Brasileira" ou "Estrangeira".
-    local_de_nascimento TEXT, Nome da cidade onde nasceu.
+    nacionalidade TEXT, -- ENUM que pode ser "Brasileira" ou "Estrangeira".
+    local_de_nascimento TEXT, -- Nome da cidade onde nasceu.
     naturalidade TEXT, -- Sigla do estado do estudante.
     cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
     deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".

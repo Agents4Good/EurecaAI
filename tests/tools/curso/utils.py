@@ -25,7 +25,6 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
     cursos = get_lista_cursos(nome_do_campus=nome_do_campus)
-    print("CURSOS AAAAAAAAAAAAA2 ", cursos)
     cursos_most_similar, top_k = get_most_similar(lista_a_comparar=cursos, dado_comparado=nome_do_curso, top_k=5, mapper=mapper_curso, limiar=0.5)
 
     if len(cursos_most_similar) == 0:
@@ -51,8 +50,6 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
         """
     )
 
-    print("\nRESPONSE GET CURSO MOST SIMILAR: \n", response.content)
-
     return processar_json(response.content, "curso")
 
 def get_lista_cursos(nome_do_campus: str) -> list:
@@ -66,12 +63,9 @@ def get_lista_cursos(nome_do_campus: str) -> list:
         list: lista de cursos.
     """
 
-    params = { 'status':'ATIVOS', 'campus': "" }
-
-    
+    params = { 'status': 'ATIVOS', 'campus': "" }
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
-
 
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
@@ -84,8 +78,6 @@ def get_lista_cursos(nome_do_campus: str) -> list:
             nome_curso = curso["descricao"]
             codigo_curso = curso["codigo_do_curso"]
             cursos.append({"codigo_do_curso": codigo_curso, "descricao": nome_curso})
-        
-        #print("CURSOS AAAAAAAAAAAAAAA", cursos)
         return cursos
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

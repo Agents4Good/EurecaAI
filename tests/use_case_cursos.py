@@ -48,7 +48,7 @@ question = "quais são os cursos que tiveram o currículo renovado a partir de 2
 #question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
 #question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
 #question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
-#question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
-question = "Quando o curso de ciencia da computação foi criado?"
+question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
+#question = "Quando o curso de ciencia da computação foi criado?"
 
 agent.run(question=question)
