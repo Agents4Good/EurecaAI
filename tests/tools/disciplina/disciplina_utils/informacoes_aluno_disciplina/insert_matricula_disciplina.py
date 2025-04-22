@@ -29,4 +29,3 @@ def save_disciplinas(data_json, db_name):
 
     conn.commit()
     conn.close()
-
