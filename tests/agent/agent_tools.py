@@ -4,8 +4,7 @@ from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
-from ..tools.utils.most_similar import get_most_similar
-from ..tools.curso.get_cursos import get_lista_cursos
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -67,13 +66,15 @@ class AgentTools:
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
         local_model = ChatOllama(model="deepseek-r1:8b", temperature=0)
+        auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
+
         response = local_model.invoke(
             f"""
             Pergunta do usuário:
             {question}
             
             Respostas encontradas pelas ferramentas:
-            {'\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."}
+            {auxiliar}
             
             Baseado nas respostas das ferramentas, faça uma interpretação para verificar se elas respondem de forma geral à pergunta do usuário. Elas não precisam responder de forma exata, só que façam sentido com a pergunta no geral.
             - Se não, informe que não foi possível encontrar uma resposta satisfatória.

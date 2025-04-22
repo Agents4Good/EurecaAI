@@ -4,11 +4,13 @@ from typing import Any
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
-from ..utils.obter_dados_sql import obter_dados_sql
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
-from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
-from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
+from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT
+from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA
+
+from ...sql.obter_dados_sql import obter_dados_sql
+
 from faker import Faker
 faker = Faker('pt_BR')
 

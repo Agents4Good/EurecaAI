@@ -9,8 +9,8 @@ from .tools.curso.get_curriculo_mais_recente_curso import get_curriculo_mais_rec
 tools = [
     get_informacoes_cursos,
     get_informacoes_estudantes,
-    get_curriculo_mais_recente_curso,
-    get_todos_curriculos_curso
+    #get_curriculo_mais_recente_curso,
+    #get_todos_curriculos_curso
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
