@@ -10,18 +10,19 @@ from .tools.disciplina.get_informacoes_aluno_disciplina import get_informacoes_a
 from .tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from .tools.disciplina.get_todas_disciplinas_curso import get_todas_disciplinas_curso
+from .tools.disciplina.get_todas_disciplinas_curso import get_disciplinas_curso_por_codigo
 
 tools = [
     get_disciplina, 
     get_horarios_disciplinas,
     get_informacoes_aluno_disciplina,
-    get_notas_turma_disciplina,
     get_plano_aulas, 
     get_plano_de_curso_disciplina, 
     get_pre_requisitos_disciplina,
     get_todas_disciplinas_curso,
     get_todas_disciplinas,
-    get_turmas_disciplina
+    get_turmas_disciplina,
+    get_disciplinas_curso_por_codigo
 ]
 
 agent = AgenteDisciplinas(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)

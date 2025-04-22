@@ -11,7 +11,7 @@ from .util.tabelas import TABELA_CURSO
 
 def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: Any = "") -> list:
     """
-    Ontem informações dos cursos em geral, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
+    Ontem informações do(s) curso(s) em geral, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
 
     Args:
         query: pergunta feita pelo usuário.
