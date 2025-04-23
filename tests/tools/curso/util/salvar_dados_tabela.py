@@ -72,3 +72,4 @@ def save_estudantes_cursos(data_json, db_name):
         ))
     conn.commit()
     conn.close()
+    print("As informações dos estudantes foram todas salvas.")

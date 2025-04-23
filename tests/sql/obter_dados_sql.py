@@ -13,4 +13,6 @@ def obter_dados_sql(query: str, db_name: str, PROMPT, TABELA, temperature = 0):
         if (temperature < 0.5):
             result = obter_dados_sql(query, db_name, PROMPT, TABELA, temperature + 0.1)
         return "Error: Não conseguimos achar os dados perguntados pelo usuário!"
+    
+    print("Devolvendo resultado do comand SQL:", result)
     return result
