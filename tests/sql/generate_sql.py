@@ -29,5 +29,4 @@ class LLMGenerateSQL:
 
         structured_llm = self.llm.with_structured_output(QueryOutput)
         result = structured_llm.invoke(prompt)
-        print("RESULTADO SQL DENTRO DA CLASSE ", result)
         return {"query": result["query"]}
