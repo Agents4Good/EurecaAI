@@ -11,7 +11,7 @@ from ...sql.obter_dados_sql import obter_dados_sql
 
 def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: Any = "") -> list:
     """
-    Ontem informações do(s) curso(s) em geral, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
+    Ontem informações dos cursos em geral, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
 
     Args:
         query: pergunta feita pelo usuário.
@@ -27,25 +27,10 @@ def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: 
     nome_do_curso=str(nome_do_curso)
     print(f"Tool get_informacoes_cursos chamada com nome_do_campus={nome_do_campus} e nome_do_curso={nome_do_curso}")  
 
-    campus, curso = False, False
     params = { 'status':'ATIVOS' }
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params['campus'] = dados_campus["campus"]["codigo"]
-        campus = True
-    
-    if (nome_do_curso != ""):
-        dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        params['curso'] = dados_curso['curso']['codigo']
-        curso = True
-
-    prompt_sql = PROMPT_SQL_CURSOS
-    if not campus and curso:
-        prompt_sql = f'''Essa tabela tem cursos chamado "{dados_curso["curso"]["nome"]}"\n\n''' + prompt_sql
-    elif campus and not curso:
-        prompt_sql = f'''Essa tabela tem cursos localizado no campus da cidade de {dados_campus["campus"]["nome"]}.\n\n''' + prompt_sql
-    elif campus and curso:
-        prompt_sql = f'''Essa tabela tem cursos chamado "{dados_curso["curso"]["nome"]}", localizado no campus da cidade de {dados_campus["campus"]["nome"]}.\n\n''' + prompt_sql
 
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
@@ -53,6 +38,6 @@ def get_informacoes_cursos(query: Any, nome_do_campus: Any = "", nome_do_curso: 
         cursos = json.loads(response.text)
         db_name = "db_cursos.sqlite"
         save_cursos(cursos, db_name)
-        return obter_dados_sql(query, db_name, prompt_sql, TABELA_CURSO, temperature=0)
+        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

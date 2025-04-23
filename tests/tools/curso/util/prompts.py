@@ -27,9 +27,6 @@ Siga **rigorosamente** as instruções abaixo:
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 </RESTRIÇÕES>
 
-#Dado a tabela a acima, responda:
-{input}
-
 Responda com uma consulta SQL válida e mínima.
 '''
 

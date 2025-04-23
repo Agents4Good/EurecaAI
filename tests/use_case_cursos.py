@@ -1,23 +1,18 @@
 from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
+from .tools.curso.get_curso import get_curso
 from .tools.curso.get_informacoes_cursos import get_informacoes_cursos
-from .tools.curso.get_informacoes_estudantes import get_informacoes_estudantes
-from .tools.curso.get_todos_curriculos_curso import get_todos_curriculos_curso
-from .tools.curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 
 tools = [
+    get_curso,
     get_informacoes_cursos,
-    get_informacoes_estudantes,
-    #get_curriculo_mais_recente_curso,
-    #get_todos_curriculos_curso
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
-question = "quais são os cursos que tiveram o currículo renovado a partir de 1999?"
-question = "Me fale quais foram os cursos que foram criados desde 2010"
+question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
 #question = "Quais são os cursos de gaduacao do campus de sume?"
 #question = "Quantos cursos diurnos tem no campus de patos?"
 #question = "Quantos cursos de turno integral tem no campus de patos?"
@@ -47,7 +42,7 @@ question = "Me fale quais foram os cursos que foram criados desde 2010"
 #question = "O curso de Ciências Sociais está disponível em qual campus?"
 #question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
 #question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
-#question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
+question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
 
