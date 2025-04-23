@@ -50,6 +50,7 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
+#question = "Quais os currículos do curso de ciência da computação do campus de campina grande?"
 
 #question = "Quais cursos foram criado em 2009"
 #question = "Quando foi criado ciência da computação, quero saber o dia e o mês"

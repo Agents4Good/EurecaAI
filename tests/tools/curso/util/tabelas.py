@@ -1,5 +1,5 @@
 TABELA_CURSO = """
-CREATE TABLE IF NOT EXISTS Curso (
+Curso (
     codigo_do_curso INTEGER, -- Codigo do curso (ID: chave primária)
     nome_do_curso Text, -- Nome do curso
     codigo_do_setor INTEGER, -- Código do setor ao qual o curso pertence
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Curso (
 """
 
 TABELA_ESTUDANTE_CURSO = """
-CREATE TABLE IF NOT EXISTS Estudante (
+Estudante (
     nome_do_estudante TEXT, -- nome do estudante
     matricula_do_estudante TEXT,
     turno_do_curso TEXT, -- ENUM que pode ser "Matutino", "Vespertino", "Noturno" ou "Integral".

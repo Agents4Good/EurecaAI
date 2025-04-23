@@ -23,7 +23,7 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
-    print(f"Tool get_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
+    print(f"Tool get_informações_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
     params = { "situacao-do-estudante": "ATIVOS" }
     query = str(query)
     nome_do_campus = str(nome_do_campus)
@@ -45,6 +45,7 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
         estudantes = json.loads(response.text)
         db_name = "db_estudantes.sqlite"
         save_estudantes_cursos(estudantes, db_name)
+        print(f"Estudantes salvos no banco de dados {db_name}.")
         return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES, TABELA_ESTUDANTE_CURSO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

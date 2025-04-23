@@ -10,7 +10,7 @@ def save_disciplinas(data_json, db_name):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
-    cursor.execute(TABELA)
+    cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABELA}")
     cursor.execute("DELETE FROM EstudanteDisciplina")
 
     for disciplina in data_json:

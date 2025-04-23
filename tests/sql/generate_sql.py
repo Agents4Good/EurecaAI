@@ -4,6 +4,7 @@ from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
 
+
 class StateSQL(TypedDict):
     query: str
     question: str
