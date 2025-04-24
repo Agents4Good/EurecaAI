@@ -4,6 +4,7 @@ from .agent_tools import AgentTools, AgentState
 from langgraph.graph import StateGraph, MessagesState, START, END
 
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 
@@ -55,7 +56,8 @@ class AgenteCursos(AgentTools):
         prompt_template = PromptTemplate(template=template, input_variables=["question"])
 
         #llm = HuggingFaceEndpoint(repo_id="maritaca-ai/sabia-7b", task="text-generation", temperature=0.1)
-        llm = ChatOllama(model="llama3.1", temperature=0)
+        #llm = ChatOllama(model="llama3.1:8b-instruct-q5_K_M", temperature=0)
+        llm = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
         llm_chain = prompt_template | llm
 
         messages = state["messages"]

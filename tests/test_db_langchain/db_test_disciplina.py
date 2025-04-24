@@ -1,9 +1,13 @@
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
+from dotenv import load_dotenv
 import warnings
 warnings.filterwarnings("ignore", message="LangSmithMissingAPIKeyWarning")
+
+load_dotenv()
 
 class StateSQL(TypedDict):
     query: str
@@ -17,6 +21,7 @@ class QueryOutput(TypedDict):
 class LLMGenerateSQL:
     def __init__(self, model: str, prompt: str):
         self.llm = ChatOllama(model=model, temperature=0)
+        #self.llm = ChatDeepInfra(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
         self.query_prompt_template = query_prompt_template
@@ -71,10 +76,6 @@ Siga **rigorosamente** as instruções abaixo:
 Responda com uma consulta SQL válida e mínima.
 '''
 
-
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
-
-
 queries = [
     '''Quero o nome do estudante que tem a maior nota na turma 1 de ciencia da computação?''',
     '''Qual é a quantidade de estudantes na turma 1 de Teoria da Computação em ciencia da computação?''',
@@ -100,7 +101,7 @@ queries = [
     '''Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2'''
 ]
 
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
 
 result = []
 for query in queries:

@@ -8,9 +8,16 @@ from .util.prompts import PROMPT_SQL_CURSOS
 from .util.tabelas import TABELA_CURSO
 from ...sql.obter_dados_sql import obter_dados_sql
 
-def get_informacoes_cursos(query: Any, nome_do_campus: Any = "") -> list:
+def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
-    Ontem informações dos cursos gerais da UFCG, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
+    Buscar informações relativo a todos os cursos da UFCG, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
+    Use esta função quando o usuário fizer uma pergunta **geral** sobre cursos da UFCG, sem mencionar nomes específicos.
+
+    Exemplos de uso:
+        - "Quantos cursos são oferecidos em Patos?"
+        - "Quais cursos são noturnos em Cajazeiras?"
+        - "Quantos cursos de graduação existem?"
+        - "Quantos cursos de graduação existem em Sousa?"
 
     Args:
         query: pergunta completa feita pelo usuário.

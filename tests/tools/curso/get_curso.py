@@ -4,9 +4,15 @@ from ..utils.base_url import URL_BASE
 import requests
 import json
 
-def get_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
+def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
-    Buscar informação de um curso da UFCG a partir do nome do curso.
+    Buscar informação de um curso específico da UFCG a partir do nome do curso.
+    Use esta função APENAS quando a pergunta mencionar um ou mais cursos específicos pelo nome.
+
+    Exemplos de uso:
+        - "O curso de Engenharia Elétrica é oferecido em qual turno?"
+        - "Qual o código do curso de Direito?"
+        - "Francês e Inglês são oferecidos em que turno?"
 
     Args:
         nome_do_curso: nome do curso.

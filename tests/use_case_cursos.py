@@ -1,21 +1,26 @@
 from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
-from .tools.curso.get_curso import get_curso
-from .tools.curso.get_informacoes_cursos import get_informacoes_cursos
+from langchain_community.chat_models import ChatDeepInfra
+from .tools.curso.get_curso import obter_dados_de_curso_especifico
+from .tools.curso.get_informacoes_cursos import obter_dados_de_todos_os_cursos
+from dotenv import load_dotenv
+
+load_dotenv()
 
 tools = [
-    get_curso,
-    get_informacoes_cursos,
+    obter_dados_de_curso_especifico,
+    obter_dados_de_todos_os_cursos,
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
+agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+#agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
-question = "Quais são os cursos de graduação do campus de sume?"
-question = "Quantos cursos diurnos tem no campus de patos?"
-question = "Quantos cursos de turno integral tem no campus de patos?"
+question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de engenharia?"
+#question = "Quantos cursos diurnos tem no campus de patos?"
+#question = "Quantos cursos de turno integral tem no campus de patos?"
 #question = "Quantos cursos noturnos tem no campus de patos?"
 
 #question = "O curso de Engenharia Elétrica é oferecido em qual campus?"
@@ -46,4 +51,5 @@ question = "Quantos cursos de turno integral tem no campus de patos?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
 
+#question = "frances ingles sao ofericidos em que turno?"
 agent.run(question=question)

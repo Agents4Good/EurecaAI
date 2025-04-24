@@ -1,4 +1,5 @@
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
@@ -14,7 +15,8 @@ class QueryOutput(TypedDict):
 
 class LLMGenerateSQL:
     def __init__(self, model: str, prompt: str):
-        self.llm = ChatOllama(model=model, temperature=0)
+        #self.llm = ChatOllama(model=model, temperature=0)
+        self.llm = ChatDeepInfra(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
         self.query_prompt_template = query_prompt_template

@@ -1,9 +1,13 @@
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
+from dotenv import load_dotenv
 import warnings
 warnings.filterwarnings("ignore", message="LangSmithMissingAPIKeyWarning")
+
+load_dotenv()
 
 class StateSQL(TypedDict):
     query: str
@@ -16,7 +20,8 @@ class QueryOutput(TypedDict):
 
 class LLMGenerateSQL:
     def __init__(self, model: str, prompt: str):
-        self.llm = ChatOllama(model=model, temperature=0)
+        #self.llm = ChatOllama(model=model, temperature=0)
+        self.llm = ChatDeepInfra(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
         self.query_prompt_template = query_prompt_template
@@ -118,7 +123,7 @@ queries = [
     '''quantas pessoas tem renda entre 1 a 10 salario minimo?'''
 ]
 
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
 
 result = []
 for query in queries:

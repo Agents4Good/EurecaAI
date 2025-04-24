@@ -69,6 +69,7 @@ def get_lista_cursos(nome_do_campus: str) -> list:
 
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+        print("\n\nAAAAAAAAAAAAAAAAAAAAH: ", dados_campus)
         params['campus'] = dados_campus["campus"]["codigo"]
 
     cursos = []
