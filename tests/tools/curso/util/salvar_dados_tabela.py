@@ -14,14 +14,12 @@ def save_cursos(data_json, db_name):
 
     for curso in data_json:
         cursor.execute("""
-        INSERT OR IGNORE INTO Curso VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO Curso VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             curso["codigo_do_curso"],
             curso["descricao"],
-            curso["grau_do_curso"],
             curso["codigo_do_setor"],
             curso["nome_do_setor"],
-            curso["campus"],
             curso["nome_do_campus"],
             curso["turno"],
             curso["periodo_de_inicio"],
@@ -29,7 +27,6 @@ def save_cursos(data_json, db_name):
             curso["codigo_inep"],
             curso["modalidade_academica"],
             curso["curriculo_atual"],
-            curso["area_de_retencao"],
             curso['ciclo_enade']
         ))
 

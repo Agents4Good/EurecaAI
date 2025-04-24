@@ -100,10 +100,6 @@ Sua saída deve ser **apenas uma consulta SQL válida e mínima**, sem comentár
 Use apenas os atributos que forem pedidos na pergunta.
 """
 
-
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
-
-
 queries = [
     '''Qual é o CRA de Matheus Hensley?''',
     '''Quantos estrangeiros tem no curso?''',
@@ -122,7 +118,7 @@ queries = [
     '''quantas pessoas tem renda entre 1 a 10 salario minimo?'''
 ]
 
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
 
 result = []
 for query in queries:

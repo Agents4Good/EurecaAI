@@ -13,9 +13,9 @@ tools = [
 agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
-#question = "Quais são os cursos de gaduacao do campus de sume?"
-#question = "Quantos cursos diurnos tem no campus de patos?"
-#question = "Quantos cursos de turno integral tem no campus de patos?"
+question = "Quais são os cursos de graduação do campus de sume?"
+question = "Quantos cursos diurnos tem no campus de patos?"
+question = "Quantos cursos de turno integral tem no campus de patos?"
 #question = "Quantos cursos noturnos tem no campus de patos?"
 
 #question = "O curso de Engenharia Elétrica é oferecido em qual campus?"
@@ -42,7 +42,7 @@ question = "quais são os cursos que tiveram o currículo renovado a partir de 2
 #question = "O curso de Ciências Sociais está disponível em qual campus?"
 #question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
 #question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
-question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
+#question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
 

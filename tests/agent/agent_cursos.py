@@ -7,10 +7,26 @@ from langchain_ollama import ChatOllama
 from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 
+# template = """
+# Você é um assistente inteligente que reformula perguntas de forma criteriosa. 
+# Seu objetivo é identificar se a pergunta menciona dois ou mais cursos universitários pelo NOME. 
+# Se e somente se houver múltiplos cursos claramente mencionados pelo nome (como 'Direito', 'Engenharia Civil', 'Medicina', etc), você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
+
+# Regras IMPORTANTES:
+# - NÃO adicione ou invente nomes de cursos que não estão mencionados explicitamente.
+# - Se a pergunta falar apenas de uma instituição (como 'Quantos cursos tem a UFCG?'), NÃO modifique a pergunta.
+# - Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
+# - Reformule a pergunta apenas se houver mais de um curso com nome claro.
+
+# Agora, reformule a seguinte pergunta obedecendo estritamente as regras mencionadas:
+
+# Pergunta: {question}
+# """
+
 template = """
 Você é um assistente inteligente que reformula perguntas de forma criteriosa. 
 Seu objetivo é identificar se a pergunta menciona dois ou mais cursos universitários pelo NOME. 
-Se e somente se houver múltiplos cursos claramente mencionados pelo nome (como 'Direito', 'Engenharia Civil', 'Medicina'), você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
+Se e somente se houver múltiplos cursos claramente mencionados pelo nome, você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
 
 Regras IMPORTANTES:
 - NÃO adicione ou invente nomes de cursos que não estão mencionados explicitamente.
@@ -18,9 +34,13 @@ Regras IMPORTANTES:
 - Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
 - Reformule a pergunta apenas se houver mais de um curso com nome claro.
 
-Agora, reformule a seguinte pergunta obedecendo estritamente às regras:
+Agora, reformule a seguinte pergunta obedecendo estritamente as regras mencionadas:
 
 Pergunta: {question}
+
+Mesmo que não haja necessidade de reformular a pergunta, mesmo assim repita a pergunta no seguinte formato (seja a pergunta reformulada ou não):
+
+Pergunta reformulada: `COLOQUE A PERGUNTA AQUI`
 """
 
 class AgenteCursos(AgentTools):
@@ -34,18 +54,23 @@ class AgenteCursos(AgentTools):
 
         prompt_template = PromptTemplate(template=template, input_variables=["question"])
 
-        llm = HuggingFaceEndpoint(repo_id="maritaca-ai/sabia-7b", task="text-generation", temperature=0.1)
-        #llm = ChatOllama(model="llama3.1", temperature=0)
+        #llm = HuggingFaceEndpoint(repo_id="maritaca-ai/sabia-7b", task="text-generation", temperature=0.1)
+        llm = ChatOllama(model="llama3.1", temperature=0)
         llm_chain = prompt_template | llm
 
         messages = state["messages"]
         question = messages[0].content
         print("PERGUNTA ORIGINAL: ", question)
         response = llm_chain.invoke({"question": question})
-        print("PERGUNTA REFEITA: ", response)
-        response_text = re.sub(r"^Resposta:\s*", "", response.strip())
+        print("PERGUNTA REFEITA: ", response.content)
+        match = re.search(r"(?i)Pergunta (?:refeita|reformulada):\s*(.+)", response.content.strip(), re.DOTALL)
+        response_text = match.group(1).strip() if match else ""
         human_msg_id = messages[-1].id
         return {'messages': [HumanMessage(content=response_text, id=human_msg_id)]}
+        # print("PERGUNTA REFEITA: ", response)
+        # response_text = re.sub(r"^Resposta:\s*", "", response.strip())
+        # human_msg_id = messages[-1].id
+        # return {'messages': [HumanMessage(content=response_text, id=human_msg_id)]}
 
     def build(self):
         workflow = StateGraph(AgentState)

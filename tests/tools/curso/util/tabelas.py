@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS Curso (
     codigo_do_setor INTEGER, -- Código do setor ao qual o curso pertence
     nome_do_setor Text, -- Nome do setor ao qual o curso pertence
     nome_do_campus Text, -- ENUM que pode ser "Campina Grande", "Cajazeiras", "Sousa", "Patos", "Cuité", "Sumé" e "Pombal".
-    turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno" e "Integral"
+    turno Text, -- Turno do curso pode ser "Matutino", "Vespertino", "Noturno", "Integral" e "Diurno"
     periodo_de_inicio REAL, -- período em que o curso foi criado/fundado
     data_de_funcionamento Text, -- Data em formato de Texto sobre quando o curso foi criado "YYYY-MM-DD" (usar esses zeros), deve converter em date
     codigo_inep INTEGER, -- Código INEP do curso 
-    modalidade_academica Text, -- Pode ser "BACHARELADO" ou "LICENCIATURA"
+    modalidade_academica Text, -- ENUM cuja as opções são: "BACHARELADO", "LICENCIATURA", "TECNICO".
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
     ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
 );

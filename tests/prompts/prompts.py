@@ -31,7 +31,7 @@ ZERO_SHOT_PROMPT1 = """
         Suas tools são estritamente essas:
         
         - get_curso (use essa tool para obter informações relevantes de cada curso especificamente, como nome do setor e código, turno, período/ano de origem, inep, etc)
-        - get_informacoes_cursos (use essa tool para obter informações relevantes de todos os cursos em geral)
+        - get_informacoes_cursos (use essa tool para obter informações relevantes dos cursos gerais da UFCG, não é de um curso específico)
 
         **IMPORTANTE**: Você sempre deve verificar se a resposta encontrada condiz com a pergunta fornecida. Por exemplo, caso a resposta encontrada tenha sido de um curso X mas a pergunta foi sobre o curso Y, você deve informar isso.
 """
