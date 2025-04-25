@@ -17,7 +17,7 @@ Siga **rigorosamente** as instruções abaixo:
   - nome_do_campus
   - turno
   - periodo_de_inicio
-  - data_de_funcionamento
+  - ano_de_criacao_do_curso
   - codigo_inep
   - modalidade_academica
   - curriculo_atual
