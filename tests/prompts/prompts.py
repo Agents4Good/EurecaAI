@@ -138,7 +138,6 @@ IMPORTANTE:
 - Se a pergunta envolver múltiplas intenções, faça múltiplas chamadas às ferramentas adequadas.
 """
 
-
 ZERO_SHOT_PROMPT_CAMPUS_SQL = """
         Você é um assistente da Universidade Federal de Campina Grande (UFCG) e deve responder utilizando ferramentas.
 
