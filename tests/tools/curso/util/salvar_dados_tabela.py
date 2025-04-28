@@ -23,7 +23,7 @@ def save_cursos(data_json, db_name):
             curso["nome_do_campus"],
             curso["turno"],
             curso["periodo_de_inicio"],
-            curso["data_de_funcionamento"].split(" ")[0] if curso["data_de_funcionamento"] else "00-00-0000",
+            f"{float(curso["periodo_de_inicio"]):.0f}" if curso["periodo_de_inicio"] else "0",
             curso["codigo_inep"],
             curso["modalidade_academica"],
             curso["curriculo_atual"],

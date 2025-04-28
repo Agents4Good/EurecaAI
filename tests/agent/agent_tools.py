@@ -68,6 +68,8 @@ class AgentTools:
         local_model = ChatOllama(model="deepseek-r1:8b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
 
+        print(auxiliar)
+
         response = local_model.invoke(
             f"""
             Pergunta do usuário:
