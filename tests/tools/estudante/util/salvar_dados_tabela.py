@@ -47,12 +47,13 @@ def save_estudantes_cursos_info_gerais(data_json, db_name):
 
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
-    cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABELA_ESTUDANTE_CURSO_INFO_GERAIS}")
-    cursor.execute("DELETE FROM Estudante")
+    #cursor.execute(f"CREATE TABLE IF NOT EXISTS {TABELA_ESTUDANTE_CURSO_INFO_GERAIS}")
+    cursor.execute(TABELA_ESTUDANTE_CURSO_INFO_GERAIS)
+    cursor.execute("DELETE FROM EstudanteGeral")
 
     for estudante in data_json:
         cursor.execute("""
-        INSERT OR IGNORE INTO Estudante VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO EstudanteGeral VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             faker.name(),
             estudante["matricula_do_estudante"],

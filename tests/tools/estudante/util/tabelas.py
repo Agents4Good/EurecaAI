@@ -24,7 +24,7 @@
 # """
 
 TABELA_ESTUDANTE_CURSO_INFO_GERAIS = """
-EstudanteGeral (
+CREATE TABLE IF NOT EXISTS EstudanteGeral (
     nome_do_estudante TEXT, -- nome do estudante
     matricula_do_estudante TEXT, -- matricula do estudante
     idade INTEGER, -- idade do estudante.
@@ -33,10 +33,10 @@ EstudanteGeral (
     cor TEXT, -- Enum que pode ser "Branca", "Preta", "Parda", "Indigena" ou "Amarela".
     nacionalidade TEXT, -- ENUM que pode ser "Brasileira" ou "Estrangeira".
     local_de_nascimento TEXT, -- Nome da cidade onde nasceu.
-    naturalidade TEXT -- Sigla do estado do estudante.
+    naturalidade TEXT, -- Sigla do estado do estudante.
     deficiente TEXT, -- Enum que pode ser "Sim" ou "Não".
     prac_renda_per_capita_ate INTEGER -- Renda mensal da família em salários mínimos.
-)
+);
 """
 
 TABELA_ESTUDANTE_CURSO_INFO_ESPECIFICAS = """
@@ -52,7 +52,7 @@ EstudanteCurso (
     mc REAL, -- Média de conclusão de curso.
     iea REAL, --Indice de eficiência acadêmica.
     periodos_completados INTEGER -- Quantidade de periodos que o estudante já completou.
-)
+);
 """
 
 
