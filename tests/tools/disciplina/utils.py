@@ -1,11 +1,11 @@
 from typing import Any
 from ..utils.preprocess_text import get_most_similar_acronym
 from ..utils.most_similar import get_most_similar
-from .get_todas_disciplinas import get_todas_disciplinas
+from .get_todas_disciplinas_curso import get_todas_disciplinas_curso
 from ..utils.processar_json import processar_json
 from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
-from ..curso.get_todos_curriculos_curso import get_curriculos
+from ..curso.get_todos_curriculos_curso import get_todos_curriculos_curso
 
 model = ChatOllama(model="llama3.1", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
@@ -34,7 +34,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         curriculo = curriculo['codigo_do_curriculo']
     else:
-        curriculos = get_curriculos(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+        curriculos = get_todos_curriculos_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         
         existe_curriculo = False
         todos_curriculos_disponiveis = []
@@ -49,7 +49,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         if not existe_curriculo:
             return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis}" }], "ocorreu um erro"
 
-    todas_disciplinas_curso = get_todas_disciplinas(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
+    todas_disciplinas_curso = get_todas_disciplinas_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
     print(disciplinas_most_similar)
     
