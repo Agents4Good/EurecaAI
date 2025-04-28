@@ -34,6 +34,7 @@ Regras IMPORTANTES:
 - Se a pergunta falar apenas de uma instituição (como 'Quantos cursos tem a UFCG?'), NÃO modifique a pergunta.
 - Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
 - Reformule a pergunta apenas se houver mais de um curso com nome claro.
+- Mesmo se não houver necessidade de reformulação, retorne a pergunta no formato correto.
 
 Agora, reformule a seguinte pergunta obedecendo estritamente as regras mencionadas:
 

@@ -20,10 +20,13 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
     
     campi = get_campi()
     campus_most_similar, _ = get_most_similar(lista_a_comparar=campi, dado_comparado=nome_do_campus, top_k=3, mapper=mapper_campus, limiar=0.65)
+
+    if len(campus_most_similar) == 0:
+        raise ValueError("Campus não encontrado")
     
     response = model.invoke(
         f"""
-        Para o campus de nome: '{nome_do_campus}', quais desses possíveis cursos abaixo é mais similar ao campus do nome informado?
+        Para o campus de nome: '{nome_do_campus}', quais desses possíveis campus abaixo é mais similar ao campus do nome informado?
         
         {campus_most_similar}
         
@@ -34,5 +37,5 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
-    print("\n\n", processar_json(response.content, "campus"))
+    #print("\n\n", processar_json(response.content, "campus"))
     return processar_json(response.content, "campus")

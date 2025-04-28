@@ -26,7 +26,10 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     nome_do_curso=str(nome_do_curso)
     print(f"Tool get_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
 
-    dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    try:
+        dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+    except ValueError as e:
+        return [{"Error": str(e)}]
 
     if 'AskHuman' in dados_curso:
         return dados_curso

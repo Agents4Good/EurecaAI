@@ -65,12 +65,12 @@ def get_lista_cursos(nome_do_campus: str) -> list:
 
     params = { 'status': 'ATIVOS', 'campus': "" }
     url_cursos = f'{URL_BASE}/cursos'
-    response = requests.get(url_cursos, params=params)
 
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-        print("\n\nAAAAAAAAAAAAAAAAAAAAH: ", dados_campus)
         params['campus'] = dados_campus["campus"]["codigo"]
+    
+    response = requests.get(url_cursos, params=params)
 
     cursos = []
     if response.status_code == 200:
