@@ -4,6 +4,9 @@ from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class StateSQL(TypedDict):
     query: str
@@ -32,5 +35,4 @@ class LLMGenerateSQL:
 
         structured_llm = self.llm.with_structured_output(QueryOutput)
         result = structured_llm.invoke(prompt)
-        print("SQL GERADO", result)
         return {"query": result["query"]}
