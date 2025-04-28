@@ -12,8 +12,6 @@ def obter_dados_sql(query: str, db_name: str, PROMPT, TABELA, temperature = 0):
 
     try:
         result = execute_sql(result['query'], db_name)
-        teste = execute_sql(f"SELECT * FROM Curso", db_name)
-        print(f"Teste: {teste}")
     except:
         if (temperature < 0.5):
             result = obter_dados_sql(query, db_name, PROMPT, TABELA, temperature + 0.1)

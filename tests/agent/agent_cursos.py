@@ -24,26 +24,57 @@ from langchain_core.prompts import PromptTemplate
 # Pergunta: {question}
 # """
 
+# template = """
+# Você é um assistente inteligente que reformula perguntas de forma criteriosa. 
+# Seu objetivo é identificar se a pergunta menciona dois ou mais cursos universitários pelo NOME. 
+# Se e somente se houver múltiplos cursos claramente mencionados pelo nome, você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
+
+# Regras IMPORTANTES:
+# - NÃO adicione ou invente nomes de cursos que não estão mencionados explicitamente.
+# - Se a pergunta falar apenas de uma instituição (como 'Quantos cursos tem a UFCG?'), NÃO modifique a pergunta.
+# - Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
+# - Reformule a pergunta apenas se houver mais de um curso com nome claro.
+# - Mesmo se não houver necessidade de reformulação, retorne a pergunta no formato correto.
+
+# Agora, reformule a seguinte pergunta obedecendo estritamente as regras mencionadas:
+
+# Pergunta: {question}
+
+# Mesmo que não haja necessidade de reformular a pergunta, mesmo assim repita a pergunta no seguinte formato (seja a pergunta reformulada ou não):
+
+# Pergunta reformulada: `COLOQUE A PERGUNTA AQUI`
+# """
+
 template = """
-Você é um assistente inteligente que reformula perguntas de forma criteriosa. 
-Seu objetivo é identificar se a pergunta menciona dois ou mais cursos universitários pelo NOME. 
-Se e somente se houver múltiplos cursos claramente mencionados pelo nome, você deve reformular a pergunta para deixar explícito que cada curso está sendo considerado separadamente.
+Você é um assistente responsável por reformular perguntas de maneira criteriosa e objetiva.
 
-Regras IMPORTANTES:
-- NÃO adicione ou invente nomes de cursos que não estão mencionados explicitamente.
-- Se a pergunta falar apenas de uma instituição (como 'Quantos cursos tem a UFCG?'), NÃO modifique a pergunta.
-- Se houver nomes genéricos como 'cursos', mas sem especificar quais, NÃO modifique a pergunta.
-- Reformule a pergunta apenas se houver mais de um curso com nome claro.
-- Mesmo se não houver necessidade de reformulação, retorne a pergunta no formato correto.
+Seu objetivo é verificar se a pergunta menciona explicitamente **dois ou mais cursos universitários pelo NOME COMPLETO** (por exemplo: 'Engenharia Civil', 'Medicina', 'Ciência da Computação', etc.).
 
-Agora, reformule a seguinte pergunta obedecendo estritamente as regras mencionadas:
+✅ **REGRAS CLARAS QUE DEVEM SER OBEDECIDAS**:
+
+1. **SÓ reformule** se houver **mais de um curso mencionado PELO NOME**.
+   - Exemplo correto para reformular: "Qual a duração de Medicina e Direito na USP?"
+   - Exemplo que NÃO deve ser reformulado: "computação código?", "Quantos cursos tem a UFCG?", "Quais cursos são ofertados?", etc.
+
+2. **NÃO reformule** se a pergunta for ambígua, incompleta ou não mencionar cursos de forma clara.
+   - Evite inferir ou completar com nomes de cursos se eles não estiverem escritos.
+   - Palavras como "cursos", "faculdades", "carreiras" ou "áreas" sem especificação não são suficientes para disparar reformulação.
+
+3. NÃO invente, NÃO corrija e NÃO interprete além do que está escrito.
+
+---
+
+🔁 Mesmo que **nenhuma reformulação seja necessária**, retorne a pergunta original no seguinte formato:
+
+Pergunta reformulada: `pergunta reformulada aqui`
+
+---
+
+Agora, avalie e reformule (se necessário) a seguinte pergunta:
 
 Pergunta: {question}
-
-Mesmo que não haja necessidade de reformular a pergunta, mesmo assim repita a pergunta no seguinte formato (seja a pergunta reformulada ou não):
-
-Pergunta reformulada: `COLOQUE A PERGUNTA AQUI`
 """
+
 
 class AgenteCursos(AgentTools):
 

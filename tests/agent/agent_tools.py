@@ -41,6 +41,13 @@ class AgentTools:
         self.tools = ToolNode(tools)
         self.prompt = prompt
         self.app = self.build()
+
+        from IPython.display import Image
+        print("Grafo do agente:")
+        file = "grafo_human.png"
+        img = self.app.get_graph().draw_mermaid_png()
+        with open(file, "wb") as f:
+            f.write(img)
     
     
     def call_model(self, state: AgentState):
@@ -96,9 +103,9 @@ class AgentTools:
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
         workflow.add_node("exit", self.exit_node)
-        workflow.add_edge(START, "input")
+        workflow.add_edge(START, "agent")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
-        workflow.add_edge("input", "agent")
+       # workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
         workflow.add_edge("exit", END)
         return workflow.compile()
@@ -132,5 +139,7 @@ class AgentTools:
     
     def run(self, question: str):
         thread = {"configurable": {"thread_id": "1"}}
+
+
         for message_chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
             message_chunk["messages"][-1].pretty_print()

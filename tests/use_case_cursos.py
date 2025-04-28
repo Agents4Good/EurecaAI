@@ -2,8 +2,8 @@ from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
-from .tools.curso.get_curso import obter_dados_de_curso_especifico
-from .tools.curso.get_informacoes_cursos import obter_dados_de_todos_os_cursos
+from .tools.curso.obter_dados_de_curso_especifico import obter_dados_de_curso_especifico
+from .tools.curso.obter_dados_de_todos_os_cursos import obter_dados_de_todos_os_cursos
 from dotenv import load_dotenv
 
 load_dotenv()
