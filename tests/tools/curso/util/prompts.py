@@ -24,6 +24,7 @@ Siga **rigorosamente** as instruções abaixo:
   - ciclo_enade
 - Não invente ou modifique os nomes das colunas.
 - Nunca use a cláusula LIKE.
+- Nunca use a cláusula GROUP BY.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 - Gere o SQL no formato correto, apenas o SQL e mais nada.
 </RESTRIÇÕES>

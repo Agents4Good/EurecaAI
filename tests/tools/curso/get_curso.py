@@ -1,6 +1,7 @@
 from typing import Any
 from .utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
+from ..utils.most_similar import get_sim_course_name
 import requests
 import json
 
@@ -28,11 +29,13 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
 
     try:
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+        if 'AskHuman' in dados_curso:
+            return dados_curso
+        if get_sim_course_name(nome_do_curso, dados_curso['curso']['nome']) < 0.5:
+            print(dados_curso['curso']['nome'])
+            return [{"Error": f"Nenhum curso encontrado com o nome {nome_do_curso}"}]
     except ValueError as e:
         return [{"Error": str(e)}]
-
-    if 'AskHuman' in dados_curso:
-        return dados_curso
 
     params = { 
         'status-enum': 'ATIVOS',

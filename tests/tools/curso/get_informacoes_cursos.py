@@ -42,6 +42,12 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         cursos = json.loads(response.text)
         db_name = "db_cursos.sqlite"
         save_cursos(cursos, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
+        try:
+            dados = obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0) 
+            if len(dados) == 0:
+                return ["Não foi encontrado nada"]
+        except TypeError as e:
+            return [{"Error": "Ocorreu um erro, você poderia perguntar novamente de outra forma?"}]
+        return dados
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

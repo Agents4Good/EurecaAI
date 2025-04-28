@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Curso (
     codigo_inep INTEGER, -- Código INEP do curso 
     modalidade_academica Text, -- ENUM cuja as opções são: "BACHARELADO", "LICENCIATURA", "TECNICO".
     curriculo_atual INTEGER, -- É o ano em que a grade do curso foi renovada
-    ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade 
+    ciclo_enade INTEGER -- De quantos em quantos semestres ocorre a prova do enade
 );
 """
 
