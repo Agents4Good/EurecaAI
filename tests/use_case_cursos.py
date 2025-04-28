@@ -55,5 +55,5 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "Quando foi criado ciência da computação, quero saber o dia e o mês"
 #question = "frances ingles sao ofericidos em que turno?"
 
-question = "O curso de Ciências Sociais está disponível em qual campus?"
+question = "computação código?"
 agent.run(question=question)

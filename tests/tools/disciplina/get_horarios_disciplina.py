@@ -5,17 +5,23 @@ from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = "") -> list:
+def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = "") -> list:
     """
     Busca os horários e a número da sala de uma disciplina de uma turma.
+    Use essa ferramenta quando quiser informações sobre:
+    - setor responsável;
+    - período;
+    - dia em que a aula ocorre;
+    - horário de início e término da aula;
+    - código da sala.
 
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
-        turma: número da turma (se for para todas as turmas usar a string vazia).
+        turma: número da turma (se for para todas as turmas usar a string vazia '').
         periodo: período do curso (se não souber, então use a string vazia '' para usar o período mais recente).
-        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
+        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
     
     Returns:
         Retorna uma lista de horários das aulas da disciplina.

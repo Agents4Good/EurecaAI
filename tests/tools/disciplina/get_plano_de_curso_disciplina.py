@@ -7,14 +7,21 @@ from ..utils.base_url import URL_BASE
 
 def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """
-    Busca o plano de curso de uma disciplina, como os temas abordados na disciplina como um todo, provas, exercícios, metodologia e livros usados na disciplina.
+    Busca o plano de curso de uma disciplina.
+    Use essa ferramenta quando quiser informações sobre:
+    - ementa da disciplina;
+    - objetivos da disciplina;
+    - conteudo da disciplina;
+    - metodologia adotada na disciplina;
+    - avaliações;
+    - referências bibliográficas utilizadas.
 
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
-        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
-        periodo: periodo (se não souber, passe a string vazia '' para buscar pelo período mais recente).
+        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
+        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
     
     Returns:
         Lista com informações relevantes do plano de curso de uma disciplina.

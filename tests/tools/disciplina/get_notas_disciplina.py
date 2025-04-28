@@ -14,18 +14,23 @@ from ...sql.obter_dados_sql import obter_dados_sql
 from faker import Faker
 faker = Faker('pt_BR')
 
-def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> list:
+def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "") -> list:
     """
-    Buscar informações relevantes dos estudantes em uma disciplina específica, como as matrículas deles, as notas (médias), dispensa da disciplina e o status (situação) dos estudantes na disciplina.
-
+    Buscar informações relevantes dos estudantes em uma disciplina específica.
+    Use essa ferramenta quando quiser informações sobre:
+    - nome dos estudantes;
+    - matricula do estudante;
+    - status do estudante (aprovação e reprovação);
+    - notas dos estudantes na disciplina;
+    - informaçãoes de dispensa do aluno na disciplina.
+    
     Args:
         query: pergunta feita pelo usuário.
         nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... (Se o usuário não informou o campus de Campina Grande)
         turma: valor numérico da turma da disciplina (se não foi informada, então passe a strig vazia '').
-        periodo: periodo do curso (se não foi informado, então passe a string vazia '').
-        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo").
+        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
     
     Returns:
         Informações relacionados aos estudantes da disciplina.
@@ -38,10 +43,12 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
 
     turma=str(turma)
     periodo=str(periodo)
-    curriculo=str(curriculo)
+    curriculo=""
 
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
+        print("ENTROU NO IF")
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)
+        print("SAIU DO IF")
     
     print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)

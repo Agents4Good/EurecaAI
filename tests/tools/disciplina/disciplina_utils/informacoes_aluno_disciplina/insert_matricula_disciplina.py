@@ -1,7 +1,7 @@
 from faker import Faker
 faker = Faker('pt_BR')
 import sqlite3
-from .tabela_matricula_disciplina import TABELA
+from .tabela_matricula_disciplina import TABELA_DISCIPLINA
 
 def save_disciplinas(data_json, db_name):
     """Salva as disciplinas temporariamente em um banco de dados SQLite."""
@@ -10,7 +10,7 @@ def save_disciplinas(data_json, db_name):
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
-    cursor.execute(TABELA)
+    cursor.execute(TABELA_DISCIPLINA)
     cursor.execute("DELETE FROM EstudanteDisciplina")
 
     for disciplina in data_json:

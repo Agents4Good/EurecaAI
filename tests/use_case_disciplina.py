@@ -1,28 +1,22 @@
 from .prompts.prompts import *
 from langchain_ollama import ChatOllama
 from .agent.agent_disciplinas import AgenteDisciplinas
-from .tools.disciplina.get_disciplina import get_disciplina
-from .tools.disciplina.get_plano_aulas import get_plano_aulas
-from .tools.disciplina.get_todas_disciplinas_curso_por_curriculo import get_todas_disciplinas_por_curriculo
+from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
-from .tools.disciplina.get_horarios_disciplinas import get_horarios_disciplinas
-from .tools.disciplina.get_informacoes_aluno_disciplina import get_informacoes_aluno_disciplina
-from .tools.disciplina.get_plano_curso_disciplina import get_plano_de_curso_disciplina
+from .tools.disciplina.get_horarios_disciplina import get_horarios_disciplina
+from .tools.disciplina.get_notas_disciplina import get_notas_disciplina
+from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
-from .tools.disciplina.get_todas_disciplinas_curso import get_todas_disciplinas_curso
-from .tools.disciplina.get_todas_disciplinas_curso import get_disciplinas_curso_por_codigo
+from .tools.disciplina.get_disciplinas import get_disciplinas
 
 tools = [
-    get_disciplina, 
-    get_horarios_disciplinas,
-    get_informacoes_aluno_disciplina,
-    get_plano_aulas, 
-    get_plano_de_curso_disciplina, 
+    get_horarios_disciplina,
+    get_notas_disciplina,
+    get_plano_de_aulas, 
+    #get_plano_de_curso_disciplina, 
     get_pre_requisitos_disciplina,
-    get_todas_disciplinas_por_curriculo,
-    get_todas_disciplinas_curso,
-    get_turmas_disciplina,
-    get_disciplinas_curso_por_codigo
+    get_disciplinas
+    #get_turmas_disciplina,
 ]
 
 agent = AgenteDisciplinas(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
@@ -38,4 +32,5 @@ agent = AgenteDisciplinas(LLM=ChatOllama, model="llama3.1", tools=tools, tempera
 #question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
 #question = "Qual foi a menor nota dos alunos na disciplina de teoria da computação do curso de ciência da computação em 2023.2?"
 question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2"
+question = "Quero o nome do estudante que tem a maior nota na turma 1 na disciplina de Teoria da computação do curso de ciencia da computação do campus de campina grande?"
 agent.run(question=question)

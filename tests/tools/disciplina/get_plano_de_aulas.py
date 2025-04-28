@@ -5,19 +5,23 @@ from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_plano_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
+def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
     """
     Busca o plano de aulas de uma turma de uma disciplina. 
-    Use quando quiser buscar informação do tema abordado na aula em um dia específico. 
-    Essa ferramenta lhe dará uma lista de temas das aulas da disciplina que irá ocorrer em cada dia.
+    Use essa ferramenta quando quiser informações sobre:
+    - período;
+    - número da aula;
+    - data em que a aula irá ocorrer;
+    - número de horas de aula.
+    - assunto abordado durante a aula.
 
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
         nome_da_disciplina: nome da disciplina.
-        periodo: período letivo (passe a string vazia '' se não souber).
-        numero_da_turma: valor numérico da turma (se não souber, use a turma '01' como turma padrão).
-        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
+        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
+        numero_da_turma: valor numérico da turma (se não souber, use a turma '01' como a turma padrão).
+        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
 
     Returns:
         Lista com informações relevantes do plano de aulas da turma de uma disciplina.

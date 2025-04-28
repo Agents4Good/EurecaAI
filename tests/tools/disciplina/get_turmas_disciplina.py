@@ -8,13 +8,20 @@ from ..utils.base_url import URL_BASE
 def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = "", curriculo: Any = "") -> list:
     """
     Busca todas as turmas de uma unica disciplina.
-    
+    Use essa ferramenta quando quiser informações sobre:
+    - número da turma
+    - código da disciplina
+    - período da curso
+    - quantidade de notas
+    - carga horária
+    - tipo ("PRESENCIAL")
+
     Args:
         nome_da_disciplina: nome da disciplina.
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-        periodo: período (se não souber não coloque nada aqui para obter o período mais recente).
-        curriculo: valor inteiro do ano (se não tiver ou se quiser a mais recente use a string vazia '').
+        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
+        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
     
     Returns:
         Lista com informações relevantes das turmas.
