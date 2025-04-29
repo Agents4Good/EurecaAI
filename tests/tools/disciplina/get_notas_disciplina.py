@@ -8,7 +8,6 @@ from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_
 from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
 from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
 from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
-
 from ...sql.obter_dados_sql import obter_dados_sql
 
 from faker import Faker
@@ -16,24 +15,22 @@ faker = Faker('pt_BR')
 
 def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "") -> list:
     """
-    Buscar informações relevantes dos estudantes em uma disciplina específica.
-    Use essa ferramenta quando quiser informações sobre:
-    - nome dos estudantes;
-    - matricula do estudante;
-    - status do estudante (aprovação e reprovação);
-    - notas dos estudantes na disciplina;
-    - informaçãoes de dispensa do aluno na disciplina.
-    
-    Args:
-        query: pergunta feita pelo usuário.
-        nome_da_disciplina: nome da disciplina.
-        nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... (Se o usuário não informou o campus de Campina Grande)
-        turma: valor numérico da turma da disciplina (se não foi informada, então passe a strig vazia '').
-        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
-    
-    Returns:
-        Informações relacionados aos estudantes da disciplina.
+    Retorna as notas dos alunos em uma disciplina.
+
+    Use esta função quando a pergunta envolver:
+    - notas, aprovações ou reprovações;
+    - dispensa de disciplina;
+    - nomes ou matrícula dos alunos.
+
+    Parâmetros:
+    - query: Pergunta original do usuário.
+    - nome_da_disciplina: Nome da disciplina.
+    - nome_do_curso: Nome do curso.
+    - nome_do_campus: Cidade do campus.
+    - turma: (Opcional) Número da turma.
+    - periodo: (Opcional) Período do curso.
+
+    Chame esta função se a pergunta for sobre desempenho ou histórico dos alunos em uma disciplina.
     """
     query=str(query)
     
@@ -47,7 +44,7 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
 
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
         print("ENTROU NO IF")
-        curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)
+        curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
         print("SAIU DO IF")
     
     print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
@@ -64,7 +61,7 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     }
 
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
-
+    print("ressss", response)
     if response.status_code == 200:
         matriculas = json.loads(response.text)
         db_name = "db_disciplina.sqlite"

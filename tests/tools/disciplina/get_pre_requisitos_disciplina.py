@@ -15,18 +15,19 @@ def get_disciplina_for_tool(codigo_da_disciplina):
 
 def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """
-    Busca as disciplinas que são pré-requisitos ou requisitos da disciplina perguntada.
-    Essa ferramenta retorna todas as disciplinas que são pré-requisitos da disciplina.
+    Retorna os pré-requisitos de uma disciplina.
 
-    Args:
-        nome_da_disciplina: nome da disciplina.
-        nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
-    
-    Returns:
-        Lista contentdo o nome de cada disciplina que é requisito para a disciplina desejada. 
-        Se o retorno for uma lista vazia, então informe que a disciplina em questão não possui requisitos.
+    Use esta função quando a pergunta envolver:
+    - disciplinas que devem ser cursadas antes;
+    - requisitos formais de matrícula.
+
+    Parâmetros:
+    - nome_da_disciplina: Nome da disciplina.
+    - nome_do_curso: Nome do curso.
+    - nome_do_campus: Cidade do campus.
+    - curriculo: (Opcional) Ano do currículo.
+
+    Chame esta função se a pergunta for sobre disciplinas que precisam ser cursadas antes.
     """
     
     nome_da_disciplina=str(nome_da_disciplina)

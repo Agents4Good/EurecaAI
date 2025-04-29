@@ -7,26 +7,22 @@ from ..utils.base_url import URL_BASE
 
 def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
     """
-    Busca o plano de aulas de uma turma de uma disciplina. 
-    Use essa ferramenta quando quiser informações sobre:
-    - período;
-    - número da aula;
-    - data em que a aula irá ocorrer;
-    - número de horas de aula.
-    - assunto abordado durante a aula.
+    Retorna o plano de aulas de uma turma.
 
-    Args:
-        nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-        nome_da_disciplina: nome da disciplina.
-        periodo: periodo do curso (se não souber ou não foi informado, então passe a string vazia '').
-        numero_da_turma: valor numérico da turma (se não souber, use a turma '01' como a turma padrão).
-        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
+    Use esta função quando a pergunta envolver:
+    - número, data ou duração das aulas;
+    - conteúdo abordado em cada aula.
 
-    Returns:
-        Lista com informações relevantes do plano de aulas da turma de uma disciplina.
+    Parâmetros:
+    - nome_do_curso: Nome do curso.
+    - nome_do_campus: Cidade do campus.
+    - nome_da_disciplina: Nome da disciplina.
+    - periodo: (Opcional) Período do curso.
+    - numero_da_turma: (Opcional) Número da turma ("01" se não informado).
+    - curriculo: (Opcional) Ano do currículo.
+
+    Chame esta função se a pergunta for sobre o cronograma de aulas da disciplina.
     """
-    
     nome_do_campus=str(nome_do_campus)
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)

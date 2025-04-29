@@ -7,28 +7,22 @@ from ..utils.base_url import URL_BASE
 
 def get_disciplinas(nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: Any = "", curriculo: Any = "") -> list:
     """
-    Busca todas as discplinas ofertadas de um curso. Usar apenas quando for perguntado sobre apenas as disciplinas que o curso oferece.
-    Use essa ferramenta quando quiser informações sobre:
-    - código da disciplina;
-    - nome da disciplina;
-    - carga teórica e prática semanal;
-    - quantidade de créditos;
-    - horas totais;
-    - carga teorica teórica/prática minima/máxima;
-    - número de semanas de aulas;
-    - código e nome do setor responsável;
-    - nome e código do campus;
-    - carga horária de extensão; 
-    - contabilização de créditos.
-    
-    Args:
-        nome_do_curso: nome do curso. Se não souber, usar o campus padrão "Campina Grande".
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-        codigo_disciplina: Código da disciplina (se não souber, usar a string vazia '').
-        curriculo: ano do curriculo do curso (passe apenas quando o usuário informar explicitamente a palavra "currículo", se não souber use a string vazia '' para usar o currículo mais recente).
-    
-    Returns:
-        Retorna uma lista de disciplinas ofertadas pelo curso.
+    Retorna as disciplinas ofertadas por um curso.
+
+    Use esta função quando a pergunta envolver:
+    - código, nome, créditos ou carga horária da disciplina;
+    - carga teórica/prática semanal ou total;
+    - número de semanas de aula;
+    - setor responsável e campus;
+    - carga de extensão ou contabilização de créditos.
+
+    Parâmetros:
+    - nome_do_curso: Nome do curso.
+    - nome_do_campus: Cidade do campus.
+    - codigo_disciplina: (Opcional) Código da disciplina.
+    - curriculo: (Opcional) Ano do currículo ("" usa o mais recente).
+
+    Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
     """
 
     curriculo = str(curriculo)
@@ -38,17 +32,21 @@ def get_disciplinas(nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: 
     
     if (curriculo == ""):
         curriculo = get_curriculo_mais_recente_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
-
+        print("okkkk-------------s", curriculo)
+    print("pppppppppppppppp")
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-    
+    print("ooooooooooooooooooo", dados_curso, curriculo)
     params = {
         'curso': dados_curso['curso']['codigo'],
-        'curriculo': curriculo["codigo_do_curriculo"]
+        'curriculo': curriculo
     }
+
+    print(params)
 
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:
+        print("retornando disciplinas")
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
