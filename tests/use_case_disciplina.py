@@ -15,8 +15,8 @@ tools = [
     #get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
     #get_pre_requisitos_disciplina,
-    #get_disciplinas,
-    #get_turmas_disciplina
+    get_disciplinas,
+    get_turmas_disciplina
 ]
 
 agent = AgenteDisciplinas(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
