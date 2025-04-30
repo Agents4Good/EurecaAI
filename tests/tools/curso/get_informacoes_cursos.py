@@ -7,6 +7,7 @@ from ..utils.base_url import URL_BASE
 from .util.prompts import PROMPT_SQL_CURSOS
 from .util.tabelas import TABELA_CURSO
 from ...sql.obter_dados_sql import obter_dados_sql
+from langchain_ollama import ChatOllama
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
@@ -42,6 +43,6 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         cursos = json.loads(response.text)
         db_name = "db_cursos.sqlite"
         save_cursos(cursos, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
+        return obter_dados_sql(query, db_name, ChatOllama, "llama3.1", PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

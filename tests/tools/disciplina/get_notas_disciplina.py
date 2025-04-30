@@ -5,12 +5,13 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
-from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
-from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
-from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_ESTUDANTEDISCIPLINA
+from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_estudante_disciplinas
+from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_ESTUDANTE_DISCIPLINA
+from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_ESTUDANTE_DISCIPLINA
 from ...sql.obter_dados_sql import obter_dados_sql
-
+from langchain_ollama import ChatOllama
 from faker import Faker
+
 faker = Faker('pt_BR')
 
 def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "") -> list:
@@ -60,8 +61,8 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
     if response.status_code == 200:
         matriculas = json.loads(response.text)
-        db_name = "db_disciplina.sqlite"
-        save_disciplinas(matriculas, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_DISCIPLINA, TABELA_ESTUDANTEDISCIPLINA, temperature=0)
+        db_name = "db_estudante_disciplina.sqlite"
+        save_estudante_disciplinas(matriculas, db_name)
+        return obter_dados_sql(query, db_name, ChatOllama, "llama3.1", PROMPT_ESTUDANTE_DISCIPLINA, TABELA_ESTUDANTE_DISCIPLINA, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

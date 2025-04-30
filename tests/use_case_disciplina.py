@@ -33,5 +33,5 @@ agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:8b", tools=tools, tempera
 #question = "Qual foi a menor nota dos alunos na disciplina de teoria da computação do curso de ciência da computação em 2023.2?"
 question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2"
 question = "Quero o nome do estudante que tem a maior nota na turma 1 na disciplina de Teoria da computação do curso de ciencia da computação do campus de campina grande no período 2023.2?"
-question = "Quero saber os assuntos abordados na disciplina de teoria da computação do curso de ciencia da computação"
+#question = "Quantas disciplinas tem no curso de ciência da computação no curriculo 2023"
 agent.run(question=question)

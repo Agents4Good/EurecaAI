@@ -1,10 +1,9 @@
 from .generate_sql import LLMGenerateSQL
 from .execute_sql import execute_sql
 
-def obter_dados_sql(query: str, db_name: str, PROMPT, TABELA, temperature = 0):
+def obter_dados_sql(query: str, db_name: str, LLM, model, PROMPT, TABELA, temperature = 0):
     print("Obtendo dados via consulta SQL")
-    #sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=PROMPT)
-    sqlGenerateLLM = LLMGenerateSQL(model="qwen3:8b", prompt=PROMPT)
+    sqlGenerateLLM = LLMGenerateSQL(LLM=LLM, model=model, prompt=PROMPT)
     result = sqlGenerateLLM.write_query(query=query, tabela=TABELA)
 
     try:

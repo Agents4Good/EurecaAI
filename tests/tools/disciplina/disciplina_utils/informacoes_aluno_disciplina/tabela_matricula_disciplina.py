@@ -1,4 +1,4 @@
-TABELA_ESTUDANTEDISCIPLINA = """
+TABELA_ESTUDANTE_DISCIPLINA = """
 CREATE TABLE IF NOT EXISTS EstudanteDisciplina (
     nome_do_estudante TEXT, -- nome do estudante (nome de pessoa).
     matricula_do_estudante TEXT, -- Número de 9 digitos que representa o número da matrícula do estudante (usar se informou a matrícula do estudante).
