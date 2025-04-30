@@ -5,8 +5,11 @@ from ..campus.utils import get_campus_most_similar
 from .util.salvar_dados_tabela import save_cursos
 from ..utils.base_url import URL_BASE
 from .util.prompts import PROMPT_SQL_CURSOS
-from .util.tabelas import TABELA_CURSO
-from ...sql.obter_dados_sql import obter_dados_sql
+#from .util.tabelas import TABELA_CURSO
+#from ...sql.obter_dados_sql import obter_dados_sql
+
+
+from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
@@ -27,11 +30,14 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
+    db_name = "db_cursos.sqlite"
+    gerenciador = GerenciadorSQLAutomatizado("Curso", db_name)
+
     query=str(query)
     nome_do_campus=str(nome_do_campus)
     print(f"Tool get_informacoes_cursos chamada com nome_do_campus={nome_do_campus}")  
 
-    params = { 'status':'ATIVOS' }
+    params = {'status':'ATIVOS' }
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params['campus'] = dados_campus["campus"]["codigo"]
@@ -40,8 +46,7 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     response = requests.get(url_cursos, params=params)
     if response.status_code == 200:
         cursos = json.loads(response.text)
-        db_name = "db_cursos.sqlite"
-        save_cursos(cursos, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_SQL_CURSOS, TABELA_CURSO, temperature=0)
+        gerenciador.save_data(cursos)
+        return gerenciador.get_data(query, PROMPT_SQL_CURSOS, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

@@ -1,0 +1,60 @@
+{
+    "Curso": {
+        "codigo_do_curso": {
+            "type": "INTEGER",
+            "description": "Codigo do curso (ID: chave primária)",
+            "primary_key": true,
+            "mapper": "codigo_do_curso"
+        },
+        "nome_do_curso": {
+            "type": "TEXT",
+            "description": "Nome do curso",
+            "mapper": "descricao"
+        },
+        "codigo_do_setor": {
+            "type": "INTEGER",
+            "description": "Codigo do setor",
+            "mapper": "codigo_do_setor"
+        },
+        "nome_do_setor": {
+            "type": "TEXT",
+            "description": "Nome do setor",
+            "mapper": "nome_do_setor"
+        },
+        "nome_do_campus": {
+            "type": "TEXT",
+            "description": "Nome do campus",
+            "mapper": "nome_do_campus"
+        },
+        "turno": {
+            "type": "TEXT",
+            "description": "Turno do curso",
+            "mapper": "turno"
+        },
+        "periodo_de_inicio": {
+            "type": "TEXT",
+            "description": "Periodo de inicio do curso",
+            "mapper": "periodo_de_inicio"
+        },
+        "codigo_inep": {
+            "type": "INTEGER",
+            "description": "Codigo do INEP",
+            "mapper": "codigo_inep"
+        },
+        "modalidade_academica": {
+            "type": "TEXT",
+            "description": "Modalidade acadêmica do curso cuja opções são BACHARELADO, LICENCIATURA, TECNICO",
+            "mapper": "modalidade_academica"
+        },
+        "curriculo_atual": {
+            "type": "TEXT",
+            "description": "É o ano em que a grade do curso foi renovada",
+            "mapper": "curriculo_atual"
+        },
+        "ciclo_enade": {
+            "type": "INTEGER",
+            "description": "De quantos em quantos semestres ocorre a prova do enade",
+            "mapper": "ciclo_enade"
+        }
+    }
+}

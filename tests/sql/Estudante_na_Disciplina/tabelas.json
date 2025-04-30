@@ -1,0 +1,30 @@
+{
+    "Estudante_na_Disciplina": {
+        "matricula_do_estudante": {
+            "type": "TEXT",
+            "description": "Matrícula do estudante",
+            "mapper": "matricula_do_estudante"
+        },
+        "nome_do_estudante": {
+            "type": "TEXT",
+            "description": "Nome do estudante",
+            "mapper": "nome_do_estudante"
+        },
+        "status_do_estudante": {
+            "type": "TEXT",
+            "description": "ENUM pode ser 'Aprovado', 'Trancado', 'Reprovado por Nota', 'Reprovado por Falta'. E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use 'Reprovado por Nota' OR Reprovado por Falta",
+            "mapper": "status_do_estudante"
+        },
+        "media_final_do_estudante": {
+            "type": "REAL",
+            "description": "Média final do estudante",
+            "mapper": "media_final_do_estudante"
+        },
+        "dispensou": {
+            "type": "TEXT",
+            "description": "ENUM pode ser 'Sim' ou 'Não'. Indica se o estudante dispensou a disciplina",
+            "mapper": "dispensou"
+        }
+
+    }
+}

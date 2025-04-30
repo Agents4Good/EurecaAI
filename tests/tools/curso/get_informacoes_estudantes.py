@@ -10,6 +10,10 @@ from .util.tabelas import TABELA_ESTUDANTE_CURSO
 
 from ...sql.obter_dados_sql import obter_dados_sql
 
+from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+
+# OBSEVAÇÃO ALTERAR PARA O GERENCIADOR SQL AUTOMATIZADO DEPOIS!!!
+
 def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: Any) -> dict:
     """
     Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
@@ -39,6 +43,8 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
         pass
     else:
         return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
+
+    
 
     response = requests.get(f'{URL_BASE}/estudantes', params=params)
     if response.status_code == 200:

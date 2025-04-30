@@ -14,8 +14,8 @@ tools = [
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
-#agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
+#agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
 question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)
@@ -56,4 +56,5 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "Quando foi criado ciência da computação, quero saber o dia e o mês"
 #question = "frances ingles sao ofericidos em que turno?"
 question = "computação código?"
+question = "Traga somente o código de todos os cursos do campus campina grande"
 agent.run(question=question)

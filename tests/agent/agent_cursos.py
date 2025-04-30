@@ -108,13 +108,13 @@ class AgenteCursos(AgentTools):
 
     def build(self):
         workflow = StateGraph(AgentState)
-        workflow.add_node("input", self.processa_entrada_node)
+        #workflow.add_node("input", self.processa_entrada_node)
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
         workflow.add_node("exit", self.exit_node)
-        workflow.add_edge(START, "input")
+        workflow.add_edge(START, "agent")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
-        workflow.add_edge("input", "agent")
+        #workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
         workflow.add_edge("exit", END)
         return workflow.compile()

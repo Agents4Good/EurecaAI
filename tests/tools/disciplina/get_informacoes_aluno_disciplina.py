@@ -5,14 +5,14 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
-from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
-from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
-from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
+#from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
+#from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_ESTUDANTE_NA_DISCIPLINA
+#from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
 
-from ...sql.obter_dados_sql import obter_dados_sql
-
-from faker import Faker
-faker = Faker('pt_BR')
+#from ...sql.obter_dados_sql import obter_dados_sql
+from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
+from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
+from ...sql.normalize_data_estudante import normalize_data_estudante
 
 def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> list:
     """
@@ -30,6 +30,10 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
     Returns:
         Informações relacionados aos estudantes da disciplina.
     """
+
+    db_name = "db_disciplina.sqlite"
+    #gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name=db_name)
+
     query=str(query)
     
     nome_da_disciplina=str(nome_da_disciplina)
@@ -49,6 +53,7 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
@@ -58,10 +63,13 @@ def get_informacoes_aluno_disciplina(query: Any, nome_da_disciplina: Any, nome_d
 
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
+    print("\n\nDADOS \n\n", response[0], "\n")
+    return;
     if response.status_code == 200:
-        matriculas = json.loads(response.text)
-        db_name = "db_disciplina.sqlite"
-        save_disciplinas(matriculas, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_DISCIPLINA, TABELA_DISCIPLINA, temperature=0)
+        estudantes_na_disciplina = normalize_data_estudante(json.loads(response.text))
+        #save_disciplinas(matriculas, db_name)
+        gerenciador.save_data(estudantes_na_disciplina)
+        #return obter_dados_sql(query, db_name, PROMPT_ESTUDANTE_NA_DISCIPLINA, TABELA_DISCIPLINA, temperature=0)
+        return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
