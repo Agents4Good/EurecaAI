@@ -30,17 +30,11 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     nome_do_curso = str(nome_do_curso)
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
-    print("Okayyok")
     if (curriculo == ""):
-        print("pooppoop")
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        print("aooaaooa")
         curriculo = curriculo['codigo_do_curriculo']
     else:
-        print("kakakaka, curriculooooppppppppppppp", curriculo)
-        print("--------------------")
         curriculos = get_todos_curriculos_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        print("ksksks", curriculo)
         existe_curriculo = False
         todos_curriculos_disponiveis = []
         
@@ -54,11 +48,8 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         if not existe_curriculo:
             return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis}" }], "ocorreu um erro"
 
-    print("iooiiooi")
     todas_disciplinas_curso = get_disciplinas(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, codigo_disciplina="", curriculo=curriculo)
-    print("todas", todas_disciplinas_curso)
     disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
-    print(disciplinas_most_similar)
     
     response = model.invoke(
         f"""
@@ -74,5 +65,4 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         """
     )
     
-    print(response.content)
     return processar_json(response.content, "disciplina"), curriculo

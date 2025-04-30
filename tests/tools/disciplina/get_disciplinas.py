@@ -32,21 +32,15 @@ def get_disciplinas(nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: 
     
     if (curriculo == ""):
         curriculo = get_curriculo_mais_recente_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
-        print("okkkk-------------s", curriculo)
-    print("pppppppppppppppp")
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-    print("ooooooooooooooooooo", dados_curso, curriculo)
+
     params = {
         'curso': dados_curso['curso']['codigo'],
         'curriculo': curriculo
     }
-
-    print(params)
-
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:
-        print("retornando disciplinas")
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

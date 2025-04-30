@@ -7,7 +7,7 @@ from ..utils.base_url import URL_BASE
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from .disciplina_utils.informacoes_aluno_disciplina.insert_matricula_disciplina import save_disciplinas
 from .disciplina_utils.informacoes_aluno_disciplina.prompt_matricula_disciplina import PROMPT_DISCIPLINA
-from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_DISCIPLINA
+from .disciplina_utils.informacoes_aluno_disciplina.tabela_matricula_disciplina import TABELA_ESTUDANTEDISCIPLINA
 from ...sql.obter_dados_sql import obter_dados_sql
 
 from faker import Faker
@@ -37,15 +37,12 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
-
     turma=str(turma)
     periodo=str(periodo)
     curriculo=""
 
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
-        print("ENTROU NO IF")
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
-        print("SAIU DO IF")
     
     print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
@@ -61,11 +58,10 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     }
 
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
-    print("ressss", response)
     if response.status_code == 200:
         matriculas = json.loads(response.text)
         db_name = "db_disciplina.sqlite"
         save_disciplinas(matriculas, db_name)
-        return obter_dados_sql(query, db_name, PROMPT_DISCIPLINA, TABELA_DISCIPLINA, temperature=0)
+        return obter_dados_sql(query, db_name, PROMPT_DISCIPLINA, TABELA_ESTUDANTEDISCIPLINA, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

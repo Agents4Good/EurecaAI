@@ -43,7 +43,7 @@ def get_informacoes_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: A
     response = requests.get(f'{URL_BASE}/estudantes', params=params)
     if response.status_code == 200:
         estudantes = json.loads(response.text)
-        db_name = "db_estudantes.sqlite"
+        db_name = "db_estudantes_disciplina.sqlite"
         save_estudantes_cursos(estudantes, db_name)
         return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES, TABELA_ESTUDANTE_CURSO, temperature=0)
     else:
