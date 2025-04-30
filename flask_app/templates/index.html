@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EurecaAI</title>
+    <title>UFCGPT - A nova IA da UFCG</title>
     <link rel="icon" type="image/png" href="../static/images/ufcg.png">
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -28,6 +28,7 @@
         let synth = window.speechSynthesis;
         let isSpeaking = false;
 
+        
         // Função para ler texto
         function speak(msg) {
             if (isSpeaking) {
@@ -60,6 +61,66 @@
             scrollToBottom();
         }
 
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+            return null;
+        }
+
+        async function deleteCookie(name) {
+            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+            return;
+        }
+        
+
+        function formatCamelCase(str) {
+            const exceptions = ['de', 'da', 'do', 'das', 'dos', 'e'];
+            return str.toLowerCase().split(' ').map((word, index) => {
+                if (exceptions.includes(word) && index !== 0) {
+                    return word;
+                }
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }).join(' ');
+        }
+
+        window.onload = function() {
+            function getProfile() {
+                const profileStr = getCookie("profile");
+                const res = profileStr ? JSON.parse(profileStr) : null;
+                if (res) {
+                    const username_ = formatCamelCase(res.name);
+                    const buttonText = document.querySelector(".login__button span");
+                    const buttonTextMobile = document.querySelector(".login_button_mobile span");
+
+                    if (buttonTextMobile || buttonText) {
+                        buttonTextMobile.textContent = "Sair";
+                        buttonText.textContent = "Sair";
+                    }
+                    var botMessageBlock = `
+                        <div class="bot">
+                            <div class="bot__container">
+                                <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
+                                <div class="bot__response">
+                                    <div class="bot__name">
+                                        <p>Assistente:</p>
+                                    </div>
+                                    <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
+                                    <div class="bot_options">
+                                        <button class="audio-button">
+                                            <img src="../static/images/audio.png" />
+                                        </button>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>`;
+                    $('.chat__container').append(botMessageBlock);
+                }
+            }
+
+            getProfile();
+        }
+    
         // Função que adiciona a mensagem do bot
         function addBotMessage() {
             var botMessageBlock = `
@@ -83,6 +144,23 @@
             scrollToBottom();
         }
 
+        function login_account() {
+            const botaologin = document.querySelector(".login__button");
+            const botaologinMobile = document.querySelector(".login_button_mobile");
+            const word = botaologin.querySelector("span");
+            const wordMobile = botaologinMobile.querySelector("span");
+        
+            if (word.textContent === "Login" || wordMobile.textContent === "Login") {
+                window.location.href = '/login';
+            } else if (word.textContent === "Sair" || wordMobile.textContent === "Sair" ) {
+                deleteCookie("profile").then(() => {
+                    word.textContent = "Login";
+                    wordMobile.textContent = "Login";
+                    window.location.href = "/";
+                });
+            }
+        }
+        
         // Função que envia a mensagem e manipula a resposta do bot
         function sendMessage(message) {
             addBotMessage();
@@ -92,7 +170,6 @@
                 timeout: 120000,
                 data: { user_input: message },
                 success: function (response) {
-                    console.log("Resposta do servidor:", response);
                     const markdownResponse = response.response;
                     const htmlResponse = marked.parse(markdownResponse);
                     $('.bot__name__response').last().html(htmlResponse);
@@ -115,7 +192,6 @@
                     } else {
                         $('.bot__name__response').last().text('Desculpe, algo deu errado.');
                     } 
-                    console.log(textStatus)
                 }
             });
         }
@@ -135,7 +211,6 @@
             .then(stream => {
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.start();
-                console.log("Gravação iniciada");
 
                 mediaRecorder.ondataavailable = event => {
                     audioChunks.push(event.data);
@@ -155,7 +230,6 @@
         function stopRecording() {
             if (mediaRecorder) {
                 mediaRecorder.stop();
-                console.log("Gravação parada");
         
                 mediaRecorder.onstop = () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
@@ -187,7 +261,6 @@
         }
         
         function changeImage(button) {
-            console.log("Ok");
             const img = button.querySelector('img');
             const inputQuery = document.getElementsByClassName('query')[0]; 
 
@@ -221,6 +294,23 @@
             }
         }
 
+
+        const textarea = document.querySelector('.query');
+        const form = document.getElementById('chat_form'); // <-- agora correto
+
+        textarea.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();  // Impede quebra de linha
+                form.submit();           // Envia formulário
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            if (!textarea.value.trim()) {
+                event.preventDefault(); // Se vazio, não envia
+            }
+        });
+
     </script>
 </head>
 <body>
@@ -229,8 +319,8 @@
             <i class='fas fa-bars fa-2x'></i>
         </div>
         <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'"/>
-        <h1>EurecaAI</h1>
-        <button class="login__button" onClick="window.location.href='/login'">
+        <h1>UFCGPT</h1>
+        <button class="login__button" onClick="login_account()">
             <span>Login</span>
         </button>
     </header>
@@ -244,7 +334,7 @@
 
             <form id="chat_form" class="query__container" method="post">
                 <div class="input_container">
-                    <input type="text" id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."/>
+                    <textarea id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."></textarea>
                     <button class="send" type="submit">
                         <img src="../static/images/arrow_icon.png"/>
                     </button>
@@ -258,8 +348,8 @@
             <div class="aside-title-container">
                 <div>
                     <img src="./static/images/logo_ufcg.png"/>
-                    <button class="login_button_mobile" onClick="window.location.href='/login'">
-                        <p>Login</p>
+                    <button class="login_button_mobile" onClick="login_account()">
+                        <span>Login</span>
                     </button>
                 </div>
                 <p class="aside-title-content">Histórico</p>

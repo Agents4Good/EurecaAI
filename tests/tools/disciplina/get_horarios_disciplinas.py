@@ -27,7 +27,6 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_di
     turma=str(turma)
     periodo=str(periodo)
     curriculo=str(curriculo)
-    
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
@@ -57,11 +56,7 @@ def get_horarios_disciplinas(nome_do_curso: Any, nome_do_campus: Any, nome_da_di
             horario_formatado = f"{horario['hora_de_inicio']}h às {horario['hora_de_termino']}h"
 
             if turma not in turmas_map:
-                turmas_map[turma] = {
-                    'turma': turma,
-                    'sala': sala,
-                    'horarios': {}
-                }
+                turmas_map[turma] = { 'turma': turma, 'sala': sala, 'horarios': {} }
                 filtros_horarios.append(turmas_map[turma])
 
             turmas_map[turma]['horarios'][dia] = horario_formatado

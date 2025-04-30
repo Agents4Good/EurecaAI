@@ -14,4 +14,5 @@ tools = [
 agent = AgenteSetores(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
 
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"
+question = "Quais os códigos de todos os setores?"
 agent.run(question=question)

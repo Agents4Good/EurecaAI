@@ -4,8 +4,7 @@ from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
-from ..tools.utils.most_similar import get_most_similar
-from ..tools.curso.get_cursos import get_lista_cursos
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -42,6 +41,13 @@ class AgentTools:
         self.tools = ToolNode(tools)
         self.prompt = prompt
         self.app = self.build()
+
+        from IPython.display import Image
+        print("Grafo do agente:")
+        file = "grafo_human.png"
+        img = self.app.get_graph().draw_mermaid_png()
+        with open(file, "wb") as f:
+            f.write(img)
     
     
     def call_model(self, state: AgentState):
@@ -67,13 +73,17 @@ class AgentTools:
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
         local_model = ChatOllama(model="deepseek-r1:8b", temperature=0)
+        auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
+
+        print(auxiliar)
+
         response = local_model.invoke(
             f"""
             Pergunta do usuário:
             {question}
             
             Respostas encontradas pelas ferramentas:
-            {'\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."}
+            {auxiliar}
             
             Baseado nas respostas das ferramentas, faça uma interpretação para verificar se elas respondem de forma geral à pergunta do usuário. Elas não precisam responder de forma exata, só que façam sentido com a pergunta no geral.
             - Se não, informe que não foi possível encontrar uma resposta satisfatória.
@@ -93,9 +103,9 @@ class AgentTools:
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
         workflow.add_node("exit", self.exit_node)
-        workflow.add_edge(START, "input")
+        workflow.add_edge(START, "agent")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
-        workflow.add_edge("input", "agent")
+       # workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
         workflow.add_edge("exit", END)
         return workflow.compile()
@@ -129,5 +139,7 @@ class AgentTools:
     
     def run(self, question: str):
         thread = {"configurable": {"thread_id": "1"}}
+
+
         for message_chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
             message_chunk["messages"][-1].pretty_print()

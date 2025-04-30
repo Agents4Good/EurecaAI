@@ -25,7 +25,6 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     nome_da_disciplina=str(nome_da_disciplina)
     curriculo=str(curriculo)
     periodo=str(periodo)
-    
     print(f"Tool get_plano_de_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, curriculo={curriculo} e periodo={periodo}")
     
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)

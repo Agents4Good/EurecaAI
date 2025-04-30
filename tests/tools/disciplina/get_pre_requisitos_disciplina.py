@@ -34,7 +34,6 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     curriculo=str(curriculo)
     
     print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")
-    
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     params = {
@@ -47,7 +46,6 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     if response.status_code == 200:
         requisitos = json.loads(response.text)
         disciplinas = []
-
         for requisito in requisitos:
             disciplina_req = get_disciplina_for_tool(requisito['condicao'])
             disciplinas.append(disciplina_req[0]['nome'])
