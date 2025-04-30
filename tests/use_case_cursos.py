@@ -2,8 +2,8 @@ from .prompts.prompts import *
 from .agent.agent_cursos import AgenteCursos
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
-from .tools.curso.get_curso import obter_dados_de_curso_especifico
-from .tools.curso.get_informacoes_cursos import obter_dados_de_todos_os_cursos
+from .tools.curso.obter_dados_de_curso_especifico import obter_dados_de_curso_especifico
+from .tools.curso.obter_dados_de_todos_os_cursos import obter_dados_de_todos_os_cursos
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,8 +14,8 @@ tools = [
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
-#agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
+#agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
 question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)
@@ -50,10 +50,11 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
+#question = "Quais os currículos do curso de ciência da computação do campus de campina grande?"
 
 #question = "Quais cursos foram criado em 2009"
 #question = "Quando foi criado ciência da computação, quero saber o dia e o mês"
 #question = "frances ingles sao ofericidos em que turno?"
-
 question = "computação código?"
+question = "Traga somente o código de todos os cursos do campus campina grande"
 agent.run(question=question)
