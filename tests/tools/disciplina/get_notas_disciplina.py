@@ -5,7 +5,6 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
-
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ...sql.normalize_data_estudante import normalize_data_estudante
