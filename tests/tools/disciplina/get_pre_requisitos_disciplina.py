@@ -42,7 +42,6 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'curriculo': curriculo
     }
-
     response = requests.get(f'{URL_BASE}/pre-requisito-disciplinas', params=params)
 
     if response.status_code == 200:

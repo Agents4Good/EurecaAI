@@ -3,7 +3,7 @@ from .get_campi import get_campi
 from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
 
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}
 
@@ -12,7 +12,7 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
     Busca os dados do campus interessado. Os dados contém o nome e o código do campus.
 
     Args:
-        campus: nome do campus interessado.
+        nome_do_campus: nome do campus interessado.
 
     Returns:
         Retorna os dados de apenas um campus com seu nome e codigo.
@@ -37,5 +37,4 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
-    #print("\n\n", processar_json(response.content, "campus"))
     return processar_json(response.content, "campus")

@@ -6,7 +6,7 @@ from ..utils.processar_json import processar_json
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 
@@ -49,7 +49,6 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
         N significa que é um curso noturno.
         """
     )
-
     return processar_json(response.content, "curso")
 
 def get_lista_cursos(nome_do_campus: str) -> list:
@@ -63,6 +62,7 @@ def get_lista_cursos(nome_do_campus: str) -> list:
         list: lista de cursos.
     """
 
+    print("get_lista_cursos sendo usada.")
     params = { 'status': 'ATIVOS', 'campus': "" }
     url_cursos = f'{URL_BASE}/cursos'
 

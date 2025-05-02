@@ -1,11 +1,9 @@
 import sqlite3
 import json
 import os
-
 from .LLMGenerateSQL import LLMGenerateSQL
-
+from langchain_community.chat_models import ChatDeepInfra
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Obtém o diretório do script atual
-
 
 class GerenciadorSQLAutomatizado:
     def __init__ (self, table_name, db_name):
@@ -137,7 +135,7 @@ class GerenciadorSQLAutomatizado:
             return [{"error": str(e)}]
     
     def get_data(self, query: str, prompt, temperature=0):
-        sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
+        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
         #sqlGenerateLLM = LLMGenerateSQL(model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
         result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")

@@ -23,6 +23,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
 
     Chame esta função se a pergunta for sobre o cronograma de aulas da disciplina.
     """
+    
     nome_do_campus=str(nome_do_campus)
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
@@ -32,8 +33,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
     
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
-    
-    if (str(periodo) == ""):
+    if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
     params = {
@@ -42,7 +42,6 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         'periodo-ate': periodo,
         'turma': numero_da_turma
     }
-
     response = requests.get(f'{URL_BASE}/aulas', params=params)
 
     if response.status_code == 200:

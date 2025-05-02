@@ -2,9 +2,7 @@ from langchain_community.chat_models import ChatDeepInfra
 from typing import TypedDict
 from typing_extensions import Annotated
 from langchain import hub
-
 from dotenv import load_dotenv
-
 load_dotenv()
 
 class StateSQL(TypedDict):

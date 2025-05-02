@@ -29,18 +29,13 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     Chame esta função se a pergunta for sobre desempenho ou histórico dos alunos em uma disciplina.
     """
 
-    db_name = "db_disciplina.sqlite"
-    gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name=db_name)
-
-    query=str(query)
-    
+    query=str(query)    
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
     turma=str(turma)
     periodo=str(periodo)
     curriculo=""
-
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
     
@@ -50,20 +45,18 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
         "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma
     }
-
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
-    print("\n\nDADOS \n\n", response[0], "\n")
-    #return;
     if response.status_code == 200:
         estudantes_na_disciplina = normalize_data_estudante(json.loads(response.text))
+        print(estudantes_na_disciplina)
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_disciplina.sqlite")
         gerenciador.save_data(estudantes_na_disciplina)
         return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
     else:

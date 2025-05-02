@@ -4,7 +4,7 @@ from ..utils.most_similar import get_most_similar
 from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
 
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOllama(model="qwen3:4b", temperature=0)
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
 mapper_setor = {"nome": "descricao", "codigo": "codigo_do_setor"}
 

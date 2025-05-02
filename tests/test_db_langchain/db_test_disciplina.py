@@ -19,8 +19,8 @@ class QueryOutput(TypedDict):
     query: Annotated[str, ..., "Syntactically valid SQL query."]
 
 class LLMGenerateSQL:
-    def __init__(self, model: str, prompt: str):
-        self.llm = ChatOllama(model=model, temperature=0)
+    def __init__(self, LLM, model: str, prompt: str):
+        self.llm = LLM(model=model, temperature=0)
         #self.llm = ChatDeepInfra(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
@@ -101,7 +101,7 @@ queries = [
     '''Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2'''
 ]
 
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="llama3.1:8b-instruct-q5_K_M", prompt=prompt)
 
 result = []
 for query in queries:

@@ -43,7 +43,6 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
         "periodo-de": periodo,
         "periodo-ate": periodo
     }
-
     response = requests.get(f'{URL_BASE}/horarios', params=params)
 
     if response.status_code == 200:

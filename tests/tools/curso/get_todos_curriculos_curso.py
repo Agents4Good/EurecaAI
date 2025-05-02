@@ -16,10 +16,12 @@ def get_todos_curriculos_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
         Lista com informações relevantes dos currículos do curso específico.
     """
     
-    print(f"Tool get_curriculos chamada com nome_do_curso={str(nome_do_curso)} e nome_do_campus={nome_do_campus}.")
-    dados_curso = get_curso_most_similar(str(nome_do_curso), str(nome_do_campus))
-    response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
+    nome_do_curso=str(nome_do_curso)
+    nome_do_campus=str(nome_do_campus)
+    print(f"Tool get_curriculos chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
     
+    dados_curso = get_curso_most_similar(nome_do_curso, nome_do_campus)
+    response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
     if response.status_code == 200:
         return json.loads(response.text)
     else:

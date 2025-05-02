@@ -39,7 +39,6 @@ def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_c
         "periodo-ate": periodo,
         "disciplina": dados_disciplina["disciplina"]["codigo"]
     }
-    
     response = requests.get(f'{URL_BASE}/turmas', params=params)
 
     if response.status_code == 200:

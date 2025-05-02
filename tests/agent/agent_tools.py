@@ -41,13 +41,6 @@ class AgentTools:
         self.tools = ToolNode(tools)
         self.prompt = prompt
         self.app = self.build()
-
-        from IPython.display import Image
-        print("Grafo do agente:")
-        file = "grafo_human.png"
-        img = self.app.get_graph().draw_mermaid_png()
-        with open(file, "wb") as f:
-            f.write(img)
     
     
     def call_model(self, state: AgentState):
@@ -55,6 +48,7 @@ class AgentTools:
         if self.prompt:
             messages = [SystemMessage(content=self.prompt)] + messages
         message = self.model.invoke(messages)
+        message = self.extract_tool_calls(message)
         return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
     
     
@@ -72,7 +66,7 @@ class AgentTools:
         ]
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        local_model = ChatOllama(model="deepseek-r1:8b", temperature=0)
+        local_model = ChatOllama(model="llama3.2:3b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
 
         print(auxiliar)
@@ -103,9 +97,9 @@ class AgentTools:
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
         workflow.add_node("exit", self.exit_node)
-        workflow.add_edge(START, "agent")
+        workflow.add_edge(START, "input")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
-       # workflow.add_edge("input", "agent")
+        #workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
         workflow.add_edge("exit", END)
         return workflow.compile()
@@ -121,6 +115,8 @@ class AgentTools:
     
     def extract_tool_calls(self, response):
         try:
+            #print("\n")
+            print(response)
             content_data = json.loads(response.content)
             if "tool_calls" in content_data:
                 tool_calls = content_data["tool_calls"]
@@ -133,13 +129,32 @@ class AgentTools:
                 response.content = content_data.get("content", "")
         
         except json.JSONDecodeError:
-            pass
+            pattern = r"<function=([a-zA-Z_][a-zA-Z0-9_]*)>\s*(\{.*?\})(?:\s*;)?"
+            matches = re.findall(pattern, response.content)
+
+            tool_calls = []
+            for func_name, args_json in matches:
+                try:
+                    args = json.loads(args_json)
+                    tool_call = {
+                        "name": func_name,
+                        "args": args,
+                        "id": str(uuid.uuid4()),
+                        "type": "tool_call"
+                    }
+                    tool_calls.append(tool_call)
+                except json.JSONDecodeError:
+                    continue
+            
+            if tool_calls:
+                response.tool_calls = tool_calls
+                response.content = ""
+                response.response_metadata["finish_reason"] = "tool_calls"
+        
         return response
     
     
     def run(self, question: str):
         thread = {"configurable": {"thread_id": "1"}}
-
-
         for message_chunk in self.app.stream({"messages": [HumanMessage(content=question)]}, thread, stream_mode="values"):
             message_chunk["messages"][-1].pretty_print()

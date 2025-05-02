@@ -15,8 +15,8 @@ class QueryOutput(TypedDict):
     query: Annotated[str, ..., "Syntactically valid SQL query."]
 
 class LLMGenerateSQL:
-    def __init__(self, model: str, prompt: str):
-        self.llm = ChatOllama(model=model, temperature=0)
+    def __init__(self, LLM, model: str, prompt: str):
+        self.llm = LLM(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
         self.query_prompt_template = query_prompt_template
@@ -85,7 +85,7 @@ Responda com uma consulta SQL válida e mínima.
 '''
 
 
-sqlGenerateLLM = LLMGenerateSQL(model="llama3.1", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:4b", prompt=prompt)
 
 
 queries = [

@@ -56,7 +56,7 @@ def get_estagios(nome_do_campus: Any, nome_do_centro_unidade: Any, ano: Any) -> 
     dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
     setor_centro_unidade = get_setor_most_similar(nome_do_centro_setor=nome_do_centro_unidade, nome_do_campus=dados_campus["campus"]["nome"], filtro="UNID")
     
-    if str(ano) == "":
+    if ano == "":
         ano = str(datetime.now().year)
     
     params = {

@@ -7,7 +7,7 @@ from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_curso import get_todos_curriculos_curso
 
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatOllama(model="llama3.2:3b", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 
@@ -30,6 +30,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     nome_do_curso = str(nome_do_curso)
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
+    
     if (curriculo == ""):
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         curriculo = curriculo['codigo_do_curriculo']

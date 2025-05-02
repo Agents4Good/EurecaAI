@@ -19,9 +19,8 @@ class QueryOutput(TypedDict):
     query: Annotated[str, ..., "Syntactically valid SQL query."]
 
 class LLMGenerateSQL:
-    def __init__(self, model: str, prompt: str):
-        #self.llm = ChatOllama(model=model, temperature=0)
-        self.llm = ChatDeepInfra(model=model, temperature=0)
+    def __init__(self, LLM, model: str, prompt: str):
+        self.llm = LLM(model=model, temperature=0)
         query_prompt_template = hub.pull("langchain-ai/sql-query-system-prompt")
         dict(query_prompt_template)['messages'][0].prompt.template = prompt
         self.query_prompt_template = query_prompt_template
@@ -123,7 +122,7 @@ queries = [
     '''quantas pessoas tem renda entre 1 a 10 salario minimo?'''
 ]
 
-sqlGenerateLLM = LLMGenerateSQL(model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
+sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
 
 result = []
 for query in queries:
