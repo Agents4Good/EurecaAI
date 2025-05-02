@@ -26,7 +26,6 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_
         query (Any): a pergunta feita.
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
-    Returns:
         codigo_disciplina (Any, optional): (Opcional) Código da disciplina ("" usa o mais recente). Defaults to "".
         curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
 

@@ -5,7 +5,7 @@ from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = "") -> list:
+def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> list:
     """_summary_
     Retorna os horários e sala de aula de uma disciplina.
     
@@ -17,7 +17,7 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         nome_da_disciplina (Any): Nome da disciplina.
-        turma (Any): _description_
+        turma (Any): Número da turma. Defaults to "01".
         periodo (Any, optional): Número da turma ("" para todas). Defaults to "".
         curriculo (Any, optional): (Opcional) Ano do currículo. Defaults to "".
 

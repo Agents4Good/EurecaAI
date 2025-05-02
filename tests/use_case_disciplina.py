@@ -34,7 +34,10 @@ agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B
 #question = "Quantas pessoas reprovaram a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 #question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
 #question = "Qual foi a menor nota dos alunos na disciplina de teoria da computação do curso de ciência da computação em 2023.2?"
-question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2"
+#question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2"
 #question = "Quero o nome do estudante que tem a maior nota na turma 1 na disciplina de Teoria da computação do curso de ciencia da computação do campus de campina grande no período 2023.2?"
-question = "Quantas disciplinas tem no curso de ciência da computação no curriculo 2023"
+#question = "Quantas disciplinas tem no curso de ciência da computação no curriculo 2023"
+question = "Qual é o horária da disciplina de redes de computadores do curso de ciencia da computacao do campus de campina grande?"
+question = "Quais são as tumas de teoria da computação do curso de ciencia da computacao?"
+question = "Quais disciplina preciso para cursar a disciplina de teoria da computacao do curso de ciencia da computacao do campus de campina grande?"
 agent.run(question=question)
