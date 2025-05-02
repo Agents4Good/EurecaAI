@@ -9,29 +9,28 @@ from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from langchain_core.tools import tool
 
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: Any = "", curriculo: Any = "") -> list:
-    """
+    """_summary_
     Retorna as disciplinas ofertadas por um curso.
-
+    
     Use esta função quando a pergunta envolver:
     - código, nome, créditos ou carga horária da disciplina;
     - carga teórica/prática semanal ou total;
     - número de semanas de aula;
     - setor responsável e campus;
     - carga de extensão ou contabilização de créditos.
-
+    
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
-
+    
     Args:
-        query: a pergunta feita.
-        nome_do_curso: Nome do curso.
-        nome_do_campus: Cidade do campus.
-        codigo_disciplina: (Opcional) Código da disciplina ("" usa o mais recente).
-        curriculo: (Opcional) Ano do currículo ("" usa o mais recente).
+        query (Any): a pergunta feita.
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        codigo_disciplina (Any, optional): (Opcional) Código da disciplina ("" usa o mais recente). Defaults to "".
+        curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
 
     Returns:
-        Uma lista com informações relevantes.
+        list: Uma lista com informações relevantes.
     """
-
     query=str(query)
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)

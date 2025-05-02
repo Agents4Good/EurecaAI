@@ -11,11 +11,11 @@ from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_d
 from .tools.disciplina.get_disciplinas import get_disciplinas
 
 tools = [
-    #get_horarios_disciplina,
+    get_horarios_disciplina,
     get_notas_disciplina,
-    #get_plano_de_aulas, 
+    get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
-    #get_pre_requisitos_disciplina,
+    get_pre_requisitos_disciplina,
     get_disciplinas,
     get_turmas_disciplina
 ]
@@ -35,7 +35,12 @@ agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4bb", tools=tools, temper
 #question = "Quantas pessoas reprovaram a disciplina de tc do periodo 2023.2 do curso de ciencia da computacao?"
 #question = "Me diga 5 nomes e suas notas dos alunos que tiraram a maior nota na turma 1 da disciplina de teoria da computacao do curso de ciencia da computacao no periodo 2023.2"
 #question = "Qual foi a menor nota dos alunos na disciplina de teoria da computação do curso de ciência da computação em 2023.2?"
+#question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2"
 question = "Quais foram os estudantes que passaram na disciplina de Teoria da computação do curso de ciencia da computacao em 2023.2 no campus Campina Grande?"
 #question = "Quero o nome do estudante que tem a maior nota na turma 1 na disciplina de Teoria da computação do curso de ciencia da computação do campus de campina grande no período 2023.2?"
+#question = "Quantas disciplinas tem no curso de ciência da computação no curriculo 2023"
+question = "Qual é o horária da disciplina de redes de computadores do curso de ciencia da computacao do campus de campina grande?"
+question = "Quais são as tumas de teoria da computação do curso de ciencia da computacao?"
+question = "Quais disciplina preciso para cursar a disciplina de teoria da computacao do curso de ciencia da computacao do campus de campina grande?"
 #question = "Quantas disciplinas tem no curso de ciência da computação no curriculo 2023"
 agent.run(question=question)

@@ -5,24 +5,26 @@ from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
-def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any, periodo: Any = "", curriculo: Any = "") -> list:
-    """
+def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> list:
+    """_summary_
     Retorna os horários e sala de aula de uma disciplina.
-
+    
     Use esta função quando a pergunta envolver:
     - dia, horário ou sala da aula;
     - setor responsável ou período da disciplina.
+    
+    Args:
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        nome_da_disciplina (Any): Nome da disciplina.
+        turma (Any): Número da turma. Defaults to "01".
+        periodo (Any, optional): Número da turma ("" para todas). Defaults to "".
+        curriculo (Any, optional): (Opcional) Ano do currículo. Defaults to "".
 
-    Parâmetros:
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - nome_da_disciplina: Nome da disciplina.
-    - turma: Número da turma ("" para todas).
-    - periodo: (Opcional) Período do curso.
-    - curriculo: (Opcional) Ano do currículo.
-
-    Chame esta função se a pergunta for sobre quando e onde a disciplina ocorre.
+    Returns:
+        list: Chame esta função se a pergunta for sobre quando e onde a disciplina ocorre.
     """
+    
     
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
