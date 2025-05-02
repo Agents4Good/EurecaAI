@@ -30,39 +30,14 @@
             "description": "Horas totais da disciplina",
             "mapper": "horas_totais"
         },
-        "media_de_aprovacao": {
-            "type": "INTEGER",
-            "description": "Média de aprovação da disciplina",
-            "mapper": "media_de_aprovacao"
-        },
-        "codigo_do_setor": {
-            "type": "INTEGER",
-            "description": "Código do setor da disciplina",
-            "mapper": "codigo_do_setor"
-        },
         "nome_do_setor": {
             "type": "TEXT",
             "description": "Nome do setor da disciplina",
             "mapper": "nome_do_setor"
         },
-        "campus": {
-            "type": "INTEGER",
-            "description": "Código do campus da disciplina",
-            "mapper": "campus"
-        },
-        "nome_do_campus": {
-            "type": "TEXT",
-            "description": "Nome do campus da disciplina",
-            "mapper": "nome_do_campus"
-        },
-        "contabiliza_creditos": {
-            "type": "TEXT",
-            "description": "ENUM pode ser 'S' ou 'N'. Indica se a disciplina contabiliza créditos",
-            "mapper": "contabiliza_creditos"
-        },
         "tipo_de_componente_curricular": {
             "type": "TEXT",
-            "description": "Tipo de componente curricular da disciplina",
+            "description": "Tipo de componente curricular da disciplina. Pode ser esses ENUM 'Normal' ou 'Atividade Complementar'",
             "mapper": "tipo_de_componente_curricular"
         }
     }

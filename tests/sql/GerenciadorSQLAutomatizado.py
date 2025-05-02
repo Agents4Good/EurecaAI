@@ -4,15 +4,15 @@ import os
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_community.chat_models import ChatDeepInfra
 from langchain_ollama import ChatOllama
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # Obtém o diretório do script atual
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class GerenciadorSQLAutomatizado:
     def __init__ (self, table_name, db_name):
         self.table_name = table_name
         self.db_name = db_name
-        self.path = os.path.join(BASE_DIR, "", self.table_name, "tabelas.json") #GAMBIARRA PRA FUNCIONAR
-
-        print(f"Path do arquivo JSON: {self.path}")        
+        self.path = os.path.join(BASE_DIR, "", self.table_name, "tabelas.json")
+        print(f"Path do arquivo JSON: {self.path}")   
+             
         if not os.path.exists(self.path):
             raise ValueError("Arquivo JSON não encontrado. Verifique o caminho do arquivo.")
         

@@ -9,7 +9,7 @@ def execute_sql(sql: str, db_name: str):
         cursor.execute(sql)
         results = cursor.fetchall()
         conn.close()
-        print(f"Comando SQL executado:\n{sql}: {results}")
+        print(f"Comando SQL executado: {sql}\nResultado do comando SQL:{results}")
         return results
     except sqlite3.Error as e:
         conn.close()

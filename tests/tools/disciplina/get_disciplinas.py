@@ -56,7 +56,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_
         disciplinas = json.loads(response.text)
         if query == "":
             return disciplinas
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="disciplina.sqlite")
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite")
         gerenciador.save_data(disciplinas)
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     else:

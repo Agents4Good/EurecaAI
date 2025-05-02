@@ -56,7 +56,7 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     if response.status_code == 200:
         estudantes_na_disciplina = normalize_data_estudante(json.loads(response.text))
         print(estudantes_na_disciplina)
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_disciplina.sqlite")
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
         gerenciador.save_data(estudantes_na_disciplina)
         return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
     else:
