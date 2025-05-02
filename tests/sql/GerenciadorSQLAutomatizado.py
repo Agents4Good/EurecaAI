@@ -10,7 +10,7 @@ class GerenciadorSQLAutomatizado:
     def __init__ (self, table_name, db_name):
         self.table_name = table_name
         self.db_name = db_name
-        self.path = os.path.join(BASE_DIR, "", self.table_name, "tabelas.json")
+        self.path = os.path.join(BASE_DIR, "", self.table_name, "tabela.json")
         print(f"Path do arquivo JSON: {self.path}")   
              
         if not os.path.exists(self.path):
