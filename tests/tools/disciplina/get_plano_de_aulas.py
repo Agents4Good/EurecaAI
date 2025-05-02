@@ -6,22 +6,23 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
 def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
-    """
+    """_summary_
     Retorna o plano de aulas de uma turma.
-
+    
     Use esta função quando a pergunta envolver:
     - número, data ou duração das aulas;
     - conteúdo abordado em cada aula.
+    
+    Args:
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        nome_da_disciplina (Any): Nome da disciplina.
+        periodo (Any, optional): Período do curso. Defaults to "".
+        numero_da_turma (Any, optional): Número da turma. Defaults to "".
+        curriculo (Any, optional): Ano do currículo. Defaults to "".
 
-    Parâmetros:
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - nome_da_disciplina: Nome da disciplina.
-    - periodo: (Opcional) Período do curso.
-    - numero_da_turma: (Opcional) Número da turma ("01" se não informado).
-    - curriculo: (Opcional) Ano do currículo.
-
-    Chame esta função se a pergunta for sobre o cronograma de aulas da disciplina.
+    Returns:
+        list: Chame esta função se a pergunta for sobre o cronograma de aulas da disciplina.
     """
     
     nome_do_campus=str(nome_do_campus)

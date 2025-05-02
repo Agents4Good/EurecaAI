@@ -11,11 +11,11 @@ from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_d
 from .tools.disciplina.get_disciplinas import get_disciplinas
 
 tools = [
-    #get_horarios_disciplina,
+    get_horarios_disciplina,
     get_notas_disciplina,
-    #get_plano_de_aulas, 
+    get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
-    #get_pre_requisitos_disciplina,
+    get_pre_requisitos_disciplina,
     get_disciplinas,
     get_turmas_disciplina
 ]

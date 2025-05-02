@@ -6,21 +6,22 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
 
 def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
-    """
+    """_summary_
     Retorna o plano de curso de uma disciplina.
-
+    
     Use esta função quando a pergunta envolver:
     - ementa, objetivos, conteúdos;
     - metodologia, avaliação ou bibliografia.
 
-    Parâmetros:
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - nome_da_disciplina: Nome da disciplina.
-    - curriculo: (Opcional) Ano do currículo.
-    - periodo: (Opcional) Período do curso.
+    Args:
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        nome_da_disciplina (Any): Nome da disciplina.
+        curriculo (Any, optional): Ano do currículo. Defaults to "".
+        periodo (Any, optional): Período do curso. Defaults to "".
 
-    Chame esta função se a pergunta for sobre a estrutura pedagógica da disciplina.
+    Returns:
+        list: Chame esta função se a pergunta for sobre a estrutura pedagógica da disciplina.
     """
     
     nome_do_curso=str(nome_do_curso)

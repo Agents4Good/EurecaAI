@@ -10,23 +10,24 @@ from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ...sql.normalize_data_estudante import normalize_data_estudante
 
 def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "") -> list:
-    """
+    """_summary_
     Retorna as notas dos alunos em uma disciplina.
-
+    
     Use esta função quando a pergunta envolver:
     - notas, aprovações ou reprovações;
     - dispensa de disciplina;
     - nomes ou matrícula dos alunos.
+    
+    Args:
+        query (Any): Pergunta original do usuário.
+        nome_da_disciplina (Any): Nome da disciplina.
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        turma (Any, optional): Número da turma. Defaults to "01".
+        periodo (Any, optional): Período do curso. Defaults to "".
 
-    Parâmetros:
-    - query: Pergunta original do usuário.
-    - nome_da_disciplina: Nome da disciplina.
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - turma: (Opcional) Número da turma.
-    - periodo: (Opcional) Período do curso.
-
-    Chame esta função se a pergunta for sobre desempenho ou histórico dos alunos em uma disciplina.
+    Returns:
+        list: Chame esta função se a pergunta for sobre desempenho ou histórico dos alunos em uma disciplina.
     """
 
     query=str(query)    

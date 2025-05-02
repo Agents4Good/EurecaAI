@@ -6,23 +6,23 @@ from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 
 def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = "", curriculo: Any = "") -> list:
-    """
+    """_summary_
     Retorna todas as turmas de uma disciplina.
-
+    
     Use esta função quando a pergunta envolver:
     - número da turma;
     - período, carga horária ou tipo da turma.
-
-    Parâmetros:
-    - nome_da_disciplina: Nome da disciplina.
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - periodo: (Opcional) Período do curso.
-    - curriculo: (Opcional) Ano do currículo.
-
-    Chame esta função se a pergunta for sobre quais turmas existem para a disciplina.
-    """
     
+    Args:
+        nome_da_disciplina (Any): Nome da disciplina.
+        nome_do_curso (Any): Nome do curso.
+        nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        periodo (Any, optional): Período do curso. Defaults to "".
+        curriculo (Any, optional): Ano do currículo. Defaults to "".
+
+    Returns:
+        list: Chame esta função se a pergunta for sobre quais turmas existem para a disciplina.
+    """
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
