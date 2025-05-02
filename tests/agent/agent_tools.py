@@ -66,7 +66,7 @@ class AgentTools:
         ]
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        local_model = ChatOllama(model="llama3.2:3b", temperature=0)
+        local_model = ChatOllama(model="qwen3:1.7b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
 
         print(auxiliar)

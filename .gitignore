@@ -10,6 +10,7 @@ saved_models/
 *.sqlite
 share
 
+get-pip.py
 # Distribution / packaging
 .Python
 build/

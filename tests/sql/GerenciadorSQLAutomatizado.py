@@ -22,14 +22,11 @@ class GerenciadorSQLAutomatizado:
         """
         Cria uma tabela no banco de dados com base na definição fornecida.
 
-        Args:
-            tabela (str): O nome da tabela no arquivo json.
-
         Returns:
             str: TABELA gerada no formato 
             TABELA (
                 coluna1 tipo -- descrição,
-                coluna2 tipo, -- descrição,
+                coluna2 tipo -- descrição,
                 ...
             );
         """
@@ -44,19 +41,17 @@ class GerenciadorSQLAutomatizado:
         if self.table_name not in data:
             raise ValueError(f"A tabela '{self.table_name}' não foi encontrada no arquivo JSON.")
 
-        sql = f"{self.table_name}(\n"
-        qtd = len(data[self.table_name])
-        c = 0
+        linhas = []
         for column, column_type in data[self.table_name].items():
-            if (c == qtd - 1):
-                sql += f"{column} {column_type['type']} -- {column_type['description']}\n"
-            else:
-                sql += f"{column} {column_type['type']}, -- {column_type['description']}\n"
-            c+=1
-            #print(f"Coluna: {column}, Tipo: {column_type['type']} , DESC: {column_type['description']} \n\n")
+            linhas.append(f"{column} {column_type['type']}, -- {column_type['description']}")
 
-        sql += ");"        
+        if linhas:
+            linhas[-1] = linhas[-1].replace(',', '', 1)
+
+        sql = f"{self.table_name}(\n" + "\n".join(linhas) + "\n);"
         return sql
+       
+            
 
     def __extract_campus(self):
         """
@@ -120,8 +115,6 @@ class GerenciadorSQLAutomatizado:
                 list: Lista de resultados da consulta.
         """
         print("Executando o comando SQL")
-
-        print("SQL gerado:", sql)
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
 
@@ -136,8 +129,9 @@ class GerenciadorSQLAutomatizado:
             return [{"error": str(e)}]
     
     def get_data(self, query: str, prompt, temperature=0):
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
-        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3", prompt=prompt)
+        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
+
+        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:1.7b", prompt=prompt)
         result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")
         try:
