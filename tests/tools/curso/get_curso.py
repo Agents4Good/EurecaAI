@@ -5,19 +5,16 @@ from ..utils.most_similar import get_sim_course_name
 import requests
 import json
 
+from langchain_core.tools import tool
+
+@tool
 def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     Buscar informação de um curso específico da UFCG a partir do nome do curso.
-    Use esta função APENAS quando a pergunta mencionar um ou mais cursos específicos pelo nome.
-
-    Exemplos de uso:
-        - "O curso de Engenharia Elétrica é oferecido em qual turno?"
-        - "Qual o código do curso de Direito?"
-        - "Francês e Inglês são oferecidos em que turno?"
 
     Args:
-        nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus. Se o nome do campus não tiver sido fornecido, use 'campina grande' por padrão.
+        nome_do_curso: nome referente a apenas um curso.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... esse parâmetro não é obrigatório, se o campus não for fornecido use vazio ''.
 
     Returns:
         Lista com informações relevantes do curso específico, como código do curso, código do inep, código e nome do setor desse curso, período de início, etc.
@@ -32,6 +29,7 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
         if 'AskHuman' in dados_curso:
             return dados_curso
         if get_sim_course_name(nome_do_curso, dados_curso['curso']['nome']) < 0.5:
+            print(get_sim_course_name(nome_do_curso, dados_curso['curso']['nome']))
             print(dados_curso['curso']['nome'])
             return [{"Error": f"Nenhum curso encontrado com o nome {nome_do_curso}"}]
     except ValueError as e:
@@ -44,6 +42,7 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     response = requests.get(f'{URL_BASE}/cursos', params=params)
 
     if response.status_code == 200:
+        #return [{**{k: v for k, v in item.items() if k != "descricao"}, "nome_do_curso": item["descricao"]} for item in json.loads(response.text)]
         return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

@@ -48,6 +48,7 @@ class AgentTools:
         if self.prompt:
             messages = [SystemMessage(content=self.prompt)] + messages
         message = self.model.invoke(messages)
+        message = self.extract_tool_calls(message)
         return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
     
     
@@ -114,6 +115,8 @@ class AgentTools:
     
     def extract_tool_calls(self, response):
         try:
+            #print("\n")
+            print(response)
             content_data = json.loads(response.content)
             if "tool_calls" in content_data:
                 tool_calls = content_data["tool_calls"]
@@ -126,7 +129,28 @@ class AgentTools:
                 response.content = content_data.get("content", "")
         
         except json.JSONDecodeError:
-            pass
+            pattern = r"<function=([a-zA-Z_][a-zA-Z0-9_]*)>\s*(\{.*?\})(?:\s*;)?"
+            matches = re.findall(pattern, response.content)
+
+            tool_calls = []
+            for func_name, args_json in matches:
+                try:
+                    args = json.loads(args_json)
+                    tool_call = {
+                        "name": func_name,
+                        "args": args,
+                        "id": str(uuid.uuid4()),
+                        "type": "tool_call"
+                    }
+                    tool_calls.append(tool_call)
+                except json.JSONDecodeError:
+                    continue
+            
+            if tool_calls:
+                response.tool_calls = tool_calls
+                response.content = ""
+                response.response_metadata["finish_reason"] = "tool_calls"
+        
         return response
     
     

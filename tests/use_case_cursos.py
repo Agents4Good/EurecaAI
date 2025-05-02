@@ -14,7 +14,7 @@ tools = [
 ]
 
 #agent = AgentTools(LLM=ChatOpenAI, model="gpt-4o", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgenteCursos(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 #agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
@@ -47,13 +47,17 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "O curso de Ciências Sociais está disponível em qual campus?"
 #question = "Quais são os turnos disponíveis para os cursos de Enfermagem, Farmácia e Nutrição na UFCG?"
 #question = "Qual a duração dos cursos de Física e Matemática no campus de Cuité?"
-#question = "O curso de Ciências Biológicas, Química e Física são oferecidos em período noturno?"
+question = "ciências biologia, química e física, são oferecidos em período noturno?"
 #question = "Qual é o estudante que tem o maior CRA do curso de ciencia da computacao do campus de campina grande"
 #question = "Quando o curso de ciencia da computação foi criado?"
 
-#question = "Quais cursos foram criado em 2009"
-#question = "Quando foi criado ciência da computação, quero saber o dia e o mês"
-#question = "frances ingles sao ofericidos em que turno?"
+question = "Quais cursos foram criado em 2009"
+question = "Quando foi criado ciência da computação, quero saber o dia e o mês"
+question = "frances ingles sao ofericidos em que turno?"
 
-question = "O curso de Ciências Sociais está disponível em qual campus?"
+#question = "O curso de Ciências Sociais está disponível em qual campus e quais são os cursos do campus de patos?"
+#question = "Onde é ofericido o curso de letras frânces?"
+#question = "computação código?"
+
+question = "Quais cursos têm ciclo ENADE a cada 3 semestres?"
 agent.run(question=question)
