@@ -35,31 +35,6 @@
             "description": "Média de aprovação da disciplina",
             "mapper": "media_de_aprovacao"
         },
-        "carga_horaria_teorica_minima": {
-            "type": "INTEGER",
-            "description": "Carga horária teórica mínima",
-            "mapper": "carga_horaria_teorica_minima"
-        },
-        "carga_horaria_pratica_minima": {
-            "type": "INTEGER",
-            "description": "Carga horária prática mínima",
-            "mapper": "carga_horaria_pratica_minima"
-        },
-        "carga_horaria_teorica_maxima": {
-            "type": "INTEGER",
-            "description": "Carga horária teórica máxima",
-            "mapper": "carga_horaria_teorica_maxima"
-        },
-        "carga_horaria_pratica_maxima": {
-            "type": "INTEGER",
-            "description": "Carga horária prática máxima",
-            "mapper": "carga_horaria_pratica_maxima"
-        },
-        "numero_de_semanas": {
-            "type": "INTEGER",
-            "description": "Número de semanas da disciplina",
-            "mapper": "numero_de_semanas"
-        },
         "codigo_do_setor": {
             "type": "INTEGER",
             "description": "Código do setor da disciplina",
@@ -89,14 +64,6 @@
             "type": "TEXT",
             "description": "Tipo de componente curricular da disciplina",
             "mapper": "tipo_de_componente_curricular"
-        },
-        "carga_horaria_extensao": {
-            "type": "INTEGER",
-            "description": "Carga horária de extensão da disciplina",
-            "mapper": "carga_horaria_extensao"
         }
     }
-
-
-
 }

@@ -6,7 +6,9 @@ from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from .disciplina_utils.disciplina.prompt_disciplina import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from langchain_core.tools import tool
 
+@tool
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: Any = "", curriculo: Any = "") -> list:
     """
     Retorna as disciplinas ofertadas por um curso.
@@ -18,13 +20,17 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_
     - setor responsável e campus;
     - carga de extensão ou contabilização de créditos.
 
-    Parâmetros:
-    - nome_do_curso: Nome do curso.
-    - nome_do_campus: Cidade do campus.
-    - codigo_disciplina: (Opcional) Código da disciplina.
-    - curriculo: (Opcional) Ano do currículo ("" usa o mais recente).
-
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
+
+    Args:
+        query: a pergunta feita.
+        nome_do_curso: Nome do curso.
+        nome_do_campus: Cidade do campus.
+        codigo_disciplina: (Opcional) Código da disciplina ("" usa o mais recente).
+        curriculo: (Opcional) Ano do currículo ("" usa o mais recente).
+
+    Returns:
+        Uma lista com informações relevantes.
     """
 
     query=str(query)
@@ -48,9 +54,9 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_
 
     if response.status_code == 200:
         disciplinas = json.loads(response.text)
-        if query == "": return disciplinas
-        
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="disciplina")
+        if query == "":
+            return disciplinas
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="disciplina.sqlite")
         gerenciador.save_data(disciplinas)
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     else:
