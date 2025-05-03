@@ -2,8 +2,7 @@
     "Curso": {
         "codigo_do_curso": {
             "type": "INTEGER",
-            "description": "Codigo do curso (ID: chave primária)",
-            "primary_key": true,
+            "description": "Codigo do curso",
             "mapper": "codigo_do_curso"
         },
         "nome_do_curso": {

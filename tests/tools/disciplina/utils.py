@@ -34,6 +34,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     if (curriculo == ""):
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         curriculo = curriculo['codigo_do_curriculo']
+        
     else:
         curriculos = get_todos_curriculos_curso(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
         existe_curriculo = False
@@ -49,6 +50,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         if not existe_curriculo:
             return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis}" }], "ocorreu um erro"
 
+     
     todas_disciplinas_curso = get_disciplinas("", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, codigo_disciplina="", curriculo=curriculo)
     disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
     

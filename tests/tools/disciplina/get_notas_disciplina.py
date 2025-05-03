@@ -37,15 +37,17 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     turma=str(turma)
     periodo=str(periodo)
     curriculo=""
+
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
     
-    print(f"Tool get_media_notas_turma_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
+    print(f"Tool get_notas_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
     
+
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
@@ -56,7 +58,6 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
 
     if response.status_code == 200:
         estudantes_na_disciplina = normalize_data_estudante(json.loads(response.text))
-        print(estudantes_na_disciplina)
         gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
         gerenciador.save_data(estudantes_na_disciplina)
         return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)

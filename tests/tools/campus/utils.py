@@ -37,4 +37,6 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
+    print('GET CAMPUS MOST SIMILAR ')
+    print(response.content)
     return processar_json(response.content, "campus")

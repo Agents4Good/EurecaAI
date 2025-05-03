@@ -3,6 +3,7 @@ import requests
 from typing import Any
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
+
 from ...sql.Curso.prompt import PROMPT_SQL_CURSOS
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 
@@ -20,16 +21,14 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     Args:
         query: pergunta completa feita pelo usuário.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
-    
+      
     Returns:
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
-    db_name = "db_cursos.sqlite"
-
     query=str(query)
     nome_do_campus=str(nome_do_campus)
-    print(f"Tool get_informacoes_cursos chamada com nome_do_campus={nome_do_campus}")  
+    print(f"Tool obter_dados_de_todos_os_cursos chamada com nome_do_campus={nome_do_campus}")  
 
     params = {'status':'ATIVOS' }
     if (nome_do_campus != ""):
@@ -40,7 +39,7 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     response = requests.get(url_cursos, params=params)
     if response.status_code == 200:
         cursos = json.loads(response.text)
-        gerenciador = GerenciadorSQLAutomatizado("Curso", db_name)
+        gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite")
         gerenciador.save_data(cursos)
         return gerenciador.get_data(query, PROMPT_SQL_CURSOS, temperature=0)
     else:

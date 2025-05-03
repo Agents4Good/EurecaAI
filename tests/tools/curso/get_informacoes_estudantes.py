@@ -7,6 +7,7 @@ from .util.salvar_dados_tabela import save_estudantes_cursos
 from ..utils.base_url import URL_BASE
 from .util.prompts import PROMPT_SQL_ESTUDANTES
 from .util.tabelas import TABELA_ESTUDANTE_CURSO
+
 from ...sql.obter_dados_sql import obter_dados_sql
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 

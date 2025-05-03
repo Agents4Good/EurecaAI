@@ -8,7 +8,6 @@ from .disciplina_utils.disciplina.prompt_disciplina import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from langchain_core.tools import tool
 
-@tool
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_disciplina: Any = "", curriculo: Any = "") -> list:
     """_summary_
     Retorna as disciplinas ofertadas por um curso.
