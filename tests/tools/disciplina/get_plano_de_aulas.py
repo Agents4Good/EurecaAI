@@ -10,8 +10,10 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     Retorna o plano de aulas de uma turma.
     
     Use esta função quando a pergunta envolver:
-    - número, data ou duração das aulas;
+    - número, data da aula ou duração das aulas;
     - conteúdo abordado em cada aula.
+    - conteúdo que já foi abordado ou que ainda será abordado.
+    Por exemplo, 'Qual foi o conteúdo abordado na aula do dia 05/04/2024?', 'Qual foi o assunto abordado na primeira aula?' 'Qual foi o assunto abordado na aula 5?'
     
     Args:
         nome_do_curso (Any): Nome do curso.
@@ -22,7 +24,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         curriculo (Any, optional): Ano do currículo. Defaults to "".
 
     Returns:
-        list: Chame esta função se a pergunta for sobre o cronograma de aulas da disciplina.
+        list: Lista dos cronograma de aulas da disciplina.
     """
     
     nome_do_campus=str(nome_do_campus)

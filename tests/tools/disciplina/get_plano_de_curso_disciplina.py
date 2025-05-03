@@ -12,7 +12,8 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     Use esta função quando a pergunta envolver:
     - ementa, objetivos, conteúdos;
     - metodologia, avaliação ou bibliografia.
-
+    Use quando a pergunta for sobre o plano de curso. 
+    
     Args:
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
@@ -21,7 +22,7 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
         periodo (Any, optional): Período do curso. Defaults to "".
 
     Returns:
-        list: Chame esta função se a pergunta for sobre a estrutura pedagógica da disciplina.
+        list: Informações a respeito de ementa, objetivos, conteúdos, metodologia, avaliação ou bibliografia.
     """
     
     nome_do_curso=str(nome_do_curso)

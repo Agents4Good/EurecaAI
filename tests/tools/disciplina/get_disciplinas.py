@@ -17,7 +17,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, codigo_
     - código, nome, créditos ou carga horária da disciplina;
     - carga teórica/prática semanal ou total;
     - número de semanas de aula;
-    - setor responsável e campus;
+    - nome do setor responsável e campus;
     - carga de extensão ou contabilização de créditos.
     
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
