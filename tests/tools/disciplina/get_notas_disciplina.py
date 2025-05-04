@@ -8,7 +8,7 @@ from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ...sql.normalize_data_estudante import normalize_data_estudante
-from ..utils.validacoes import validar_periodo, validar_curriculo
+from ..utils.validacoes import validar_periodo, validar_curriculo, validar_turma
 
 def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "01", periodo: Any = "") -> list:
     """_summary_
@@ -39,6 +39,9 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     periodo=str(periodo)
     curriculo=""
     print(f"Tool get_notas_disciplina chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
+
+    validou_turma, mensagem = validar_turma(turma_usada=turma)
+    if not validou_turma: return mensagem
 
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
