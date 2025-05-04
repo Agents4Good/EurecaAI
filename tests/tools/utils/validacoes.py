@@ -34,3 +34,9 @@ def validar_curriculo(curriculo_usado: str, nome_do_campus: str, nome_do_curso: 
     
     print("-------- Currículo inválido --------")
     return False, f"Currículo inválido. Informe ao usuário que para o curso {nome_do_curso} existem apenas esses currículos {', '.join(str(c) for c in curriculos)} e que o mais recente é o currículo de {str(curriculos[-1])}"
+
+
+def validar_turma(turma_usada: str):
+    if (turma_usada.isdigit() and int(turma_usada) >= 1 and int(turma_usada) <= 20) or turma_usada == "": 
+        return True, ""
+    return False, f"Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema)."

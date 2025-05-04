@@ -4,7 +4,7 @@ from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_periodo
+from ..utils.validacoes import validar_periodo, validar_turma
 
 def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "") -> list:
     """_summary_
@@ -30,8 +30,11 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
     nome_da_disciplina=str(nome_da_disciplina)
     turma=str(turma)
     periodo=str(periodo)
-    curriculo=str(curriculo)
+    curriculo=""
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
+    
+    validou_turma, mensagem = validar_turma(turma_usada=turma)
+    if not validou_turma: return mensagem
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
@@ -54,18 +57,20 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
             
         filtros_horarios = []
         turmas_map = {}
+        dias = {"2": "Segunda-feira", "3": "Terça-feira", "4": "Quarta-feira", "5": "Quinta-feira", "6": "Sexta-feira", "7": "Sábado"}
 
         for horario in horarios:
             turma = horario['turma']
             sala = horario['codigo_da_sala']
             dia = str(horario['dia'])
+            dia_nome = dias.get(dia, f"Dia {dia}")
             horario_formatado = f"{horario['hora_de_inicio']}h às {horario['hora_de_termino']}h"
 
             if turma not in turmas_map:
                 turmas_map[turma] = { 'turma': turma, 'sala': sala, 'horarios': {} }
                 filtros_horarios.append(turmas_map[turma])
 
-            turmas_map[turma]['horarios'][dia] = horario_formatado
+            turmas_map[turma]['horarios'][dia_nome] = horario_formatado
 
         return filtros_horarios
     else:
