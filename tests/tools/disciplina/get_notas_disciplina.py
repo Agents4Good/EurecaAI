@@ -66,6 +66,7 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
         estudantes_na_disciplina = normalize_data_estudante(json.loads(response.text))
         gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
         gerenciador.save_data(estudantes_na_disciplina)
+        
         return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
