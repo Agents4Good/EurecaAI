@@ -251,6 +251,142 @@ class TestTurmasValidas(unittest.TestCase):
 
         self.assertEqual(saida_esperada, resultado)
     
+    
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_1(self):
+        codigo_da_disciplina = "1109126" # Cálculo 1
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo 1", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+        
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_i(self):
+        codigo_da_disciplina = "1109126" # Cálculo i
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo i", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+    
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_2(self):
+        codigo_da_disciplina = "1109131" # Cálculo 2
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo 2", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+        
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_ii(self):
+        codigo_da_disciplina = "1109131" # Cálculo ii
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo ii", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_diferencial_integral_1(self):
+        codigo_da_disciplina = "1109126" # Cálculo 1
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo diferencial e integral 1", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+        
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_diferencial_e_integral_i(self):
+        codigo_da_disciplina = "1109126" # Cálculo i
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo diferencial e integral i", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+    
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_diferencial_e_integral_2(self):
+        codigo_da_disciplina = "1109131" # Cálculo 2
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo diferencial e integral 2", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+        
+
+    def test_de_curso_sem_periodo_e_sem_curriculo_calculo_ii(self):
+        codigo_da_disciplina = "1109131" # Cálculo 2
+        periodo_escolhido = "2024.1" # str(periodo_corrente())
+        
+        saida_esperada = get_turmas(codigo_disciplina=codigo_da_disciplina, periodo=periodo_escolhido)
+        resultado = get_turmas_disciplina(
+            nome_da_disciplina="cálculo diferencial e integral ii", 
+            nome_do_campus="campina grande", 
+            nome_do_curso="ciencia da computacao"
+        )
+
+        self.assertIsInstance(resultado, list)
+        for item in resultado: self.assertIsInstance(item, dict)
+
+        self.assertEqual(saida_esperada, resultado)
+
 
     def test_de_curso_com_periodo_e_com_curriculo(self):
         codigo_da_disciplina = "1411171" # Teoria da Computação
