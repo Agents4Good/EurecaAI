@@ -49,7 +49,10 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
         N significa que é um curso noturno.
         """
     )
-    return processar_json(response.content, "curso")
+    resultado = processar_json(response.content, "curso")
+    print(f"curso mais similar: {resultado}")
+    return resultado
+
 
 def get_lista_cursos(nome_do_campus: str) -> list:
     """

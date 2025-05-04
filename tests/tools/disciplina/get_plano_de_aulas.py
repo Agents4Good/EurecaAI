@@ -4,6 +4,7 @@ from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
+from ..utils.validacoes import validar_curriculo, validar_periodo
 
 def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
     """_summary_
@@ -35,10 +36,18 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     periodo=str(periodo)
     print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
     
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
+    else:
+        validou_periodo, mensagem = validar_periodo(periodo=periodo)
+        if not validou_periodo: return mensagem
     
+    if curriculo != "":
+        validou_curriculo, mensagem = validar_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_campus, nome_da_disciplina=nome_da_disciplina)    
+        if not validou_curriculo: return mensagem
+    
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+
     params = {
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'periodo-de': periodo,

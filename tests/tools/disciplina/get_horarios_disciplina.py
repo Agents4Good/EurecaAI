@@ -4,8 +4,9 @@ from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
+from ..utils.validacoes import validar_periodo
 
-def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "", curriculo: Any = "") -> list:
+def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "") -> list:
     """_summary_
     Retorna os horários e sala de aula de uma disciplina.
     
@@ -19,12 +20,10 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
         nome_da_disciplina (Any): Nome da disciplina.
         turma (Any): Número da turma. Defaults to "01".
         periodo (Any, optional): Número da turma ("" para todas). Defaults to "".
-        curriculo (Any, optional): (Opcional) Ano do currículo. Defaults to "".
 
     Returns:
         list: Chame esta função se a pergunta for sobre quando e onde a disciplina ocorre.
     """
-    
     
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
@@ -34,10 +33,13 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
     curriculo=str(curriculo)
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
-    
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
+    else:
+        validou_periodo, mensagem = validar_periodo(periodo=periodo)
+        if not validou_periodo: return mensagem
+    
+    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
     params = {
         "disciplina": dados_disciplina["disciplina"]["codigo"],

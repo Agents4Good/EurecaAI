@@ -3,7 +3,6 @@ import requests
 from typing import Any
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
-
 from ...sql.Curso.prompt import PROMPT_SQL_CURSOS
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 

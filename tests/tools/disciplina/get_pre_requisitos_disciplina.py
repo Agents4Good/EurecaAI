@@ -3,6 +3,8 @@ import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
+from ..utils.validacoes import validar_curriculo
+from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 
 def get_disciplina_for_tool(codigo_da_disciplina):
     params = { 'disciplina': codigo_da_disciplina }
@@ -35,8 +37,15 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
     curriculo=str(curriculo)
-    
     print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")
+    
+    if curriculo == "":
+        curriculo = get_curriculo_mais_recente_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        curriculo = curriculo["codigo_do_curriculo"]
+    else:
+        validou_curriculo, mensagem = validar_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo_usado=curriculo)    
+        if not validou_curriculo: return mensagem
+    
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     params = {

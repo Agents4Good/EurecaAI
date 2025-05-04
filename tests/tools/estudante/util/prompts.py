@@ -1,4 +1,3 @@
-
 PROMPT_SQL_ESTUDANTES = """
 Você é um agente especialista em gerar comando SQL!
 

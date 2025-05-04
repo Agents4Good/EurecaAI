@@ -21,10 +21,13 @@ def get_curriculo_mais_recente_curso(nome_do_curso: Any, nome_do_campus: Any) ->
     print(f"Tool get_curriculo_mais_recente_curso chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")
     
     dados_curso = get_curso_most_similar(nome_do_curso, nome_do_campus)
+    print(f"Dados do curso mais similar: {dados_curso}")
 
     response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
 
     if response.status_code == 200:
-        return json.loads(response.text)[-1]
+        result = json.loads(response.text)[-1]
+        print(f"O currículo mais recente do curso {nome_do_curso} do campus de {nome_do_campus} foi de: {result['codigo_do_curriculo']}")
+        return result
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

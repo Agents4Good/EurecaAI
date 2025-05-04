@@ -17,6 +17,7 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
     Returns:
         Retorna os dados de apenas um campus com seu nome e codigo.
     """
+    print(f"get_campus_most_similar chamada com nome_do_campus={nome_do_campus}.")
     
     campi = get_campi()
     campus_most_similar, _ = get_most_similar(lista_a_comparar=campi, dado_comparado=nome_do_campus, top_k=3, mapper=mapper_campus, limiar=0.65)
@@ -37,6 +38,5 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
-    print('GET CAMPUS MOST SIMILAR ')
-    print(response.content)
+    print(f'get_campus_most_similar respondeu com o campus: {response.content}')
     return processar_json(response.content, "campus")
