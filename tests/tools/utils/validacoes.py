@@ -3,7 +3,7 @@ from datetime import date
 from ..campus.get_calendarios import get_calendarios
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 
-ano_inicio = 2017
+ano_inicio = 2002
 
 def validar_periodo(periodo: str):
     padrao = r'^(20\d{2})\.(1|2)$'

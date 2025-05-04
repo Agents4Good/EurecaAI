@@ -4,9 +4,9 @@ from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_curriculo, validar_periodo
+from ..utils.validacoes import validar_curriculo, validar_periodo, validar_turma
 
-def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", numero_da_turma: Any = "", curriculo: Any = "") -> list:
+def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", turma: Any = "", curriculo: Any = "") -> list:
     """_summary_
     Retorna o plano de aulas de uma turma.
     
@@ -21,7 +21,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         nome_da_disciplina (Any): Nome da disciplina.
         periodo (Any, optional): Período do curso. Defaults to "".
-        numero_da_turma (Any, optional): Número da turma. Defaults to "".
+        turma (Any, optional): Número da turma. Defaults to "".
         curriculo (Any, optional): Ano do currículo. Defaults to "".
 
     Returns:
@@ -32,9 +32,12 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     curriculo=str(curriculo)
-    numero_da_turma=str(numero_da_turma)
+    turma=str(turma)
     periodo=str(periodo)
-    print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={numero_da_turma} e curriculo={curriculo}.")
+    print(f"Tool get_plano_de_aulas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, periodo={periodo}, numero_turma={turma} e curriculo={curriculo}.")
+    
+    validou_turma, mensagem = validar_turma(turma_usada=turma)
+    if not validou_turma: return mensagem
     
     if (periodo == ""):
         periodo = get_periodo_mais_recente()
@@ -43,7 +46,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         if not validou_periodo: return mensagem
     
     if curriculo != "":
-        validou_curriculo, mensagem = validar_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_campus, nome_da_disciplina=nome_da_disciplina)    
+        validou_curriculo, mensagem = validar_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo_usado=curriculo)    
         if not validou_curriculo: return mensagem
     
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
@@ -52,7 +55,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'periodo-de': periodo,
         'periodo-ate': periodo,
-        'turma': numero_da_turma
+        'turma': turma
     }
     response = requests.get(f'{URL_BASE}/aulas', params=params)
 

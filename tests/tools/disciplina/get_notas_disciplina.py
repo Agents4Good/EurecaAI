@@ -46,7 +46,7 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
     if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
         curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
     else:
-        validou_curriculo, mensagem = validar_curriculo(curriculo_usado=curriculo, nome_do_campus=nome_do_campus, nome_da_disciplina=nome_da_disciplina)
+        validou_curriculo, mensagem = validar_curriculo(curriculo_usado=curriculo, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
         if not validou_curriculo: return mensagem
     
     if (periodo == ""):
