@@ -20,9 +20,9 @@ def get_most_similar(lista_a_comparar: list, dado_comparado: str, top_k: int, ma
         tuple: Retorna os top K mais prováveis.
     """
     
-    descricao = [i[mapper["nome"]] for i in lista_a_comparar]
+    descricao = [i[mapper["nome"]].lower() for i in lista_a_comparar]
     embeddings = model_sentence.encode(descricao)
-    embedding_query = model_sentence.encode(dado_comparado).reshape(1, -1)
+    embedding_query = model_sentence.encode(dado_comparado.lower()).reshape(1, -1)
 
     similarities = cosine_similarity(embeddings, embedding_query).flatten()
     top_k_indices = np.argsort(similarities)[-top_k:][::-1]
