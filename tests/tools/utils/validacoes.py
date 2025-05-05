@@ -2,6 +2,9 @@ import re
 from datetime import date
 from ..campus.get_calendarios import get_calendarios
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
+from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
+from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
+
 
 ano_inicio = 2002
 
@@ -40,3 +43,41 @@ def validar_turma(turma_usada: str):
     if (turma_usada.isdigit() and int(turma_usada) >= 1 and int(turma_usada) <= 20) or turma_usada == "": 
         return True, ""
     return False, f"Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema)."
+
+
+def busca_curriculo_no_periodo(periodo: str, todos_curriculos: list):
+    todos_curriculos = [curriculo["codigo_do_curriculo"] for curriculo in todos_curriculos]
+    ano_periodo = int(periodo.split('.')[0])
+    
+    curriculos_ordenados = sorted(todos_curriculos)    
+    curriculo_encontrado = None
+    
+    for curriculo in curriculos_ordenados:
+        if int(curriculo) <= int(ano_periodo):
+            curriculo_encontrado = curriculo
+        else:
+            break
+
+    return curriculo_encontrado
+
+
+def valida_periodo_curriculo(nome_do_campus: str, nome_do_curso: str, periodo: str, curriculo: str):
+    mensagem = ""
+
+    if periodo == "":
+        periodo = get_periodo_mais_recente()
+    
+    if curriculo == "":
+        todos_curriculos = get_todos_curriculos_do_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        curriculo_atual = todos_curriculos[-1]
+        if int(periodo.split(".")[0]) < int(curriculo_atual['codigo_do_curriculo']):
+            curriculo = busca_curriculo_no_periodo(periodo=periodo, todos_curriculos=todos_curriculos)
+            if curriculo == None:
+                mensagem = "Erro: Informe ao usuário o curso não existia nesse período, portanto não é possível obter os dados da disciplina nesse período."
+        else:
+            curriculo = curriculo_atual["codigo_do_curriculo"]
+    else:
+        if int(periodo.split(".")[0]) < int(curriculo):
+            mensagem = f"Erro: O período {periodo} não pode ser anterior ao curriculo de {curriculo}. Precisa ser igual ou superior."
+    
+    return periodo, curriculo, mensagem

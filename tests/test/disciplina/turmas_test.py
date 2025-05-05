@@ -409,7 +409,7 @@ class TestTurmasValidas(unittest.TestCase):
 
 
 class TestTurmasInvalidas(unittest.TestCase):
-    def test_de_curso_com_periodo_invalido_e_curriculo_valido(self):
+    def test_de_curso_com_periodo_invalido_e_curriculo_valido(self): #
         periodo_escolhido = "2090.1"
         curriculo_escolhido = "2023"
         
@@ -422,11 +422,13 @@ class TestTurmasInvalidas(unittest.TestCase):
         )
 
         self.assertIsInstance(resultado, str)
+        self.assertIn("Não foi possível obter informação da disciplina porque a disciplina não existe para esse período ou curriculo.", resultado[0]["msg"])
+        """
         self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
         self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        """
 
-
-    def test_de_curso_com_periodo_valido_e_curriculo_invalido(self):
+    def test_de_curso_com_periodo_valido_e_curriculo_invalido(self): #
         periodo_escolhido = "2024.1"
         curriculo_escolhido = "2024"
         
@@ -439,8 +441,8 @@ class TestTurmasInvalidas(unittest.TestCase):
         )
 
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são:", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_de_curso_com_periodo_invalido_e_curriculo_invalido(self):
@@ -456,11 +458,11 @@ class TestTurmasInvalidas(unittest.TestCase):
         )
 
         self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
-    def test_de_curso_com_periodo_invalido_negativo(self):
+    def test_de_curso_com_periodo_invalido_negativo(self): #
         periodo_escolhido = "-2024.1"
         
         resultado = get_turmas_disciplina(
@@ -471,8 +473,7 @@ class TestTurmasInvalidas(unittest.TestCase):
         )
 
         self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIn("Erro: Informe ao usuário o curso não existia nesse período, portanto não é possível obter os dados da disciplina nesse período.", resultado)
 
 
     def test_de_curso_com_curriculo_invalido_negativo(self):

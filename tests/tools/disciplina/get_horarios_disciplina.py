@@ -2,9 +2,8 @@ import json
 import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
-from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_periodo, validar_turma
+from ..utils.validacoes import valida_periodo_curriculo, validar_turma
 
 def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "") -> list:
     """_summary_
@@ -30,18 +29,14 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
     nome_da_disciplina=str(nome_da_disciplina)
     turma=str(turma)
     periodo=str(periodo)
-    curriculo=""
     print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
     
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
     
-    if (periodo == ""):
-        periodo = get_periodo_mais_recente()
-    else:
-        validou_periodo, mensagem = validar_periodo(periodo=periodo)
-        if not validou_periodo: return mensagem
-    
+    periodo, curriculo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo="")
+    if mensagem != "": return mensagem
+
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
     params = {

@@ -42,19 +42,8 @@ def get_notas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any
 
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
-
-    if curriculo == "" and nome_do_curso != "" and nome_do_campus != "":
-        curriculo = get_curriculo_mais_recente_curso(nome_do_curso, nome_do_campus)["codigo_do_curriculo"]
-    else:
-        validou_curriculo, mensagem = validar_curriculo(curriculo_usado=curriculo, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
-        if not validou_curriculo: return mensagem
     
-    if (periodo == ""):
-        periodo = get_periodo_mais_recente()
-    else:
-        validou_periodo, mensagem = validar_periodo(periodo=periodo)
-        if not validou_periodo: return mensagem
-    
+    periodo = periodo if periodo != "" else get_periodo_mais_recente()
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
     
     params = {

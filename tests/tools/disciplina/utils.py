@@ -7,7 +7,7 @@ from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 
@@ -49,12 +49,13 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
                 existe_curriculo = True
         
         if not existe_curriculo:
-            return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis}" }], "ocorreu um erro"
+            return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis} e que o curriculo mais recente é o de {todos_curriculos_disponiveis[-1]}." }], "ocorreu um erro"
 
     todas_disciplinas_curso = get_disciplinas("", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     print("todas as disciplinas do curso foram recuperadas")
-    disciplinas_most_similar, _ = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
-    
+    disciplinas_most_similar, top_k = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
+    print("\n\n\n\n\n", disciplinas_most_similar, top_k, "\n\n\n\n")
+
     response = model.invoke(
         f"""
         Para a disciplina de nome: '{nome_da_disciplina}', quais dessas possíveis disciplinas abaixo é mais similar a disciplina do nome informado?

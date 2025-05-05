@@ -2,9 +2,8 @@ import json
 import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
-from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_curriculo, validar_periodo, validar_turma
+from ..utils.validacoes import validar_curriculo, validar_periodo, validar_turma, valida_periodo_curriculo
 
 def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", turma: Any = "", curriculo: Any = "") -> list:
     """_summary_
@@ -38,17 +37,10 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
-    
-    if (periodo == ""):
-        periodo = get_periodo_mais_recente()
-    else:
-        validou_periodo, mensagem = validar_periodo(periodo=periodo)
-        if not validou_periodo: return mensagem
-    
-    if curriculo != "":
-        validou_curriculo, mensagem = validar_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo_usado=curriculo)    
-        if not validou_curriculo: return mensagem
-    
+
+    periodo, curriculo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo=curriculo)
+    if mensagem != "": return mensagem
+
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
 
     params = {

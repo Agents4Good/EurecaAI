@@ -3,7 +3,7 @@ from .get_campi import get_campi
 from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
 
-model = ChatOllama(model="llama3.2:3b", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}
 

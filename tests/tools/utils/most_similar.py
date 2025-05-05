@@ -2,6 +2,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import unicodedata
 import numpy as np
+import re
 
 model_sentence = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -20,9 +21,9 @@ def get_most_similar(lista_a_comparar: list, dado_comparado: str, top_k: int, ma
         tuple: Retorna os top K mais prováveis.
     """
     
-    descricao = [i[mapper["nome"]].lower() for i in lista_a_comparar]
+    descricao = [re.sub(r'\b(i|ii|iii|iv|v|vi|vii|viii|ix|x)\b', '', i[mapper["nome"]].lower()).strip() for i in lista_a_comparar]
     embeddings = model_sentence.encode(descricao)
-    embedding_query = model_sentence.encode(dado_comparado.lower()).reshape(1, -1)
+    embedding_query = model_sentence.encode(re.sub(r'\b(i|ii|iii|iv|v|vi|vii|viii|ix|x)\b', '', dado_comparado.lower()).strip()).reshape(1, -1)
 
     similarities = cosine_similarity(embeddings, embedding_query).flatten()
     top_k_indices = np.argsort(similarities)[-top_k:][::-1]
