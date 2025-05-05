@@ -462,7 +462,7 @@ class TestTurmasInvalidas(unittest.TestCase):
         self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
-    def test_de_curso_com_periodo_invalido_negativo(self): #
+    def test_de_curso_com_periodo_invalido_negativo(self): ##
         periodo_escolhido = "-2024.1"
         
         resultado = get_turmas_disciplina(
