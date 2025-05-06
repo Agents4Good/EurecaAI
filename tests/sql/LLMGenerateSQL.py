@@ -32,7 +32,7 @@ class LLMGenerateSQL:
         
         print("PROMPT:", prompt.messages[0].content)
 
-     
+      
         prompt = prompt.messages[0].content
         structured_llm = self.llm.with_structured_output(QueryOutput)
         result = structured_llm.invoke(prompt)

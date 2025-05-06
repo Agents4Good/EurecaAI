@@ -48,10 +48,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       db_name = "db_estudantes.sqlite"
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
       gerenciador.save_data(estudantes)
-      print(f"Estudantes salvos no banco de dados {db_name}.")
-
       return gerenciador.get_data(query,PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
-      #return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS, TABELA_ESTUDANTE_CURSO_INFO_GERAIS, temperature=0)
+     
    else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]
 

@@ -3,7 +3,7 @@ import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_curriculo, validar_periodo, validar_turma, valida_periodo_curriculo
+from ..utils.validacoes import validar_turma, valida_periodo_curriculo
 
 def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, periodo: Any = "", turma: Any = "", curriculo: Any = "") -> list:
     """_summary_

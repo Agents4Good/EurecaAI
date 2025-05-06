@@ -3,7 +3,8 @@ import requests
 from typing import Any
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-from .disciplina_utils.disciplina.prompt_disciplina import PROMPT_SQL_DISCIPLINA
+
+from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ..utils.validacoes import valida_periodo_curriculo
 

@@ -235,4 +235,6 @@ question = "Quais foram as médias finais dos alunos na disciplina Álgebra Line
 
 #question = "Qual é a sala da disiciplina Fundamentos de Matemática para Ciência da Computação 2?" # ToolCall - OK
 
+question = "Traga todas as disciplinas do curso de ciência da computação" 
+question = "Quais as notas dos estudantes da disciplina de inteligencia artificial do curso de ciencia da computacao no periodo 2023.1?" # ToolCall - OK
 agent.run(question=question)
