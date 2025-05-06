@@ -2,9 +2,8 @@ import json
 import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
-from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_curriculo, validar_periodo, valida_periodo_curriculo
+from ..utils.validacoes import valida_periodo_curriculo
 
 def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, curriculo: Any = "", periodo: Any = "") -> list:
     """_summary_
@@ -37,6 +36,8 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     if mensagem != "": return mensagem
 
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
+       return dados_disciplina[0]["msg"]
     
     params = {
         'disciplina': dados_disciplina['disciplina']['codigo'],

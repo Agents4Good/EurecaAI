@@ -3,11 +3,11 @@ import requests
 from ..utils.base_url import URL_BASE
 
 def get_calendarios() -> list:
-    """
+    """_summary_
     Busca todos os calendários da universidade do campus 1 da UFCG. Ou seja, os periodos letivos que já ocorreram na UFCG até hoje.
     
     Returns:
-        Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
+        list: Lista com informações relevantes dos calendários acadêmicos do campus (como 'inicio_das_matriculas', 'inicio_das_aulas' e 'numero_de_semanas')
     """
     
     print(f"Tool get_calendarios chamada")

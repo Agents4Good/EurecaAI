@@ -234,5 +234,5 @@ agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B
 # Outros
 
 question = "Quantas turmas tem a disciplina de ciencia de dados preditiva no curso de ciencia da computacao, campus de campina grande?" # ToolCall - OK
-
+question = "Quantos estudantes estão na disciplina de teoria da computação no curso de ciencia da computação do campus de campina grande no período 2024.2"
 agent.run(question=question)

@@ -3,11 +3,11 @@ import requests
 from ..utils.base_url import URL_BASE
 
 def get_campi() -> list:
-    """
+    """_summary_
     Busca todos os campi/campus/polos da UFCG.
     
     Returns:
-        Lista com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
+        list: Lista com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
     """
     response = requests.get(f'{URL_BASE}/campi')
 

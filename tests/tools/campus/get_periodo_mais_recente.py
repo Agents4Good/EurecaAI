@@ -3,11 +3,11 @@ import requests
 import json
 
 def get_periodo_mais_recente() -> str:
-    """
+    """_summary_
     Busca pelo calendário(período) mais recente(atual) da universidade (período atual da UFCG). Ou seja, em que período estamos hoje.
     
     Returns:
-        String com o período mais recente.
+        str: String com o período mais recente.
     """
     
     print("Tool get_periodo_mais_recente chamada")

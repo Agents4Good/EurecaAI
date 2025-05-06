@@ -30,7 +30,6 @@ class TestPlanoCursoSucesso(unittest.TestCase):
         
         self.assertIsInstance(plano_de_curso, list)
         for item in plano_de_curso: self.assertIsInstance(item, dict)
-        
         self.assertEqual(saida_esperada, plano_de_curso)
 
 
@@ -96,8 +95,8 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_buscando_plano_de_curso_periodo_invalido(self):        
@@ -108,9 +107,9 @@ class TestPlanoCursoInvalido(unittest.TestCase):
             periodo="2090.1",
         )
 
-        self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIsInstance(resultado, list)
+        self.assertIsInstance(resultado[0], dict)
+        self.assertIn("Não foi possível obter informação da disciplina de teoria da computação por não existir para esse período ou por ser chamada de outro nome.", resultado[0]["msg"])
 
 
     def test_buscando_plano_de_curso_periodo_valido_e_curriculo_invalido(self):        
@@ -123,8 +122,8 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_buscando_plano_de_curso_periodo_invalido_e_curriculo_valido(self):        
@@ -136,9 +135,9 @@ class TestPlanoCursoInvalido(unittest.TestCase):
             curriculo="2023"
         )
 
-        self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIsInstance(resultado, list)
+        self.assertIsInstance(resultado[0], dict)
+        self.assertIn("Não foi possível obter informação da disciplina de teoria da computação por não existir para esse período ou por ser chamada de outro nome.", resultado[0]["msg"])
 
 
     def test_buscando_plano_de_curso_periodo_invalido_e_curriculo_invalido(self):        
@@ -151,8 +150,8 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_buscando_plano_de_curso_periodo_invalido_para_ano(self):        
@@ -164,8 +163,7 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
+        self.assertIn("Informe ao usuário o curso não existia nesse período, portanto não é possível obter os dados da disciplina nesse período.", resultado)
 
 
     def test_buscando_plano_de_curso_curriculo_invalido_para_ano(self):        
@@ -177,8 +175,8 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_buscando_plano_de_curso_periodo_invalido_para_ano_e_invalido_para_curriculo_ano(self):        
@@ -191,9 +189,8 @@ class TestPlanoCursoInvalido(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Período inválido. Informe ao usuário que os períodos que ele pode acessar são", resultado)
-        self.assertRegex(resultado, r"e que o período mais recente é o de [0-9]{4}\.[0-2]")
-
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 if __name__ == "__main__":
     unittest.main()

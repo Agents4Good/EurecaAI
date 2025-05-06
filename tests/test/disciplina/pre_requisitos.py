@@ -45,8 +45,8 @@ class TestPreRequisitosInvalidas(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
     def test_pre_requisitos_disciplina_com_curriculo_invalido_nevativo(self):        
@@ -58,8 +58,8 @@ class TestPreRequisitosInvalidas(unittest.TestCase):
         )
         
         self.assertIsInstance(resultado, str)
-        self.assertIn("Currículo inválido. Informe ao usuário que para o curso", resultado)
-        self.assertRegex(resultado, r"e que o mais recente é o currículo de [0-9]{4}")
+        self.assertIn("Informe ao usuário que este curriculo é inválido e que os disponíveis são", resultado)
+        self.assertRegex(resultado, r"e que o curriculo mais recente é o de [0-9]{4}")
 
 
 if __name__ == "__main__":
