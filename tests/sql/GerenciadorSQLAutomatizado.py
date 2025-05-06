@@ -51,9 +51,33 @@ class GerenciadorSQLAutomatizado:
         sql = f"{self.table_name}(\n" + "\n".join(linhas) + "\n);"
         return sql
        
-            
 
-    def __extract_campus(self):
+    def _extract_campus_types_description(self):
+        """
+            Extrai os nomes dos campos, os tipos e a descrição no arquivo JSON.
+            ex: nome_do_curso é mapeado para descricao
+
+            Returns:
+                list: Uma lista de campos mapeados da tabela.
+        """
+
+        with open(self.path, 'r') as file:
+            try:
+                data = json.load(file)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Erro ao carregar o arquivo JSON: {e}")
+        
+        # Verifica se a tabela existe no JSON
+        if self.table_name not in data:
+            raise ValueError(f"A tabela '{self.table_name}' não foi encontrada no arquivo JSON.")
+        
+        campus_tabela = []
+        for column, column_type in data[self.table_name].items():
+            campus_tabela.append(f"{column} {column_type['type']} -- {column_type['description']}")
+
+        return campus_tabela     
+
+    def _extract_campus(self):
         """
             Extrai os campos mapper da tabela especificada no arquivo JSON.
             ex: nome_do_curso é mapeado para descricao
@@ -94,7 +118,7 @@ class GerenciadorSQLAutomatizado:
         cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.tabela}")
         cursor.execute(f"DELETE FROM {self.table_name}")
 
-        dados = self.__extract_campus()
+        dados = self._extract_campus()
         for dado in data_json:
             cursor.execute(f"""
             INSERT OR IGNORE INTO {self.table_name} VALUES ({', '.join(['?' for _ in dados])})
@@ -130,8 +154,8 @@ class GerenciadorSQLAutomatizado:
     
     def get_data(self, query: str, prompt, temperature=0):
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", prompt=prompt)
-
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:1.7b", prompt=prompt)
+        
+        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:4b", prompt=prompt)
         result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")
         try:

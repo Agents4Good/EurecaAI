@@ -4,10 +4,11 @@ import requests
 from ..campus.utils import get_campus_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-from .util.salvar_dados_tabela import save_estudantes_cursos_info_gerais
-from .util.tabelas import TABELA_ESTUDANTE_CURSO_INFO_GERAIS
-from .util.prompts import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
-from ...sql.obter_dados_sql import obter_dados_sql
+
+
+from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
+from ...sql.normalize_data_estudante import normalize_data_estudante
 
 def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: Any):
    """
@@ -19,19 +20,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
          nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser informações dos estudantes de todos os campus (toda a UFCG), passe a string vazia ''. 
 
       Returns:
-      Informações dos estudantes que ajude a responder a pergunta feita pelo usuário.
-      - nome_do_estudante
-      - matricula_do_estudante
-      - idade
-      - estado_civil
-      - sexo
-      - cor
-      - nacionalidade
-      - local_de_nascimento
-      - naturalidade
-      - deficiente
-      - prac_renda_per_capita_ate
-
+         Informações dos estudantes que ajude a responder a pergunta feita pelo usuário.
+      
    """
 
 
@@ -54,11 +44,14 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
 
    response = requests.get(f'{URL_BASE}/estudantes', params=params)
    if response.status_code == 200:
-      estudantes = json.loads(response.text)
+      estudantes = normalize_data_estudante(json.loads(response.text))
       db_name = "db_estudantes.sqlite"
-      save_estudantes_cursos_info_gerais(estudantes, db_name)
+      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
+      gerenciador.save_data(estudantes)
       print(f"Estudantes salvos no banco de dados {db_name}.")
-      return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS, TABELA_ESTUDANTE_CURSO_INFO_GERAIS, temperature=0)
+
+      return gerenciador.get_data(query,PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
+      #return obter_dados_sql(query, db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS, TABELA_ESTUDANTE_CURSO_INFO_GERAIS, temperature=0)
    else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]
 

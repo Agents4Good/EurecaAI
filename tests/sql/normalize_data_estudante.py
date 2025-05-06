@@ -8,7 +8,7 @@ def normalize_data_estudante(data_json):
     fake = Faker('pt_BR')
     for item in data_json:
         Faker.seed(int(item["matricula_do_estudante"]))
-        campos_adicionais = {"nome_do_estudante": fake.name()}
+        campos_adicionais = {"nome": fake.name()}
         for campo, valor in campos_adicionais.items():
             item[campo] = valor
 

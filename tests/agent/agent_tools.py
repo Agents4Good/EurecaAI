@@ -66,10 +66,8 @@ class AgentTools:
         ]
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        local_model = ChatOllama(model="qwen3:1.7b", temperature=0)
+        local_model = ChatOllama(model="qwen3:4b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
-
-        print(auxiliar)
 
         response = local_model.invoke(
             f"""
@@ -97,7 +95,7 @@ class AgentTools:
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
         workflow.add_node("exit", self.exit_node)
-        workflow.add_edge(START, "input")
+        workflow.add_edge(START, "agent")
         workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
         #workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")

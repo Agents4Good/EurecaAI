@@ -25,8 +25,8 @@ tools = [
 #agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
-#agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
-agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+#agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #question = "Quais foram a média das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação no periodo 2023.2?" # ToolCall - OK
 #question = "Qual são os assuntos de EDA do curso ciência da computação?" # ToolCall - OK
 #question = "Qual o código da disciplina fmcc2 do curso ciência da computação?" # ToolCall - OK
@@ -92,7 +92,7 @@ agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B
 
 # Notas na disciplina
 
-#question = "Quais foram as médias finais dos alunos na disciplina Álgebra Linear I do curso de Ciência da Computação no campus de Campina Grande?" # ToolCall-OK
+question = "Quais foram as médias finais dos alunos na disciplina Álgebra Linear I do curso de Ciência da Computação no campus de Campina Grande?" # ToolCall-OK
 #question = "Quantos alunos foram aprovados na disciplina Álgebra Linear I no curso de Ciência da Computação no campus de Campina Grande?" # ToolCall-OK
 #question = "Quantos alunos foram reprovados por nota na disciplina Álgebra Linear I no curso de Ciência da Computação no campus de Campina Grande?" # ToolCall-OK
 #question = "Algum aluno foi dispensado da disciplina Álgebra Linear I no curso de Ciência da Computação no campus de Campina Grande?" # ToolCall-OK
@@ -233,6 +233,6 @@ agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B
 
 # Outros
 
-question = "Quantas turmas tem a disciplina de ciencia de dados preditiva no curso de ciencia da computacao, campus de campina grande?" # ToolCall - OK
-question = "Quantos estudantes estão na disciplina de teoria da computação no curso de ciencia da computação do campus de campina grande no período 2024.2"
+#question = "Qual é a sala da disiciplina Fundamentos de Matemática para Ciência da Computação 2?" # ToolCall - OK
+
 agent.run(question=question)

@@ -5,10 +5,15 @@
             "description": "Matrícula do estudante",
             "mapper": "matricula_do_estudante"
         },
-        "nome_do_estudante": {
+        "periodo": {
             "type": "TEXT",
-            "description": "Nome do estudante",
-            "mapper": "nome_do_estudante"
+            "description": "Período do estudante",
+            "mapper": "periodo"
+        },
+        "turma": {
+            "type": "TEXT",
+            "description": "Turma do estudante",
+            "mapper": "turma"
         },
         "status": {
             "type": "TEXT",

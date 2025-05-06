@@ -63,6 +63,7 @@ ZERO_SHOT_PROMPT_ESTUDANTE_SQL = """
      - SE A TOOL NÃO RESPONDER NADA, NÃO INVENTE RESPOSTAS.
      - VOCÊ SEMPRE DEVE MANDAR  A PERGUNTA DO USUÁRIO PARA SUA TOOL, CASO O PARÂMETRO DA TOOL EXIJA ISSO
      - MANDE PARA A TOOL APENAS OS PARAMÊTROS NECESSÁRIOS
+     - É possível que a  tool retorne somente um número, por exemplo, [(5)]. Isso significa que a resposta é 5.
 """
 
 
