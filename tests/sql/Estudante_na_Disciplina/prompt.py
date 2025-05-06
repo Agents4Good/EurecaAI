@@ -18,4 +18,6 @@ Siga **rigorosamente** as instruções abaixo:
 </RESTRIÇÕES>
 
 Responda com uma consulta SQL válida e mínima.
+
+{input}
 '''

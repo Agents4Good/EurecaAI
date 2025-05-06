@@ -29,7 +29,7 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
     nome_da_disciplina=str(nome_da_disciplina)
     turma=str(turma)
     periodo=str(periodo)
-    print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma} e curriculo={curriculo}")
+    print(f"Tool get_horarios_disciplinas chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, nome_da_disciplina={nome_da_disciplina}, turma={turma}")
     
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
@@ -39,6 +39,11 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
 
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
+
+    if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
+       return dados_disciplina[0]["msg"]
+
+
     params = {
         "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma,
@@ -46,6 +51,9 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
         "periodo-ate": periodo
     }
     response = requests.get(f'{URL_BASE}/horarios', params=params)
+
+    print("========================\n")
+    print("PARAMETROS", params)
 
     if response.status_code == 200:
         horarios = json.loads(response.text)

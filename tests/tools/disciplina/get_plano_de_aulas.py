@@ -43,6 +43,10 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
 
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
 
+
+    if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
+       return dados_disciplina[0]["msg"]
+
     params = {
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'periodo-de': periodo,
@@ -50,7 +54,7 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
         'turma': turma
     }
     response = requests.get(f'{URL_BASE}/aulas', params=params)
-
+   
     if response.status_code == 200:
         return json.loads(response.text)
     else:

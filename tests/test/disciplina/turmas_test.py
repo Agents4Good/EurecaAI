@@ -472,7 +472,7 @@ class TestTurmasInvalidas(unittest.TestCase):
         self.assertIn("Erro: Informe ao usuário o curso não existia nesse período, portanto não é possível obter os dados da disciplina nesse período.", resultado)
 
 
-    def test_de_curso_com_curriculo_invalido_negativo(self):
+    def test_de_curso_com_curriculo_invalido_negativo(self): 
         curriculo_escolhido = "-2024"
         
         resultado = get_turmas_disciplina(

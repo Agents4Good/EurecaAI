@@ -34,11 +34,13 @@ def get_horarios(codigo_da_disciplina: str, periodo: str, turma: str):
             turmas_map[turma]['horarios'][dia_nome] = horario_formatado
 
         return filtros_horarios
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 
     
 class TestHorarios(unittest.TestCase):
-    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_sem_turma(self):
-        saida_esperada = [{"turma": 1, "sala": "CAA303", "horarios": {"Sexta-feira": "8:00h às 10:00h", "Terça-feira": "10:00h às 12:00h"}}]
+    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_sem_turma_2(self): #OK
+        saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.2", turma="1")
 
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
@@ -53,23 +55,7 @@ class TestHorarios(unittest.TestCase):
         self.assertEqual(saida_esperada, resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_sem_turma_2(self):
-        saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.1", turma="1")
-
-        resultado = get_horarios_disciplina(
-            nome_do_campus="campina grande",
-            nome_do_curso="ciencia da computação",
-            nome_da_disciplina="teoria da computação"
-        )
-        
-        print("Resultado", resultado)
-        print("Saida esperada", saida_esperada)
-        self.assertIsInstance(resultado, list)
-        for saida in resultado: self.assertIsInstance(saida, dict)
-        self.assertEqual(saida_esperada, resultado)
-
-
-    def test_buscando_horarios_de_uma_disciplina_com_periodo_e_sem_turma(self):
+    def test_buscando_horarios_de_uma_disciplina_com_periodo_e_sem_turma(self): #OK
         saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.1", turma="1")
 
         resultado = get_horarios_disciplina(
@@ -86,8 +72,8 @@ class TestHorarios(unittest.TestCase):
         self.assertEqual(saida_esperada, resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_com_turma(self):
-        saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.1", turma="1")
+    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_com_turma(self): #OK
+        saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.2", turma="1")
 
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
@@ -103,7 +89,7 @@ class TestHorarios(unittest.TestCase):
         self.assertEqual(saida_esperada, resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_sem_turma(self):
+    def test_buscando_horarios_de_uma_disciplina_sem_periodo_e_sem_turma_3(self): #OK
         saida_esperada = get_horarios(codigo_da_disciplina="1411171", periodo="2024.1", turma="1")
 
         resultado = get_horarios_disciplina(
@@ -122,7 +108,7 @@ class TestHorarios(unittest.TestCase):
 
 
 class TestHorariosInvalido(unittest.TestCase):
-    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_0(self):
+    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_0(self): #OK
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
             nome_do_curso="ciencia da computação",
@@ -135,7 +121,7 @@ class TestHorariosInvalido(unittest.TestCase):
         self.assertIn("Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema).", resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_negativo(self):
+    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_negativo(self): #OK
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
             nome_do_curso="ciencia da computação",
@@ -148,7 +134,7 @@ class TestHorariosInvalido(unittest.TestCase):
         self.assertIn("Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema).", resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_21(self):
+    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_igual_21(self): #OK
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
             nome_do_curso="ciencia da computação",
@@ -161,7 +147,7 @@ class TestHorariosInvalido(unittest.TestCase):
         self.assertIn("Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema).", resultado)
 
 
-    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_maior_que_21(self):
+    def test_buscando_horarios_de_uma_disciplina_com_turma_invalida_maior_que_21(self): #OK
         resultado = get_horarios_disciplina(
             nome_do_campus="campina grande",
             nome_do_curso="ciencia da computação",

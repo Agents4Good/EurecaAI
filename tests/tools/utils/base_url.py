@@ -1,1 +1,1 @@
-URL_BASE = "https://eureca.sti.ufcg.edu.br/das/v2"
+URL_BASE = "https://eureca.lsd.ufcg.edu.br/das/v2"

@@ -22,7 +22,7 @@
         },
         "situacao_do_estudante": {
             "type": "TEXT",
-            "description": "Situação do estudante ENUM SUSPENSO, REINGRESSOS, REATIVADOS, DESISTENTES, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS E ATIVOS.",
+            "description": "Situação do estudante no curso ENUM SUSPENSO, REINGRESSOS, REATIVADOS, DESISTENTES, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS E ATIVOS.",
             "mapper": "situacao"
         },
         "naturalidade": {

@@ -146,7 +146,6 @@ class GerenciadorSQLAutomatizado:
             cursor.execute(sql)
             results = cursor.fetchall()
             conn.close()
-            print(f"Comando SQL executado:\n{sql}: {results}")
             return results
         except sqlite3.Error as e:
             conn.close()
@@ -164,7 +163,5 @@ class GerenciadorSQLAutomatizado:
             if (temperature < 0.5):
                 result = self.get_data(query,prompt, temperature + 0.1)
             return "Error: Não conseguimos achar os dados perguntados pelo usuário!"
-
-        print("Devolvendo resultado do comand SQL:", result)
         return result
     
