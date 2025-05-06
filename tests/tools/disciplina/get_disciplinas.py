@@ -3,7 +3,6 @@ import requests
 from typing import Any
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ..utils.validacoes import valida_periodo_curriculo
@@ -22,7 +21,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
     
     Args:
-        query (Any): a pergunta feita.
+        query (Any): reformule a pergunta sem citar nome de curso, nem de campus e nem currículo nesse parâmetro.
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".

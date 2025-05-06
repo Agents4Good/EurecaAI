@@ -35,7 +35,6 @@ def get_turmas_disciplina(nome_da_disciplina: Any, nome_do_curso: Any, nome_do_c
     if mensagem != "": return mensagem
 
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
-    print("\n\n\n\n\n\n\n\n", dados_disciplina, type(dados_disciplina), "\n\n\n\n\n\n\n\n")
 
     if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
        return dados_disciplina[0]["msg"]

@@ -1,6 +1,5 @@
 from .prompts.prompts import *
 from langchain_ollama import ChatOllama
-from langchain_community.chat_models import ChatDeepInfra
 from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
@@ -25,7 +24,7 @@ tools = [
 #agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
-agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #question = "Quais foram a média das notas na turma 1 da disciplina de inteligencia artificial do curso de cincia da computação no periodo 2023.2?" # ToolCall - OK
 #question = "Qual são os assuntos de EDA do curso ciência da computação?" # ToolCall - OK
@@ -235,6 +234,10 @@ question = "Quais foram as médias finais dos alunos na disciplina Álgebra Line
 
 #question = "Qual é a sala da disiciplina Fundamentos de Matemática para Ciência da Computação 2?" # ToolCall - OK
 
-question = "Traga todas as disciplinas do curso de ciência da computação" 
-question = "Quais as notas dos estudantes da disciplina de inteligencia artificial do curso de ciencia da computacao no periodo 2023.1?" # ToolCall - OK
+question = "Quantas disciplinas existem no curso de ciência da computação do campus de campina grande?"
+question = "Eu estava curioso para saber quantas disciplinas há no curso de engenharia elétrica"
+question = "Quantas disciplinas do curso de engenharia mecanica do campus de campina grande tem 4 creditos?"
+question = "Quero o nome e os creditos de todas as disciplina que tenha 60 horas de aula para o curso de engenharia de producao do campus de campina grande"
+question = "Quero saber o nome e os creditos em medicina de campina grande"
+#question = "Quais as notas dos estudantes da disciplina de inteligencia artificial do curso de ciencia da computacao no periodo 2023.1?" # ToolCall - OK
 agent.run(question=question)

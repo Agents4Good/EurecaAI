@@ -11,7 +11,7 @@ metadata:
     annotations:
         backstage.io/techdocs-ref: dir:.
         github.com/project-slug: Agents4Good/EurecaAI
-        
+    
 spec:
     type: service
     lifecycle: development

@@ -2,7 +2,6 @@ import sqlite3
 import json
 import os
 from .LLMGenerateSQL import LLMGenerateSQL
-from langchain_community.chat_models import ChatDeepInfra
 from langchain_ollama import ChatOllama
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

@@ -3,7 +3,6 @@ import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
-from ..utils.validacoes import validar_curriculo
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 
 def get_disciplina_for_tool(codigo_da_disciplina):

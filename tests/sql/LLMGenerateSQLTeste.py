@@ -1,8 +1,6 @@
-from langchain_community.chat_models import ChatDeepInfra
 from typing import Optional, TypedDict
 from typing_extensions import Annotated
 from langchain_ollama import ChatOllama
-from langchain import hub
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -41,7 +39,6 @@ prompt_gera_sql = """
     {input}
     - Você deve retornar a consulta SQL e mais nada.
 """
-
 
 
 class FieldAtributtes(TypedDict):

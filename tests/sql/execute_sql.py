@@ -1,7 +1,6 @@
 import sqlite3
 
 def execute_sql(sql: str, db_name: str):
-    print("Executando o comando SQL")
     conn = sqlite3.connect(db_name)
     cursor = conn.cursor()
 
