@@ -251,5 +251,4 @@ question = "Quais são as disciplinas complementares do curso de Ciência da Com
 # question = "Quais são os nomes dos setores com mais de 5 disciplinas associadas no curso de Ciência da Computação do campus de Campina Grande"
 # question = "Quais disciplinas do currículo 2023 da Ciência da Computação em Campina Grande têm mais carga horária prática do que teórica?"
 # question = "Liste as disciplinas que têm carga horária total superior à média do curso de Ciência da Computação no campus de Campina Grande, independentemente do currículo."
-
 agent.run(question=question)
