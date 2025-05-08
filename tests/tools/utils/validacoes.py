@@ -42,8 +42,7 @@ def validar_curriculo(curriculo_usado: str, nome_do_campus: str, nome_do_curso: 
 def validar_turma(turma_usada: str):
     if (turma_usada.isdigit() and int(turma_usada) >= 1 and int(turma_usada) <= 20) or turma_usada == "": 
         return True, ""
-    return False, f"Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é 1 (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema)."
-
+    return False, f"Turma inválida. A turma precisa ser um valor númerico entre 1 a 20. O padrão é vazio '' (caso você escolha o padrão, você deve informar ao usuário da sua escolha relatando o problema)."
 
 def busca_curriculo_no_periodo(periodo: str, todos_curriculos: list):
     todos_curriculos = [curriculo["codigo_do_curriculo"] for curriculo in todos_curriculos]

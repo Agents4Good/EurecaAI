@@ -118,35 +118,20 @@ REGRAS PARA USO DAS TOOLS:
 1. Se a pergunta mencionar o nome de uma ou mais disciplinas (ex: "Teoria da Computação", "Cálculo II", "Álgebra Linear") e pedir INFORMAÇÕES BÁSICAS (ementa, nome completo, código etc), use:
 ➤ get_disciplinas
 
-   - Exemplo: "Qual o nome completo da disciplina de Cálculo II?"
-   - Se houver mais de uma disciplina mencionada, chame a ferramenta separadamente para cada uma.
-
 2. Se a pergunta for sobre DATAS ou HORÁRIOS de aula de uma disciplina específica, use:
 ➤ get_horarios_disciplina
 
-   - Exemplo: "Que dia e horário ocorrerá a aula de Compiladores?"
-
-3. Se a pergunta envolver NOTAS, DESEMPENHO DE ESTUDANTES, quem DISPENSOU, quem tirou maior nota, ranking, etc., use:
-➤ get_notas_disciplina
-
-   - Exemplos:
-     - "Quais foram as notas na disciplina de Álgebra Linear na turma 3?"
-     - "Quem tirou a maior nota na turma 1 de Ciência da Computação?"
-     - "Quantos estudantes foram reprovados em Programação I?"
+3. Se a pergunta envolver MATRÍCULA, NOTAS, DESEMPENHO DE ESTUDANTES, quem DISPENSOU, quem tirou maior nota, ranking, etc., use:
+➤ get_matriculas_disciplina
 
 4. Se a pergunta for sobre o PLANO DE AULA de uma disciplina (conteúdo de uma data específica, temas futuros), use:
 ➤ get_plano_de_aulas
 
-   - Exemplo: "Qual o tema abordado na aula do dia 15 de abril em Lógica de Programação?"
-
 5. Se a pergunta for sobre METODOLOGIA, AVALIAÇÕES, REFERÊNCIAS, número de provas ou conteúdo geral da disciplina, use:
 ➤ get_pre_requisitos_disciplina
 
-   - Exemplo: "Qual a metodologia de ensino e quais os livros usados em Banco de Dados?"
-
 IMPORTANTE:
 - Não tente responder por conta própria.
-- Sempre retorne chamadas de tools em JSON válido.
 - Se a pergunta envolver múltiplas intenções, faça múltiplas chamadas às ferramentas adequadas.
 """
 

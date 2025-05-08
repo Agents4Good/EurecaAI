@@ -5,16 +5,6 @@
             "description": "Matrícula do estudante",
             "mapper": "matricula_do_estudante"
         },
-        "periodo": {
-            "type": "TEXT",
-            "description": "Período do estudante",
-            "mapper": "periodo"
-        },
-        "turma": {
-            "type": "TEXT",
-            "description": "Turma do estudante",
-            "mapper": "turma"
-        },
         "status": {
             "type": "TEXT",
             "description": "ENUM pode ser 'Aprovado', 'Trancado', 'Reprovado por Nota', 'Reprovado por Falta'. E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use 'Reprovado por Nota' OR Reprovado por Falta",

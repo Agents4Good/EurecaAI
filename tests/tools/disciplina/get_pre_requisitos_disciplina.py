@@ -29,7 +29,7 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
         curriculo (Any, optional): Ano do currículo. Defaults to "".
 
     Returns:
-        list: Chame esta função se a pergunta for sobre disciplinas que precisam ser cursadas antes.
+        list: Uma lista com as disciplinas que são pré-requisitos de outra.
     """
     
     nome_da_disciplina=str(nome_da_disciplina)
