@@ -152,7 +152,7 @@ class GerenciadorSQLAutomatizado:
             return [{"error": str(e)}]
     
     def get_data(self, query: str, prompt, temperature=0):
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo", prompt=prompt)
+        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:4b", prompt=prompt)
         result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")

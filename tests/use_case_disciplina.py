@@ -1,5 +1,6 @@
 from .prompts.prompts import *
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
@@ -22,7 +23,7 @@ tools = [
 #print(get_disciplinas.args_schema.schema())
 
 agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
-#agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+#agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
 # Outros
 
