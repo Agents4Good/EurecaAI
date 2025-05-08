@@ -37,7 +37,7 @@
         },
         "tipo_de_componente_curricular": {
             "type": "TEXT",
-            "description": "Tipo de componente curricular da disciplina. Pode ser esses ENUM 'Normal' ou 'Atividade Complementar'",
+            "description": "Tipo de componente curricular da disciplina. Pode ser ENUM 'Normal' ou 'Atividade Complementar'",
             "mapper": "tipo_de_componente_curricular"
         }
     }

@@ -47,6 +47,8 @@ class AgentTools:
         if self.prompt:
             messages = [SystemMessage(content=self.prompt)] + messages
         message = self.model.invoke(messages)
+
+        print("MENSAGEM ", message.content)
         message = self.extract_tool_calls(message)
         return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
     

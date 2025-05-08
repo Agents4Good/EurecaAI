@@ -15,7 +15,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
 
       Args:
-         query: Pergunta feita pelo usuário.
+         query: reformule a pergunta removendo o nome do curso e o nome de campus, mas mantendo o sentido da pergunta.
          nome_do_curso: nome do curso (se quiser todos os estudantes da UFCG (de todas as universidades), use a string vazia '' para obter os estudantes de todos os cursos).
          nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser informações dos estudantes de todos os campus (toda a UFCG), passe a string vazia ''. 
 

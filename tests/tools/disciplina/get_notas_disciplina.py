@@ -52,6 +52,7 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
         "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma
     }
+    
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:

@@ -12,7 +12,7 @@ tools = [
     obter_dados_gerais_de_todos_estudantes
 ]   
 
-agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
+agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
 #agent = AgenteEstudante(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 
@@ -50,5 +50,5 @@ question = "quantos estudantes sao pardos ou indigenas no curso de ciencia da co
 #question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 #question = "Quantos estudantes solteiros existem no curso de ciência da computação do campus Campina Grande?"
-question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
+#question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
 agent.run(question=question)

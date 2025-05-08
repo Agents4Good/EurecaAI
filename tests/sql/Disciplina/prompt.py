@@ -9,7 +9,7 @@ Siga **rigorosamente** as instruções abaixo:
 
 <RESTRIÇÕES>
 - Nunca use "SELECT *" — selecione somente as colunas relevantes.
-- Assuma que você já tem os dados do Curso carregados na tabela, não precisa se preocupar com curso.
+- Selecione apenas as colunas que são necessárias para responder à pergunta.
 - Não invente ou modifique os nomes das colunas.
 - Nunca use a cláusula LIKE.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.

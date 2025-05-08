@@ -30,6 +30,7 @@ class LLMGenerateSQL:
         })
 
         prompt = prompt.messages[0].content
+        #print(f"Prompt: {prompt}")
         structured_llm = self.llm.with_structured_output(QueryOutput)
         result = structured_llm.invoke(prompt)
         return {"query": result["query"]}
