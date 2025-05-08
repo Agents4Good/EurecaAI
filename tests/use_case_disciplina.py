@@ -36,10 +36,9 @@ question = "Quero saber o nome e os creditos em medicina de campina grande"
 question = "Quantas disciplinas tem no curriculo de 2017 no curso de ciencia da computação do campus de campina grande"
 question = "Quais disciplinas do curso de Ciência da Computação do campus de Campina Grande têm mais de 4 créditos?"
 question = "Me mostre as disciplinas com carga horária teórica semanal maior que 2 do curso de Ciência da Computação de Campina Grande."
-#question = "Quais são as disciplinas complementares do curso de Ciência da Computação do campus de Campina Grande?"
-#question = "quero o nome e o código das disciplinas do curso de letras frances de campina grande?"
-#question = "Liste as disciplinas do curso de Ciência da Computação em Campina Grande com carga horária prática semanal igual a 0."
-question = "Quais as notas dos estudantes da disciplina de inteligencia artificial do curso de ciencia da computacao no periodo 2023.1?" # ToolCall - OK
+question = "Quais são as disciplinas complementares do curso de Ciência da Computação do campus de Campina Grande?"
+question = "Liste o nome das disciplinas do curso de Ciência da Computação em Campina Grande com carga horária prática semanal igual a 0."
+# question = "Quais as notas dos estudantes da disciplina de inteligencia artificial do curso de ciencia da computacao no periodo 2023.1?" # ToolCall - OK
 # question = "Quais disciplinas da Ciência da Computação em Campina Grande pertencem ao setor de Engenharia Elétrica?"
 # question = "Quais disciplinas do currículo 2017 do curso de Ciência da Computação em Campina Grande têm mais de um crédito, carga prática semanal diferente de zero, e são do tipo Normal?"
 # question = "Liste todas as disciplinas do curso de Ciência da Computação do campus de Campina Grande com carga horária teórica maior que 2 e carga horária prática menor ou igual a 2, independentemente do currículo."
@@ -47,10 +46,14 @@ question = "Quais as notas dos estudantes da disciplina de inteligencia artifici
 # question = "Quais disciplinas do currículo 2023 da Ciência da Computação em Campina Grande têm mais carga horária teórica do que prática?"
 # question = "Liste as disciplinas que têm carga horária total superior à média do curso de Ciência da Computação no campus de Campina Grande, independentemente do currículo."
 
+
+
+
+
 # Notas permutação
 # Campo: matricula_do_estudante
-#question = "Quais são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?"
-#question = "Liste as matrículas dos alunos que fizeram a disciplina de Teoria da Computação de ciencia da computacao no campus de Campina Grande."
+question = "Quais são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?"
+#question = "Liste as matrículas dos alunos que fizeram a disciplina de Teoria da Computação no campus de Campina Grande."
 #question = "Me mostre quem, por matrícula, cursou Teoria da Computação na Ciência da Computação de Campina Grande."
 
 # Campo: periodo
@@ -82,5 +85,6 @@ question = "Quais as notas dos estudantes da disciplina de inteligencia artifici
 #question = "Me mostre quem não dispensou Teoria da Computação na Ciência da Computação de Campina Grande."
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
 #question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
+
 
 agent.run(question=question)
