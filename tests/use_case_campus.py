@@ -11,7 +11,8 @@ tools = [
     get_periodo_mais_recente
 ]
 
-agent = AgenteCampus(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_CAMPUS_SQL)
+agent = AgenteCampus(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_CAMPUS_SQL)
 
 question = "Quais são os campus da UFCG?"
+question = "Quando começa o período 2024.2"
 agent.run(question=question)
