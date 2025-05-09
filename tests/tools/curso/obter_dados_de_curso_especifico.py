@@ -6,6 +6,7 @@ import json
 
 def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
+    _summary_
     Buscar informação de um curso específico da UFCG a partir do nome do curso.
     Use esta função APENAS quando a pergunta mencionar um ou mais cursos específicos pelo nome.
 

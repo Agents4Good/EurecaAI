@@ -8,6 +8,7 @@ from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
+    _summary_
     Buscar informações relativo a todos os cursos da UFCG, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
     Use esta função quando o usuário fizer uma pergunta **geral** sobre cursos da UFCG, sem mencionar nomes específicos.
 

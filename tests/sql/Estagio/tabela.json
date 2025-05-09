@@ -1,0 +1,89 @@
+{
+    "Estagio": {
+        "id": {
+            "type": "INTEGER",
+            "description": "Identificador único do estágio",
+            "mapper": "id"
+        },
+        "matricula_do_estudante": {
+            "type": "TEXT",
+            "description": "Matrícula do estudante",
+            "mapper": "matricula_do_estudante"
+        },
+        "id_empresa": {
+            "type": "INTEGER",
+            "description": "Identificador da empresa",
+            "mapper": "id_concedente"
+        },
+        "uf_concedente": {
+            "type": "TEXT",
+            "description": "Unidade da federação do concedente, exemplo: PB",
+            "mapper": "uf_concedente"
+        },
+        "matricula_do_professor": {
+            "type": "TEXT",
+            "description": "Matrícula do professor orientador",
+            "mapper": "matricula_do_docente"
+        },
+        "departamento_da_empresa": {
+            "type": "TEXT",
+            "description": "Departamento da empresa onde o estágio é realizado",
+            "mapper": "departamento"
+        },
+        "nome_do_professor": {
+            "type": "TEXT",
+            "description": "Nome do professor orientador",
+            "mapper": "nome_docente"
+        },
+        "obrigatorio": {
+            "type": "BOOLEAN",
+            "description": "Indica se o estágio é obrigatório ou não",
+            "mapper": "obrigatorio"
+        },
+        "data_inicio": {
+            "type": "DATE",
+            "description": "Data de início do estágio",
+            "mapper": "inicio_vigencia"
+        },
+        "data_fim": {
+            "type": "DATE",
+            "description": "Data de fim do estágio",
+            "mapper": "final_vigencia"
+        },
+        "carga_horaria_semanal": {
+            "type": "INTEGER",
+            "description": "Carga horária semanal do estágio em horas",
+            "mapper": "carga_semanal"
+        },
+        "status": {
+            "type": "TEXT",
+            "description": "Status do estágio, exemplo: 'Termo celebrado', 'Termo rescindido', 'Termo', 'Plano aprovado CPE/Centro'",
+            "mapper": "status"
+        },
+        "codigo_da_disciplina": {
+            "type": "TEXT",
+            "description": "Código da disciplina relacionada ao estágio",
+            "mapper": "codigo_da_disciplina"
+        },
+        "bolsa_mensal": {
+            "type": "REAL",
+            "description": "Valor da bolsa mensal do estágio",
+            "mapper": "bolsa_mensal"
+        },
+        "auxilio_transporte_diario": {
+            "type": "REAL",
+            "description": "Valor do auxílio transporte diário do estágio",
+            "mapper": "auxilio_transporte_diario"
+        },
+        "nome_do_setor": {
+            "type": "TEXT",
+            "description": "Nome do setor da universidade ao qual o estágio está vinculado",
+            "mapper": "nome_do_setor"
+        },
+        "codigo_do_setor": {
+            "type": "TEXT",
+            "description": "Código do setor da universidade ao qual o estágio está vinculado",
+            "mapper": "codigo_do_setor"
+        }
+    }
+}

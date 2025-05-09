@@ -11,8 +11,9 @@ tools = [
     get_todos_setores
 ]
 
-agent = AgenteSetores(LLM=ChatOllama, model="llama3.1", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
+agent = AgenteSetores(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
 
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"
 question = "Quais os códigos de todos os setores?"
+question = "Traga os estágios do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS do campus de campina grande no ano de 2024"
 agent.run(question=question)

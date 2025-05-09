@@ -8,10 +8,11 @@ from ..utils.base_url import URL_BASE
 
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
-from ...sql.normalize_data_estudante import normalize_data_estudante
+from ...sql.Estudante_Info_Gerais.normalize_data import normalize_data_estudante
 
 def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_do_campus: Any):
    """
+      _summary_
       Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
 
       Args:

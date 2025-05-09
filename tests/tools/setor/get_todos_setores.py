@@ -6,6 +6,7 @@ import json
 
 def get_todos_setores(nome_do_campus: Any = "", filtro: str = "") -> list:
     """
+    _summary_
     Busca as informações dos setores (centros) do campus da UFCG.
     O parametro nome_do_campus é o nome da cidade e ela pode ser Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
     

@@ -6,6 +6,7 @@ import json
 
 def get_professores_setor(nome_do_centro_setor: Any, nome_do_campus: Any = "") -> list:
     """
+    _summary_
     Busca as informações de professores ativos nos setores(centros) da UFCG ou de toda a UFCG. Ou seja, busca quais são os professores.
     
     Args:

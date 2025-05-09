@@ -87,5 +87,5 @@ question = "Quais são as matrículas dos estudantes que cursaram Teoria da Comp
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
 #question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
-
+question = "Quais disciplinas foram ofertadas em computação no período 2024.1"
 agent.run(question=question)

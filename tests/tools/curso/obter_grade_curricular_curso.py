@@ -6,6 +6,7 @@ from ..utils.base_url import URL_BASE
 
 def obter_grade_curricular_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
+    _summary_
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
 
     Args:

@@ -6,6 +6,7 @@ from ..utils.base_url import URL_BASE
 
 def get_curriculo_mais_recente_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
+    _summary_
     Buscar o currículo mais recente de um curso.
 
     Args:
