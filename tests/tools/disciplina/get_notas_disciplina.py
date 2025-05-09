@@ -20,7 +20,11 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
     - quantidade de estudantes em uma disciplina de um curso.
     
     Args:
+<<<<<<< HEAD
         query (Any): Pergunta do usuário.
+=======
+        query (Any): reformule a pergunta sem citar nome de curso, nem de campus e nem currículo nesse parâmetro.
+>>>>>>> cfc1db6 (add: adicionando tool do agente de disciplinas no periodo)
         nome_da_disciplina (Any): Nome da disciplina.
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.

@@ -21,7 +21,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
     
     Args:
-        query (Any): Reformule a query apenas se necessário, removendo o nome do curso, o nome de campus e o currículo (ano), mas mantendo o sentido da pergunta.
+        query (Any): reformule a pergunta sem citar nome de curso, nem de campus e nem currículo nesse parâmetro.
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
