@@ -3,8 +3,9 @@ from .get_todos_setores import get_todos_setores
 from ..utils.most_similar import get_most_similar
 from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
+from langchain_community.chat_models import ChatDeepInfra
 
-model = ChatOllama(model="qwen3:4b", temperature=0)
+model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
 mapper_setor = {"nome": "descricao", "codigo": "codigo_do_setor"}
 

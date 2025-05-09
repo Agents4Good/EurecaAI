@@ -4,6 +4,7 @@ from langgraph.prebuilt import ToolNode
 from langgraph.graph import StateGraph, MessagesState, START, END
 from langchain_core.messages import AnyMessage, SystemMessage, HumanMessage, AIMessage, ToolMessage
 from ..prompts.prompts import AGENTE_ENTRADA_PROMPT
+from langchain_community.chat_models import ChatDeepInfra
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -65,7 +66,8 @@ class AgentTools:
         ]
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        local_model = ChatOllama(model="qwen3:8b", temperature=0)
+        local_model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
+        #local_model = ChatOllama(model="qwen3:8b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
 
         response = local_model.invoke(

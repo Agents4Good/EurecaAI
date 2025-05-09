@@ -2,8 +2,11 @@ from .get_professores_setor import get_professores_setor
 from ..campus.utils import get_campus_most_similar
 from ..disciplina.get_disciplinas import get_disciplinas
 from ..campus.utils import get_campus_most_similar
+
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ...sql.Estagio.normalize_data import normalize_data_estagio
 from ...sql.Estagio.prompt import PROMPT_SQL_ESTAGIO
+
 from ..utils.base_url import URL_BASE
 from datetime import datetime
 from typing import Any
@@ -11,8 +14,8 @@ import requests
 import json
 import unicodedata
 
-def get_estagios(ano: Any, query: Any = "", nome_do_campus: Any = "", nome_do_centro_unidade: Any = "", nome_do_curso: Any = "") -> list:
-    """_summary_
+def get_estagios(ano: Any, query: Any,  nome_do_campus: Any = "", nome_do_centro_unidade: Any = "", nome_do_curso: Any = "") -> list:
+    """
     Buscar informações sobre estágios dos estudantes de uma centro da unidade de um curso.
 
     Args:
@@ -56,7 +59,7 @@ def get_estagios(ano: Any, query: Any = "", nome_do_campus: Any = "", nome_do_ce
     
     elif nome_do_campus and nome_do_centro_unidade:
         professores = get_professores_setor(nome_do_campus=nome_do_campus, nome_do_centro_setor=nome_do_centro_unidade)
-        codigo_professores = [professor["codigo_do_professor"] for professor in professores]
+        codigo_professores = [professor["matricula_do_docente"] for professor in professores]
         for estagiario in estagiarios:
             if estagiario["matricula_do_docente"] in codigo_professores:
                 estagiarios_filtrados.append(estagiario)
@@ -71,9 +74,10 @@ def get_estagios(ano: Any, query: Any = "", nome_do_campus: Any = "", nome_do_ce
     else:
         return "Erro: Informe para passar os dados necessarios nessa ferramenta"
 
+    estagiarios_filtrados = normalize_data_estagio(estagiarios_filtrados)
     if estagiarios_filtrados:
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estagios", db_name="db_estagio.sqlite")
-        gerenciador.save_data(disciplinas)
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite")
+        gerenciador.save_data(estagiarios_filtrados)
         return gerenciador.get_data(query, PROMPT_SQL_ESTAGIO, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

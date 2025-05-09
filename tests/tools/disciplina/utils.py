@@ -6,8 +6,10 @@ from ..utils.processar_json import processar_json
 from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
+from langchain_community.chat_models import ChatDeepInfra
 
-model = ChatOllama(model="llama3.1", temperature=0)
+
+model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 

@@ -5,8 +5,11 @@ from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
+from langchain_community.chat_models import ChatDeepInfra
 
-model = ChatOllama(model="llama3.1", temperature=0)
+
+
+model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 
