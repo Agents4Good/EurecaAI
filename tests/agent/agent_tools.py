@@ -65,7 +65,7 @@ class AgentTools:
         ]
         #ai_response = next((msg.content for msg in messages if isinstance(msg, AIMessage) and msg.content), "")
 
-        local_model = ChatOllama(model="qwen3:4b", temperature=0)
+        local_model = ChatOllama(model="qwen3:8b", temperature=0)
         auxiliar = '\n'.join(tool_responses) if tool_responses else "Nenhuma resposta encontrada."
 
         response = local_model.invoke(
@@ -112,7 +112,6 @@ class AgentTools:
     
     def extract_tool_calls(self, response):
         try:
-            #print("\n")
             print(response)
             content_data = json.loads(response.content)
             if "tool_calls" in content_data:

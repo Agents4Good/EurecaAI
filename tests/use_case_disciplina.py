@@ -22,7 +22,7 @@ tools = [
 
 #print(get_disciplinas.args_schema.schema())
 
-agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
 # Outros
