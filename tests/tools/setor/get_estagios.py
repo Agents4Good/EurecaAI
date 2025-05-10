@@ -42,42 +42,56 @@ def get_estagios(ano: Any, query: Any,  nome_do_campus: Any = "", nome_do_centro
         "fim-ate": str(ano)
     }
 
-
     response = requests.get(f'{URL_BASE}/estagios', params=params)
     if response.status_code != 200:
-        return "Erro: "
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
     
-    estagiarios = json.loads(response.text)
-    estagiarios_filtrados = []
+    estagios = json.loads(response.text)
+    estagios_filtrados = filtragem(nome_do_campus,nome_do_curso,nome_do_centro_unidade, estagios)
     
+    if len(estagios_filtrados) == 0:
+        return "Erro: Informe para passar os dados necessarios nessa ferramenta"
+
+    estagios_filtrados_normalizados = normalize_data_estagio(estagios_filtrados)
+    gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite")
+    gerenciador.save_data(estagios_filtrados_normalizados)
+    return gerenciador.get_data(query, PROMPT_SQL_ESTAGIO, temperature=0)
+   
+        
+
+
+
+#FUNÇÂO AUXILIAR
+def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
+    estagios_filtrados = []
     if nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         codigo_campus = str(dados_campus["campus"]["codigo"])
-        for estagiario in estagiarios:
-            if estagiario["codigo_disciplina"][0] == codigo_campus:
-                estagiarios_filtrados.append(estagiario)
+       
+        for estagio in estagios:
+            codigo = estagio["codigo_da_disciplina"]
+            #EXISTEM ALGUNS CÒDIGOS QUE SÂO NONE
+            if codigo is not None and str(codigo)[0] == codigo_campus:
+                estagios_filtrados.append(estagio)
     
     elif nome_do_campus and nome_do_centro_unidade:
         professores = get_professores_setor(nome_do_campus=nome_do_campus, nome_do_centro_setor=nome_do_centro_unidade)
         codigo_professores = [professor["matricula_do_docente"] for professor in professores]
-        for estagiario in estagiarios:
-            if estagiario["matricula_do_docente"] in codigo_professores:
-                estagiarios_filtrados.append(estagiario)
+        for estagio in estagios:
+            if estagio["matricula_do_docente"] in codigo_professores:
+                estagios_filtrados.append(estagio)
     
     elif nome_do_campus and nome_do_curso:
-        disciplinas = get_disciplinas(query="", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="")
-        disciplinas_de_estagios = [disciplina["codigo_da_disciplina"] for disciplina in disciplinas if "estagio" in disciplina["nome"].apply(lambda x: unicodedata.normalize("NFKD", x).encode("ASCII", "ignore").decode("utf-8").lower())]
-        for estagiario in estagiarios:
-            if estagiario["codigo_disciplina"] in disciplinas_de_estagios:
-                estagiarios_filtrados.append(estagiario)
-    
-    else:
-        return "Erro: Informe para passar os dados necessarios nessa ferramenta"
+        disciplinas = get_disciplinas(query="", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=" ") #CURRICULO TEM QUE PASSAR UM ESPAÇO EM BRANCO
 
-    estagiarios_filtrados = normalize_data_estagio(estagiarios_filtrados)
-    if estagiarios_filtrados:
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite")
-        gerenciador.save_data(estagiarios_filtrados)
-        return gerenciador.get_data(query, PROMPT_SQL_ESTAGIO, temperature=0)
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        disciplinas_de_estagios = [
+                disciplina["codigo_da_disciplina"]
+                for disciplina in disciplinas
+                if "estagio" in unicodedata.normalize("NFKD", disciplina["nome"]).encode("ASCII", "ignore").decode("utf-8").lower()
+        ]
+
+        for estagio in estagios:
+            if estagio["codigo_da_disciplina"] in disciplinas_de_estagios:
+                estagios_filtrados.append(estagio)
+
+    return estagios_filtrados

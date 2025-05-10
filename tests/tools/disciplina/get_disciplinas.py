@@ -46,6 +46,8 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         'curso': dados_curso['curso']['codigo'],
         'curriculo': curriculo
     }
+
+    print("CURRICULO USADO ", curriculo)
     
     print(f"Recuperando as disciplinas do curso de {dados_curso['curso']['nome']} e código {dados_curso['curso']['codigo']} e currículo {curriculo}")
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)

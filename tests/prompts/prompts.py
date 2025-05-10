@@ -167,14 +167,33 @@ REGRAS PARA USO DAS TOOLS:
 ➤  get_estagios
         1.1 Essa ferramenta tem acesso à informações de id do estágio, matrícula do estudante, nome e matrícula do professor, id da empresa, data de início e fim do estágio, carga horária, valor da bolsa, auxílio transporte, nome do setor e código do setor.
 
+        1. Exemplos:
+        - Quais foram os estágios da professora Eliane?
+        - Quais professores estiveram envolvidos em estágios no ano 2015 até 2016?
+        - Quanto ganha o aluno 123456789 no estágio?
+        - Liste todos os estágio de 2024 associados a unidade acadêmica de ciências médicas.
+
 2. Se a pergunta envolver professores num contexto geral ou professores de um centro específico use:
 ➤  get_professores_setor
     2.1 Essa ferramenta tem acesso à informações de matrícula do professor, nome, codigo do setor, email, cpf, siape e titulação dos professores de um setor específico.
+
+        2. Exemplos:
+        - A professora Eliane é de qual setor?
+        - Qual o email do professor Dalton?
+        - A professora Patrícia tem doutorado?
 
 3. Se a pergunta envolver informações gerais sobre todos os setores use:
 ➤  get_todos_setores
         3.1 Essa ferramenta tem acesso à informações de codigo, descrição/nome, campus e email dos setores.
 
+        3. Exemplos:
+        - Qual o código do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS?
+        - Me traga o nome do setor 12345678
+        - A qual campus o setor centro de engenharia elétrica e informática pertence?
+
+***IMPORTANTE***
+- EM HIPÓTESE ALGUMA MODIFIQUE O DADO QUE A TOOL RETORNOU, MESMO QUE ELE NÂO FAÇA SENTIDO PARA VOCÊ.
+- VOCÊ DEVE PASSAR A QUERY PARA A TOOL EXATAMENTE COMO O USUÁRIO MANDOU, VOCÊ SÓ DEVE MODIFICÁ-LA SE A TOOL EXIGIR.
 """
 
 ZERO_SHOT_PROMPT_SETORES_SQL_ANTIGO = """

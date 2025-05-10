@@ -95,12 +95,13 @@ class AgentTools:
         workflow = StateGraph(AgentState)
         workflow.add_node("agent", self.call_model)
         workflow.add_node("tools", self.tools)
-        workflow.add_node("exit", self.exit_node)
+        #workflow.add_node("exit", self.exit_node)
         workflow.add_edge(START, "agent")
-        workflow.add_conditional_edges("agent", self.should_continue, ["tools", "exit"])
-        #workflow.add_edge("input", "agent")
         workflow.add_edge("tools", "agent")
-        workflow.add_edge("exit", END)
+        workflow.add_conditional_edges("agent", self.should_continue, ["tools", END])
+        #workflow.add_edge("input", "agent")
+        #workflow.add_edge("agent", END)
+        #workflow.add_edge("exit", END)
         return workflow.compile()
 
         
@@ -109,7 +110,7 @@ class AgentTools:
         last_message = messages[-1]
         if last_message.tool_calls:
             return "tools"
-        return "exit"
+        return END
     
     
     def extract_tool_calls(self, response):

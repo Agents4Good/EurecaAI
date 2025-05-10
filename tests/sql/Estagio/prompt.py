@@ -13,6 +13,8 @@ Siga **rigorosamente** as instruções abaixo:
 - Nunca use a cláusula LIKE.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 - Gere o SQL no formato correto, apenas o SQL e mais nada.
+- Se a pergunta envolve algum campo que a tabela não tem, ignore esse campo.
+- ASSUMA QUE A CONSULTA TRAZ MUITOS DADOS, PORTANTO SEMPRE COLOQUE UM LIMIT 50
 </RESTRIÇÕES>
 
 Responda com uma consulta SQL válida e mínima.
