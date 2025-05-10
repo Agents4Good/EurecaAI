@@ -30,11 +30,6 @@
             "description": "Horas totais da disciplina",
             "mapper": "horas_totais"
         },
-        "nome_do_setor": {
-            "type": "TEXT",
-            "description": "Nome do setor da disciplina",
-            "mapper": "nome_do_setor"
-        },
         "tipo_de_componente_curricular": {
             "type": "TEXT",
             "description": "Tipo de componente curricular da disciplina. Pode ser esses ENUM 'Normal' ou 'Atividade Complementar'",

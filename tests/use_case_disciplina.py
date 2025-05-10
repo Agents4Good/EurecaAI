@@ -9,20 +9,22 @@ from .tools.disciplina.get_notas_disciplina import get_matriculas_disciplina
 from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from .tools.disciplina.get_disciplinas import get_disciplinas
+from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplinas_ofertadas_periodo
 
 tools = [
+    get_disciplinas_ofertadas_periodo,
     get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas, 
-    #get_plano_de_curso_disciplina, 
+    get_plano_de_curso_disciplina, 
     get_pre_requisitos_disciplina,
     get_disciplinas,
-    #get_turmas_disciplina
+    get_turmas_disciplina
 ]
 
 #print(get_disciplinas.args_schema.schema())
 
-agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
+agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 #agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
 # Outros
@@ -48,12 +50,10 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 # question = "Liste as disciplinas que têm carga horária total superior à média do curso de Ciência da Computação no campus de Campina Grande, independentemente do currículo."
 
 
-
-
-
 # Notas permutação
 # Campo: matricula_do_estudante
-question = "Quais são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?"
+
+#question = "Quais são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?"
 #question = "Liste as matrículas dos alunos que fizeram a disciplina de Teoria da Computação no campus de Campina Grande."
 #question = "Me mostre quem, por matrícula, cursou Teoria da Computação na Ciência da Computação de Campina Grande."
 

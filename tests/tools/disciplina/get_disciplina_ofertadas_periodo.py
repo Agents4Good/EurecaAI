@@ -40,16 +40,16 @@ def get_disciplinas_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_ca
     if mensagem != "": return mensagem
     
     dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-    params["curso"] = dados_curso['curso']['codigo']
 
     params = {
-        'disciplina': dados_curso['curso']['codigo'],
+        'curso': dados_curso['curso']['codigo'],
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
-    response = requests.get(f'{URL_BASE}/aulas', params=params)
-
+    response = requests.get(f'{URL_BASE}/turmas', params=params)
+    
     if response.status_code == 200:
+        print("Turmas retornadas com sucesso")
         turmas = json.loads(response.text)
         codigo_disciplinas = list(set(turma["codigo_da_disciplina"] for turma in turmas))
 
@@ -57,7 +57,7 @@ def get_disciplinas_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_ca
         for codigo_disciplina in codigo_disciplinas:
             response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "disciplina": codigo_disciplina })
             if response_disciplina.status_code == 200:
-                disciplinas.append(json.loads(response_disciplina.text))
+                disciplinas.append(json.loads(response_disciplina.text)[0])
 
         if query == "":
             return disciplinas
