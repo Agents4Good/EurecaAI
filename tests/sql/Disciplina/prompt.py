@@ -15,6 +15,7 @@ Siga **rigorosamente** as instruções abaixo:
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
 - Gere o SQL no formato correto, apenas o SQL e mais nada.
 - Se uma parte da pergunta não estiver representada diretamente nos nomes de coluna, ignore totalmente essa parte, mesmo que você ache que ela seja importante para responder a pergunta.
+- Apenas retorne no padrão adequado.
 </RESTRIÇÕES>
 
 Responda com uma consulta SQL válida e mínima.
