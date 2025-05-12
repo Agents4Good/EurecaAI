@@ -3,6 +3,14 @@
     font-family: ui-sans-serif, -apple-system, system-ui, Segoe UI, Helvetica, Apple Color Emoji, Arial, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
 }
 
+body{
+    background-size: 20px 20px;
+    background-image:
+        linear-gradient(to right, rgb(231, 231, 231) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(231, 231, 231) 1px, transparent 1px);
+    background-color: rgb(251, 251, 255);
+}
+
 header {
     width: 100%;
     height: 60px;
@@ -12,8 +20,8 @@ header {
     justify-content: center;
     align-items: center;
     padding: 13px 0px;
-    border-bottom: 5px solid #30ABED;
-    background-color: #30ABED;
+    border-bottom: 5px solid transparent;
+    background-color: transparent;
 }
 
 @media (max-width: 1200px) {
@@ -55,19 +63,24 @@ header h1 {
 .login__button {
     width: 100px;
     height: 40px;
-    background-color: white;
+    background-color:  #00205B;
     grid-area: login-button;
     border: 0;
     border-radius: 10px;
     display: flex;
     justify-content: center;
-    align-items: center;
     cursor: pointer;
-    border: 2px solid rgb(65, 64, 70);
+    border-width: 1px;
+    border-color: rgba(75, 79, 84, 0.2);
+    border-style: solid;
+    border-radius: 4px;
+    box-shadow: 0.1px 4px 4px rgba(75, 79, 84, 0.2);
 }
 
 .login__button span {
-    font-size: 1.2rem;
+    color: white;
+    font-size: 1rem;
+    padding-top: 5px;
 }
 
 body {
@@ -78,9 +91,9 @@ body {
 
 section {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2.8fr 0.2fr;
     grid-template-rows: calc(100vh - 166px) 40px;
-    grid-template-areas: ". chat chat" ". query .";
+    grid-template-areas: ". chat ." ". query .";
 }
 
 @media (max-width: 1200px) {
@@ -93,14 +106,18 @@ section {
 
 .query__container {
     grid-area: query;
-    width: 100%;
+    width: calc(100%-8px);
     min-height: 60px;
     max-height: 230px;
     display: flex;
     align-items: center;
-    border: 4px solid #30ABED;
+    border: 2px solid #30abed82;
     flex-direction: row-reverse;
     border-radius: 30px;
+    background-color: white;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-shadow: 0.1px 4px 4px rgba(75, 79, 84, 0.2);
 }
 
 .query {
@@ -115,6 +132,7 @@ section {
     font-size: 1rem;
     padding-top: 20px;
     resize: none;
+    background-color: transparent;
 }
 
 .query:focus {
@@ -130,10 +148,14 @@ section {
     flex-direction: column;
     gap: 10px;
     overflow-y: scroll;
-    padding-top: 10px;
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-areas: "chat-container .";
+    grid-template-areas: "chat-container";
+    border-width: 1px;
+    background-color: white;
+    border-color: rgba(75, 79, 84, 0.2);
+    border-style: solid;
+    border-radius: 4px;
+    box-shadow: 0.1px 4px 4px rgba(75, 79, 84, 0.2);
 }
 
 @media (max-width: 1200px) {
@@ -149,6 +171,7 @@ section {
     flex-direction: column;
     border-left: 5px solid transparent;
     box-sizing: border-box;
+    padding: 15px 15px;
 }
 
 .user {
@@ -233,18 +256,20 @@ section {
     justify-content: space-between;
     border-radius: 40px;
     padding: 5px;
+    z-index: 0;
+    height: fit-content;
 }
 
 .send {
     border-radius: 0px 20px 20px 0px;
-    background-color: white;
     border: 10px;
     cursor: pointer;
+    background-color: transparent;
 }
 
 .record {
     border-radius: 20px 0px 0px 20px;
-    background-color: white;
+    background-color: transparent;
     border: 10px;
     cursor: pointer;
     display: flex;
@@ -312,12 +337,24 @@ aside {
     position: absolute;
     height: calc(100% + 20px);
     width: 300px;
-    background-color: #f9f9f9;
-    left: 0;
+    background-color: transparent;
+    left: 10px;
     top: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-width: 1px;
+    background-color: #1A4E8A;
+    border-color: rgba(75, 79, 84, 0.4);
+    border-style: solid;
+    border-radius: 4px;
+    box-shadow: 0.1px 4px 4px rgba(75, 79, 84, 0.3);
+    color: rgba(255,255,255, 0.7);
+}
+
+.aside-card {
+    width: 100%;
+    height: 100%;
 }
 
 .aside-title-container {
@@ -325,6 +362,7 @@ aside {
     height: 60px;
     display: flex;
     align-items: center;
+    justify-content: center;
     border: 4px;
     box-sizing: border-box;
 }
@@ -335,7 +373,7 @@ aside {
 
 .aside-title-content {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight:500;
 }
 
 .history {
@@ -352,10 +390,11 @@ aside {
 .history_item {
     width: 100%;
     height: 44px;
-    border: 10px solid rgb(219, 208, 208);
+    border: 10px solid transparent;
     box-sizing: border-box;
     border-radius: 10px;
-    background-color: rgb(219, 208, 208);
+    background-color: rgb(61, 135, 203,0.3);
+    box-shadow: 0.1px 4px 4px rgba(0, 32, 91, 0.3);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -364,6 +403,11 @@ aside {
 .history_item p {
     font-weight: bold;
 }
+
+.history_item i {
+    color: white;
+}
+
 
 .history_item button {
     width: 30px;
@@ -387,6 +431,7 @@ aside {
 .about {
     width: 100%;
     display: flex;
+    padding: 10px 10px;
     justify-content: space-between;
     box-sizing: border-box;
     flex-direction: row;
