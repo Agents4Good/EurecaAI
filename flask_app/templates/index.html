@@ -13,6 +13,22 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+
+        $(document).ready(function () {
+            $('#chat_form').on('keydown', function (event) {
+                if (event.keyCode == 13) {
+                    console.log('Enter key pressed');
+                    event.preventDefault();
+                    var userMessage = $('#user_input').val();
+                    $('#user_input').val(''); // Limpa o campo de input após o envio
+                    if (userMessage.trim() !== '') {
+                        addUserMessage(userMessage);
+                        sendMessage(userMessage);
+                    }
+                }
+            });
+        });
+
         $(document).ready(function () {
             $('#chat_form').on('submit', function (event) {
                 event.preventDefault();
@@ -160,6 +176,24 @@
                 });
             }
         }
+
+        function openMenu(id) {
+            const menu = document.getElementById(id);
+            const icon = menu.querySelector("i");
+            const history = document.querySelector(".history");
+
+            if (menu.classList.contains("open")) {
+                menu.classList.remove("open");
+                icon.classList.remove("fa-times");
+                icon.classList.add("fa-ellipsis-h");
+            } else {
+                menu.classList.add("open");
+                icon.classList.remove("fa-ellipsis-h");
+                icon.classList.add("fa-times");
+            }
+
+
+        }
         
         // Função que envia a mensagem e manipula a resposta do bot
         function sendMessage(message) {
@@ -174,16 +208,25 @@
                     const htmlResponse = marked.parse(markdownResponse);
                     $('.bot__name__response').last().html(htmlResponse);
                     const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
-                    //marked.parse(response.response)
-                    //$('.bot__name__response').last().text(marked.parse(response.response)); // Atualiza a última resposta
-                    //const cleanedResponse = (response.response.trim()).replace(/['"]/g, '');
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
-
+        
+                    // Criar o item de histórico
                     const newDiv = document.createElement("div");
+                    const id = `item_${Date.now()}`; // ID único usando timestamp
                     newDiv.className = "history_item";
-                    newDiv.innerHTML = "<p>Origem dos estudantes</p><button><i class='fas fa-ellipsis-h'></i></button>";
+                    newDiv.id = id;
+        
+                    newDiv.innerHTML = `
+                    <p>Origem dos estudantes</p>
+                    <div class="fab-wrapper">
+                        <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
+                        <div class="fab-menu" id="${id}_menu">
+                            <i class='fas fa-trash'></i>
+                        </div>
+                    </div>
+                `;
+                
                     document.getElementsByClassName("history")[0].appendChild(newDiv);
-                    
                     scrollToBottom();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -196,6 +239,21 @@
             });
         }
 
+        function toggleMenu(id) {
+            console.log('entrei no toggleMenu');
+            const menu = document.getElementById(`${id}_menu`);
+        
+            // Fecha outros menus
+            document.querySelectorAll('.fab-menu').forEach(m => {
+                if (m !== menu) m.style.display = 'none';
+            });
+        
+            // Alterna o menu clicado
+            if (menu) {
+                menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+            }
+        }
+        
         // Função para manter o scroll no fim do chat
         function scrollToBottom() {
             $('.chat').animate({ scrollTop: $('.chat')[0].scrollHeight }, 200);
@@ -295,11 +353,11 @@
         }
 
 
-        const textarea = document.querySelector('.query');
+        //const textarea = document.querySelector('.query');
         const form = document.getElementById('chat_form'); // <-- agora correto
 
-        textarea.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
+        form.addEventListener('keypress', function(event) {
+            if (event.keyCode === 13 && !event.shiftKey) {
                 event.preventDefault();  // Impede quebra de linha
                 form.submit();           // Envia formulário
             }
@@ -355,6 +413,9 @@
                 <p class="aside-title-content">Histórico</p>
             </div>
             <div class="history">
+                
+            </div>
+            <div class="history_menu">
                 
             </div>
             <div class="about">

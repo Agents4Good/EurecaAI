@@ -347,6 +347,8 @@ aside {
     gap: 10px;
     border: 10px solid transparent;
     box-sizing: border-box;
+    overflow-y: visible;
+    padding-top: 50px;
 }
 
 .history_item {
@@ -403,6 +405,66 @@ aside {
     font-size: 15px;
     text-decoration: underline;
 }
+
+.history_item {
+    width: 100%;
+    height: fit-content;
+    border: 10px solid rgb(219, 208, 208);
+    box-sizing: border-box;
+    border-radius: 10px;
+    background-color: rgb(219, 208, 208);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative; /* Para que o menu flutuante seja posicionado em relação a este item */
+    overflow: visible; /* Para que o menu flutuante não seja cortado */
+}
+
+.fab-wrapper {
+    position: relative;
+}
+
+.fab {
+    height: fit-content;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.fab-menu {
+    position: absolute;
+    top: -60px; /* sobe acima do botão */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    z-index: 99999999;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    height: fit-content;
+    display: none;
+}
+
+.fab-menu i {
+    cursor: pointer;
+    margin: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    background: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.fab-menu i:hover {
+    background-color: #f0f0f0;
+}
+
+.fab-menu a:last-child {
+    border-bottom: none;
+}
+
 
 @media (max-width: 1200px) {
     aside {
@@ -505,4 +567,7 @@ aside {
     .login_button_mobile span {
         font-weight: bold;
     }
+
+
+    
 }
