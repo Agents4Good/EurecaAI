@@ -1,7 +1,7 @@
 import re
 from typing import Any, Tuple
 from .connection_nosql import get_mongo_collection
-from .markdown_format.format_table import format_md
+from .markdown_format.format_table import format_md_table
 
 def save_data(id: Any, colecao: Any, sql: Any, data: Any) -> Tuple[str, bool]:
     id = str(id)
@@ -29,7 +29,7 @@ def save_data(id: Any, colecao: Any, sql: Any, data: Any) -> Tuple[str, bool]:
     limit = 50
     resultados = colecao_db.find().skip(skip).limit(limit)    
     resultados_lista = list(resultados)
-    output = format_md(resultado_lista=resultados_lista)
+    output = format_md_table(resultado_lista=resultados_lista)
     
     total = colecao_db.count_documents({})
     has_more = total > 50
@@ -65,7 +65,7 @@ def recovery_data(id: Any, colecao: Any, page: Any, limit: Any) -> Tuple[str, bo
         return "Você já recebeu todos os dados, não há mais.", False
     
     
-    output = format_md(resultado_lista=resultado_lista)
+    output = format_md_table(resultado_lista=resultado_lista)
     total_docs = colecao_db.count_documents({})
     total_pages = (total_docs + limit - 1) // limit
     has_more = page < total_pages
