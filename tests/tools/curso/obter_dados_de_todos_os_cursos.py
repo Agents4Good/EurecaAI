@@ -11,24 +11,24 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     _summary_
     Buscar informações relativo a todos os cursos da UFCG, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
     Use esta função quando o usuário fizer uma pergunta **geral** sobre cursos da UFCG, sem mencionar nomes específicos.
-
+    
     Exemplos de uso:
         - "Quantos cursos são oferecidos em Patos?"
         - "Quais cursos são noturnos em Cajazeiras?"
         - "Quantos cursos de graduação existem?"
         - "Quantos cursos de graduação existem em Sousa?"
-
+    
     Args:
         query: pergunta completa feita pelo usuário.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
-      
+    
     Returns:
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
     query=str(query)
     nome_do_campus=str(nome_do_campus)
-    print(f"Tool obter_dados_de_todos_os_cursos chamada com nome_do_campus={nome_do_campus}")  
+    print(f"Tool `obter_dados_de_todos_os_cursos` chamada com nome_do_campus={nome_do_campus}")  
 
     params = {'status':'ATIVOS' }
     if (nome_do_campus != ""):

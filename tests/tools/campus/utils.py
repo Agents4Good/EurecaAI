@@ -5,8 +5,8 @@ from langchain_community.chat_models import ChatDeepInfra
 from ..utils.processar_json import processar_json
 
 
-model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
-#model = ChatOllama(model="llama3.1", temperature=0)
+#model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}
 
@@ -24,7 +24,7 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
     
     campi = get_campi()
     campus_most_similar, _ = get_most_similar(lista_a_comparar=campi, dado_comparado=nome_do_campus, top_k=3, mapper=mapper_campus, limiar=0.65)
-
+    
     if len(campus_most_similar) == 0:
         raise ValueError("Campus não encontrado")
     
@@ -33,11 +33,11 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Para o campus de nome: '{nome_do_campus}', quais desses possíveis campus abaixo é mais similar ao campus do nome informado?
         
         {campus_most_similar}
-        
+
         Responda no seguinte formato:
-        
+
         {format}
-        
+
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )

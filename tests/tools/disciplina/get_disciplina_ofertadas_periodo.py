@@ -7,7 +7,7 @@ from ..utils.base_url import URL_BASE
 import requests
 import json
 
-def get_disciplinas_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = ""):
+def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_campus: Any, periodo: Any = ""):
     """_summary_
     Retorna as disciplinas ofertadas por um curso em um período específico.
     

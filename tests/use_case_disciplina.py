@@ -5,27 +5,31 @@ from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
 from .tools.disciplina.get_horarios_disciplina import get_horarios_disciplina
-from .tools.disciplina.get_notas_disciplina import get_matriculas_disciplina
+from .tools.disciplina.get_matriculas_disciplina import get_matriculas_disciplina
 from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from .tools.disciplina.get_disciplinas import get_disciplinas
-from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplinas_ofertadas_periodo
+from .tools.disciplina.test_estudante import estudante_info
+from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplina_ofertadas_periodo
 
 tools = [
-    get_disciplinas_ofertadas_periodo,
+    get_disciplina_ofertadas_periodo,
     get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
     get_pre_requisitos_disciplina,
     get_disciplinas,
-    get_turmas_disciplina
+    #get_turmas_disciplina,
+    #estudante_info
 ]
+
+#print(estudante_info.args_schema.schema())
 
 #print(get_disciplinas.args_schema.schema())
 
+#agent = AgenteDisciplinas(LLM=ChatOllama, model="qwen3", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
-#agent = AgenteDisciplinas(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_DISCIPLINAS_SQL)
 
 # Outros
 
@@ -87,5 +91,8 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
 #question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
-question = "Quais disciplinas foram ofertadas em computação no período 2024.1"
+question = "Quais são os códigos e nomes das disciplinas no curso de computação"
+
+#question = "Qual o meu CRA"
+
 agent.run(question=question)

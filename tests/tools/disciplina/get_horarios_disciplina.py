@@ -17,7 +17,7 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         nome_da_disciplina (Any): Nome da disciplina.
-        turma (Any): Número da turma. Defaults to "01".
+        turma (Any): Número da turma. Defaults to "".
         periodo (Any, optional): Número da turma ("" para todas). Defaults to "".
 
     Returns:

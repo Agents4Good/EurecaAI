@@ -8,15 +8,16 @@ def obter_grade_curricular_curso(nome_do_curso: Any, nome_do_campus: Any) -> lis
     """
     _summary_
     Buscar todos os currículos de um curso, ou seja, a grade curricular do curso.
-
+    
     Args:
+
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
-
+    
     Returns:
         Lista com informações relevantes dos currículos do curso específico.
     """
-    
+
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
     print(f"Tool get_curriculos chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")

@@ -21,7 +21,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
     
     Args:
-        query (Any): reformule a pergunta removendo qualquer referência ao nome do curso, nome do campus e ao currículo (ano), mas mantendo o sentido da pergunta.
+        query (Any): reformule a pergunta removendo qualquer referência ao nome do curso, nome do campus e ao currículo (ano).
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
@@ -34,7 +34,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
-    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
+    print(f"Tool `get_disciplinas` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
     
     if curriculo == "":
         _, curriculo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo="", curriculo=curriculo)
@@ -50,6 +50,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     print("CURRICULO USADO ", curriculo)
     
     print(f"Recuperando as disciplinas do curso de {dados_curso['curso']['nome']} e código {dados_curso['curso']['codigo']} e currículo {curriculo}")
+    print(params)
     response = requests.get(f'{URL_BASE}/disciplinas', params=params)
 
     if response.status_code == 200:

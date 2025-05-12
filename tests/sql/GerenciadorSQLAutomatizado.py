@@ -156,11 +156,7 @@ class GerenciadorSQLAutomatizado:
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:4b", prompt=prompt)
         result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")
-        try:
-            result = self.__execute_sql(result['query'])
-        except:
-            if (temperature < 0.5):
-                result = self.get_data(query,prompt, temperature + 0.1)
-            return "Error: Não conseguimos achar os dados perguntados pelo usuário!"
+        result = self.__execute_sql(result['query'])
+        print("RESULTADO DO SQL: ", result)
         return result
     

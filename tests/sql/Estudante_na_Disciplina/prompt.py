@@ -1,5 +1,4 @@
 PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA = '''
-Essa tabela tem estudantes de uma disciplina chamada "TEORIA DA COMPUTAÇÃO - D" do cuso de "CIENCIA DA COMPUTAÇÃO - INTEGRAL".
 Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 Use apenas a seguintes tabela a seguir:

@@ -9,7 +9,8 @@ from langchain_community.chat_models import ChatDeepInfra
 
 
 
-model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+#model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 

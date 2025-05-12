@@ -10,9 +10,9 @@
             "description": "ENUM pode ser 'Aprovado', 'Trancado', 'Reprovado por Nota', 'Reprovado por Falta'. E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use 'Reprovado por Nota' OR Reprovado por Falta",
             "mapper": "status"
         },
-        "media_final": {
+        "nota_na_disciplina": {
             "type": "REAL",
-            "description": "Média final do estudante",
+            "description": "Nota final do estudante na disciplina",
             "mapper": "media_final"
         },
         "dispensas": {
