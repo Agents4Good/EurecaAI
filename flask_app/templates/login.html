@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/css/login.css">
     <link rel="icon" type="image/png" href="../static/images/ufcg.png">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_package_v0.16/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package_v0.16//favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon_package_v0.16//favicon-16x16.png">
+    <link rel="manifest" href="../assets/favicon_package_v0.16//site.webmanifest">
+    <link rel="mask-icon" href="../assets/favicon_package_v0.16//safari-pinned-tab.svg" color="#40c4ff">
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- importando as configurações de estilização e fontes -->
+    <meta charset="UTF-8"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="../static/materialize/css/materialize.min.css"  media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!--Importando javascript-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" 
+    integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="login.js" type="module"></script>
+    <script src="../components/toast.js" type="text/javascript"></script> 
     <title>EurecaAI - Login</title>
     <script>
         const hoursExpiredIn = 24
@@ -75,28 +105,60 @@
 
     </script>
 </head>
-<body>
-    <header class="header_main">
-        <img src="./static/images/logo_ufcg.png" onClick="window.location.href='/'">
-    </header>
-    <main>
-        <section>
-            <article>
-                <div class="login_container">
-                    <h2 class="title_login_container">Login com os dados do Controle Acadêmico</h2>
-                    <div class="credentials">
-                        <label for="login" class="credentials_login_container_text">Login</label>
-                        <input type="text" id="login" class="input_field" placeholder="Digite sua matrícula">
+<body class="valign-wrapper">
+
+    <div class="container">
+    
+        <div class="row">
+
+            <div class="col s12">
+                <div class="center-align">
+                    <img class="responsive-img vertical" src="../static/images/Eureca_AI_logo.png">
+                </div>
+            </div>
+
+            <div class="col s4"><!-- coluna só pra centralizar o conteúdo real --></div>
+
+            <div class="col s4">
+                <div class="card azul-escuro-1">
+                    <div class="card-content white-text">
+                        <p class="font text thin">Seja bem-vindo! Insira as suas credenciais do controle acadêmico para receber seu token de acesso.</p>
                     </div>
-                    <div class="credentials">
-                        <label for="password" class="credentials_login_container_text">Senha</label>
-                        <input type="password" id="password" class="input_field" placeholder="Digite sua senha">
+                </div>
+                <div class="card">
+                    <div class="card-content text-azul-escuro-1 center-align">
+                        
+                        <form>
+
+                            <div class="input-field col s12">
+                                <input class="texto-azul-escuro-1" placeholder="Usuário" id="login" type="text" class="validate">
+                            </div>
+
+                            <div class="input-field col s12">
+                                <input class="texto-azul-escuro-1" placeholder="Senha" id="password" type="password" class="validate">
+                            </div>
+                            <p id="login-alert" style="color: red;"></p>
+                            <button onClick="handleLogin()" id="loginButton" class="btn waves-effect waves-light azul-escuro-1" name="action" type="submit">Entrar</button>
+                        
+                        </form>
                     </div>
-                    <p id="login-alert" style="color: red;"></p>
-                    <button class="login_button" onClick="handleLogin()">Fazer Login</button>
-                </div>                
-            </article>
-        </section>
-    </main>
+
+                </div>
+
+            </div>
+            
+            <div class="col s4"><!-- coluna só pra centralizar o conteúdo real --></div>
+
+        </div>    
+        
+        <footer class="font texto-azul-escuro-1 center-align light">
+            © 2025 Eureca - Todos os direitos reservados.
+        </footer>
+        <br>
+        <br>
+
+
+    </div>
+
 </body>
 </html>

@@ -1,6 +1,17 @@
 * {
     margin: 0;
-    font-family: ui-sans-serif, -apple-system, system-ui, Segoe UI, Helvetica, Apple Color Emoji, Arial, sans-serif, Segoe UI Emoji, Segoe UI Symbol;
+    font-family: 'Be Vietnam Pro', Verdana, Tahoma;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "Be Vietnam Pro";
+    src: url(https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap) format("truetype");
+}
+
+@font-face {
+    font-family: "Merriweather Sans";
+    src: url(https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap) format("truetype");
 }
 
 body{
@@ -15,12 +26,12 @@ header {
     width: 100%;
     height: 60px;
     display: grid;
-    grid-template-columns: 17px 1fr 1fr 1fr 100px 30px;
+    grid-template-columns: 30px 1fr 1fr 1fr 100px 30px;
     grid-template-areas: ". ufcg-logo pln-text . login-button .";
     justify-content: center;
     align-items: center;
     padding: 13px 0px;
-    border-bottom: 5px solid transparent;
+    border-top: 5px solid transparent;
     background-color: transparent;
 }
 
@@ -43,8 +54,7 @@ header {
 }
 
 header img {
-    height: 64px;
-    width: 200px;
+    height: 60px;
     grid-area: ufcg-logo;
     cursor: pointer;
 }
@@ -80,7 +90,7 @@ header h1 {
 .login__button span {
     color: white;
     font-size: 1rem;
-    padding-top: 5px;
+    padding-top: 8px;
 }
 
 body {
@@ -349,7 +359,7 @@ aside {
     border-style: solid;
     border-radius: 4px;
     box-shadow: 0.1px 4px 4px rgba(75, 79, 84, 0.3);
-    color: rgba(255,255,255, 0.7);
+    color: rgba(255,255,255, 0.8);
 }
 
 .aside-card {
