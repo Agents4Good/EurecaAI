@@ -13,6 +13,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
+        let idChatLocal = null;
 
         $(document).ready(function () {
             $('#chat_form').on('keydown', function (event) {
@@ -100,40 +101,41 @@
             }).join(' ');
         }
 
-        window.onload = function() {
-            function getProfile() {
-                const profileStr = getCookie("profile");
-                const res = profileStr ? JSON.parse(profileStr) : null;
-                if (res) {
-                    const username_ = formatCamelCase(res.name);
-                    const buttonText = document.querySelector(".login__button span");
-                    const buttonTextMobile = document.querySelector(".login_button_mobile span");
+        function getProfile() {
+            const profileStr = getCookie("profile");
+            const res = profileStr ? JSON.parse(profileStr) : null;
+            if (res) {
+                const username_ = formatCamelCase(res.name);
+                const buttonText = document.querySelector(".login__button span");
+                const buttonTextMobile = document.querySelector(".login_button_mobile span");
 
-                    if (buttonTextMobile || buttonText) {
-                        buttonTextMobile.textContent = "Sair";
-                        buttonText.textContent = "Sair";
-                    }
-                    var botMessageBlock = `
-                        <div class="bot">
-                            <div class="bot__container">
-                                <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
-                                <div class="bot__response">
-                                    <div class="bot__name">
-                                        <p>Assistente:</p>
-                                    </div>
-                                    <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
-                                    <div class="bot_options">
-                                        <button class="audio-button">
-                                            <img src="../static/images/audio.png" />
-                                        </button>
-                                    </div>  
-                                </div>
-                            </div>
-                        </div>`;
-                    $('.chat__container').append(botMessageBlock);
+                if (buttonTextMobile || buttonText) {
+                    buttonTextMobile.textContent = "Sair";
+                    buttonText.textContent = "Sair";
                 }
+                var botMessageBlock = `
+                    <div class="bot">
+                        <div class="bot__container">
+                            <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
+                            <div class="bot__response">
+                                <div class="bot__name">
+                                    <p>Assistente:</p>
+                                </div>
+                                <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
+                                <div class="bot_options">
+                                    <button class="audio-button">
+                                        <img src="../static/images/audio.png" />
+                                    </button>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>`;
+                $('.chat__container').append(botMessageBlock);
             }
+        }
 
+
+        window.onload = function() {
             getProfile();
         }
     
@@ -191,10 +193,63 @@
                 icon.classList.remove("fa-ellipsis-h");
                 icon.classList.add("fa-times");
             }
+        }
 
+        function apagar_chat(id) {
 
+            function apagar_chat_pelo_id(id) {
+                document.querySelector('.chat__container').innerHTML = '';
+                const historyItem = document.getElementById(id);
+                if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
+                    try {
+                        historyItem.remove();
+                    } catch {
+                        // console.log("Não há histórico a remover.")
+                    }
+                    getProfile();
+                    if (id == idChatLocal || id == '') {
+                        idChatLocal = null;
+                    }
+                }
+            }
+
+            if (id == '') {
+                apagar_chat_pelo_id('')
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete_chat',
+                    timeout: 120000,
+                    success: function (response) {
+                        apagar_chat_pelo_id(id);
+                    }
+                });
+            }
         }
         
+        async function get_resumo(texto) {
+            try {
+                const response = await fetch('/resumir', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ texto: texto })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro na requisição: ' + response.status);
+                }
+
+                const data = await response.json();
+                return data.resumo;
+            } catch (erro) {
+                console.error('Erro ao obter resumo:', erro);
+                return null;
+            }
+        }
+
+
         // Função que envia a mensagem e manipula a resposta do bot
         function sendMessage(message) {
             addBotMessage();
@@ -211,22 +266,29 @@
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
         
                     // Criar o item de histórico
-                    const newDiv = document.createElement("div");
-                    const id = `item_${Date.now()}`; // ID único usando timestamp
-                    newDiv.className = "history_item";
-                    newDiv.id = id;
-        
-                    newDiv.innerHTML = `
-                    <p>Origem dos estudantes</p>
-                    <div class="fab-wrapper">
-                        <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
-                        <div class="fab-menu" id="${id}_menu">
-                            <i class='fas fa-trash'></i>
-                        </div>
-                    </div>
-                `;
-                
-                    document.getElementsByClassName("history")[0].appendChild(newDiv);
+
+                    if (!idChatLocal) {
+                        const newDiv = document.createElement("div");
+                        const id = `item_${Date.now()}`;
+                        newDiv.className = "history_item";
+                        newDiv.id = id;
+                        
+                        get_resumo(message).then((resumo) => {
+                            newDiv.innerHTML = `
+                            <p>${resumo}</p>
+                            <div class="fab-wrapper">
+                                <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
+                                <div class="fab-menu" id="${id}_menu">
+                                    <i class='fas fa-trash' onclick="apagar_chat('${id}')"></i>
+                                </div>
+                            </div>
+                            `;
+
+                            idChatLocal = id;
+                            document.getElementsByClassName("history")[0].appendChild(newDiv);
+                        });
+                    }
+
                     scrollToBottom();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
@@ -368,7 +430,6 @@
                 event.preventDefault(); // Se vazio, não envia
             }
         });
-
     </script>
 </head>
 <body>
@@ -412,7 +473,14 @@
                 <p class="aside-title-content">Histórico</p>
             </div>
             <div class="history">
-                
+                <div class="history_item" onclick="apagar_chat('')" style="margin-top: -40px;">
+                    <p>Novo Chat</p>
+                    <div class="fab-wrapper">
+                        <div class="fab">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="history_menu">
                 

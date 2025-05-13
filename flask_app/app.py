@@ -3,22 +3,27 @@ from src.agents.build_graph import build
 import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
-
+from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage
 import asyncio
 
+from demo.agents.eureca_chat import EurecaChat
 from src.guardrails.validate_input import validate
 
 app = Flask(__name__)
 
 # Inicializa o sistema de agentes ao iniciar o aplicativo
-system = build()
+system = EurecaChat(
+    supervisor_model=ChatDeepInfra(model="microsoft/phi-4", temperature=0),
+    agents_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
+    aggregator_model=ChatDeepInfra(model="google/gemini-1.5-flash", temperature=0)
+).build()
 
 async def process_query(query):
     """
     Processa a consulta do usuário usando o sistema de agentes.
     """
-    config = {"configurable": {"thread_id": None}}
+    config = {"configurable": {"thread_id": "1"}}
     inputs = {"messages": [HumanMessage(content=validate(query))]}
     response = []
 
@@ -41,6 +46,29 @@ def login():
 def politica_termos():
     # Renderiza a página HTML onde o login será exibido
     return render_template('politica_termos.html')
+
+@app.route('/delete_chat', methods=["POST"])
+def delete_chat():
+    return jsonify({"msg": "apagado"}), 200
+
+@app.route('/resumir', methods=["POST"])
+def resumir():
+    data = request.get_json()
+
+    if not data or 'texto' not in data:
+        return jsonify({"erro": "Campo 'texto' é obrigatório"}), 400
+
+    texto = data['texto']
+
+    try:
+        llm = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+        resposta = llm.invoke(f"Dê título de até 4 palavras para o texto a seguir: {texto}")
+        resumo = resposta.content if hasattr(resposta, "content") else str(resposta)
+
+        return jsonify({"resumo": resumo}), 200
+
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao gerar resumo: {str(e)}"}), 500
 
 @app.route('/chat', methods=['POST'])
 def chat():
