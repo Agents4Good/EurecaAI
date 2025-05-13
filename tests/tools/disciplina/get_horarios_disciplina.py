@@ -39,6 +39,7 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
 
     dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     
+    print(dados_disciplina)
 
     if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
        return dados_disciplina[0]["msg"]
@@ -55,6 +56,7 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
     print("========================\n")
     print("PARAMETROS", params)
 
+    print(response.json())
     if response.status_code == 200:
         horarios = json.loads(response.text)
             
@@ -77,4 +79,4 @@ def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_dis
 
         return filtros_horarios
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

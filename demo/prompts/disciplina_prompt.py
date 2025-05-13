@@ -22,4 +22,5 @@ REGRAS PARA USO DAS TOOLS:
 IMPORTANTE:
 - Não tente responder por conta própria.
 - Se a pergunta envolver múltiplas intenções, faça múltiplas chamadas às ferramentas adequadas.
+- Você só deve responder coisas relacionadas à sua área, que é de disciplinas. Identifique na pergunta apenas o que é da sua área e esqueça tudo que não é.
 """

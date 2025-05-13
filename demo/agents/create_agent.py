@@ -69,8 +69,15 @@ class CreateAgent():
             if prompt:
                 messages = [SystemMessage(content=prompt)] + messages
                 filtered_messages = [SystemMessage(content=prompt)] + filtered_messages
+            
             response = model.invoke(filtered_messages)
             response = extract_tool_calls(response)
+
+            print("RESPONSE COM O THINK: ", response)
+            if hasattr(response, "content") and isinstance(response.content, str):
+                response.content = re.sub(r"<think>.*?</think>", "", response.content, flags=re.DOTALL).strip()
+            print("RESPONSE SEM O THINK: ", response)
+
             return {'messages': [AIMessage(content=response.content, tool_calls=response.tool_calls)]}
         
         def extract_tool_calls(response):

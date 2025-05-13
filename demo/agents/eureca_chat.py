@@ -70,32 +70,47 @@ class EurecaChat:
         """
 
         query, formatted_responses = format_agent_responses(state["messages"])
-        print(query, formatted_responses)
 
-        output_parser, format_instructions = get_supervisor_output_parser()
+        # output_parser, format_instructions = get_supervisor_output_parser()
 
-        prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT + "\n\n{format_instructions}", 
-                                         input_variables=["members", "query", "responses"], 
-                                         partial_variables={"format_instructions": format_instructions})
+        # prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT + "\n\n{format_instructions}", 
+        #                                  input_variables=["members", "query", "responses"], 
+        #                                  partial_variables={"format_instructions": format_instructions})
         
-        supervisor_chain = prompt_template | self.supervisor_model | output_parser
+        # supervisor_chain = prompt_template | self.supervisor_model | output_parser
 
-        filled_prompt = prompt_template.format(
-            members=MEMBERS,
-            query=query,
-            responses=formatted_responses
-        )
-        print("\nPROMPT DO SUPERVISOR: ", filled_prompt)
+        # filled_prompt = prompt_template.format(
+        #     members=MEMBERS,
+        #     query=query,
+        #     responses=formatted_responses
+        # )
+        # print("\nPROMPT DO SUPERVISOR: ", filled_prompt)
+        # result = supervisor_chain.invoke({
+        #     "members": MEMBERS,
+        #     "query": query,
+        #     "responses": formatted_responses
+        # })
+
+        # print("\nRESPOSTA DO SUPERVISOR: ", result)
+
+        prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT, 
+                                         input_variables=["members", "query", "responses"])
+        
+        supervisor_chain = prompt_template | self.supervisor_model
+
         result = supervisor_chain.invoke({
             "members": MEMBERS,
             "query": query,
             "responses": formatted_responses
         })
-
-        print("\nRESPOSTA DO SUPERVISOR: ", result)
-
-        return result
-        
+        print(result)
+        next_agent = extract_next_agent(result)
+        print("PRÓXIMO AGENTE: ", next_agent)
+        return {
+            "messages": state["messages"],
+            "next": next_agent
+        }
+    
     
     def aggregator_node(self, state: StateGraph):
         """

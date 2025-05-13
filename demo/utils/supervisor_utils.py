@@ -1,4 +1,6 @@
-from langchain.schema import AIMessage, HumanMessage
+import json, re
+
+from langchain.schema import AIMessage, HumanMessage, BaseMessage
 from langchain.output_parsers import PydanticOutputParser
 
 from typing import Literal
@@ -29,29 +31,23 @@ def get_supervisor_output_parser() -> tuple:
     format_instructions = output_parser.get_format_instructions()
     return output_parser, format_instructions
 
+def extract_next_agent(response: BaseMessage) -> str:
+    """
+    Extrai o campo 'next' de uma resposta do supervisor no formato JSON.
+    """
+
+    try:
+        parsed = RouteResponse.model_validate_json(response.content)
+        return parsed.next
+    except Exception as e:
+        raise ValueError(f"Erro ao extrair 'next' da resposta: {response.content}") from e
+
 def format_agent_responses(messages: list) -> tuple[str, str]:
     """
     Extrai a query e organiza as respostas por agente, em blocos separados apenas se houver múltiplas mensagens do mesmo agente.
     A ordem original das mensagens é preservada.
     """
-    
-    '''query = next((msg.content for msg in messages if isinstance(msg, HumanMessage)), "")
-    
-    # Agrupa respostas por agente
-    agent_responses = defaultdict(list)
-    for msg in messages:
-        if isinstance(msg, AIMessage) and msg.name:
-            content = msg.content.strip()
-            if content:
-                agent_responses[msg.name].append(msg.content.strip())
-    
-    response_lines = []
-    for agent, responses in agent_responses.items():
-        # Caso haja muitas respostas do mesmo agente, junta tudo por blocos
-        full_response = "\n\n---\n\n".join(responses)
-        response_lines.append(f"'{agent}' respondeu:\n{full_response}")
-    
-    formatted_responses = "\n\n\n".join(response_lines)'''
+
     query = next((msg.content for msg in messages if isinstance(msg, HumanMessage)), "").strip()
 
     response_blocks = []

@@ -65,6 +65,7 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
                 return ["Não foi encontrado nada"]
         except TypeError as e:
             return [{"Error": "Ocorreu um erro para gerar a consulta SQL."}]
+        print(dados)
         return dados
         # gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
         # gerenciador.save_data(estudantes_na_disciplina)

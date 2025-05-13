@@ -14,9 +14,9 @@ app = Flask(__name__)
 
 # Inicializa o sistema de agentes ao iniciar o aplicativo
 system = EurecaChat(
-    supervisor_model=ChatDeepInfra(model="microsoft/phi-4", temperature=0),
-    agents_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
-    aggregator_model=ChatDeepInfra(model="google/gemini-1.5-flash", temperature=0)
+    supervisor_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
+    aggregator_model=ChatDeepInfra(model="google/gemini-1.5-flash", temperature=0, max_tokens=2048),
+    agents_model=ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
 ).build()
 
 async def process_query(query):
@@ -26,6 +26,8 @@ async def process_query(query):
     config = {"configurable": {"thread_id": "1"}}
     inputs = {"messages": [HumanMessage(content=validate(query))]}
     response = []
+
+    print(inputs)
 
     async for chunk in system.astream(inputs, config, stream_mode="values"):
         chunk["messages"][-1].pretty_print()
@@ -62,7 +64,7 @@ def resumir():
 
     try:
         llm = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
-        resposta = llm.invoke(f"Dê título de até 4 palavras para o texto a seguir: {texto}")
+        resposta = llm.invoke(f"Gere um título de até 3 palavras para o texto a seguir: {texto}")
         resumo = resposta.content if hasattr(resposta, "content") else str(resposta)
 
         return jsonify({"resumo": resumo}), 200

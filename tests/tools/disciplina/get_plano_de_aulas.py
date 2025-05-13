@@ -45,16 +45,17 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
 
     if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
        return dados_disciplina[0]["msg"]
-
+    
     params = {
         'disciplina': dados_disciplina["disciplina"]["codigo"],
         'periodo-de': periodo,
         'periodo-ate': periodo,
         'turma': turma
     }
+
     response = requests.get(f'{URL_BASE}/aulas', params=params)
-   
+
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]
