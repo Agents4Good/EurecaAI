@@ -5,7 +5,7 @@ from pydub import AudioSegment
 from io import BytesIO
 from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage
-import asyncio
+import asyncio, json
 
 from demo.agents.eureca_chat import EurecaChat
 from src.guardrails.validate_input import validate
@@ -64,10 +64,23 @@ def resumir():
 
     try:
         llm = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
-        resposta = llm.invoke(f"Gere um título de até 3 palavras para o texto a seguir: {texto}")
+        resposta = llm.invoke(
+            f"""
+            "Gere um título de até 3 palavras para o texto a seguir:
+            {texto}
+            
+            *IMPORTANTE*:
+            - Você sempre deve gerar um título, não faça nada além disso.
+            - Sempre gere no seguinte formato: {{"titulo": "titulo_gerado"}}
+            """
+        )
+        print("RESUMO PARA O TÍTULO: ", resposta)
         resumo = resposta.content if hasattr(resposta, "content") else str(resposta)
 
-        return jsonify({"resumo": resumo}), 200
+        resumo = resumo.replace("'", '"')
+        resumo = json.loads(resumo)
+
+        return jsonify({"resumo": resumo['titulo']}), 200
 
     except Exception as e:
         return jsonify({"erro": f"Erro ao gerar resumo: {str(e)}"}), 500
