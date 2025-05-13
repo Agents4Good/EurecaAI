@@ -19,6 +19,9 @@ REGRAS PARA USO DAS TOOLS:
 5. Se a pergunta for sobre METODOLOGIA, AVALIAÇÕES, REFERÊNCIAS, número de provas ou conteúdo geral da disciplina, use:
 ➤ get_pre_requisitos_disciplina
 
+6. Se a pergunta envolver planos de curso, ementa, conteúdo, objetivos, metodologia, avaliação ou bibliografia, use:
+➤ get_plano_de_curso_disciplina
+
 IMPORTANTE:
 - Não tente responder por conta própria.
 - Se a pergunta envolver múltiplas intenções, faça múltiplas chamadas às ferramentas adequadas.

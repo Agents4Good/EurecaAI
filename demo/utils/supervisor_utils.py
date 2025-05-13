@@ -11,7 +11,8 @@ from collections import defaultdict
 # AGENTES ESPECIALIZADOS DO SISTEMA
 MEMBERS = [
     "Agente_Curso",
-    "Agente_Disciplina"
+    "Agente_Disciplina",
+    "Agente_Estudante"
 ]
 
 # FORMATO DE RETORNO PARA A RESPOSTA DO SUPERVISOR
@@ -19,6 +20,7 @@ class RouteResponse(BaseModel):
     next: Literal[
         "Agente_Curso",
         "Agente_Disciplina",
+        "Agente_Estudante",
         "FINISH"
     ]
 

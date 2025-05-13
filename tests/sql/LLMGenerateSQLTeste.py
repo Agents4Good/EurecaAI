@@ -1,6 +1,7 @@
 from typing import Optional, TypedDict
 from typing_extensions import Annotated
 from langchain_ollama import ChatOllama
+from langchain_community.chat_models import ChatDeepInfra
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -120,6 +121,7 @@ class LLMGenerateSQL:
 
 
 agent = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:4b", prompt=prompt, prompt_gera_sql=prompt_gera_sql);
+agent = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
 query = "Traga o email das estudantes femininas solteiras que nasceram no ano de 2005 do curso de ciência da computação?"
 
 result = agent.write_query(tabela="Estudante", state={"question": query, "query": "", "result": "", "answer": "", "previous_state": None})

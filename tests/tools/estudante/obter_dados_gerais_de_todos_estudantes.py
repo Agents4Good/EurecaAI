@@ -26,14 +26,16 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    """
 
    print(f"Tool obter_dados_de_todos_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
-   params = { "situacao-do-estudante": "ATIVOS" }
+   params = {"situacao-do-estudante": "ATIVOS" }
    query = str(query)
    nome_do_campus = str(nome_do_campus)
    nome_do_curso = str(nome_do_curso)
       
    if (nome_do_curso != "" and nome_do_campus != ""):
       dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+      dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
       params["curso"] = dados_curso['curso']['codigo']
+      params["campus"] = dados_campus['campus']['codigo']
    elif (nome_do_curso == "" and nome_do_campus != ""):
       dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
       params["campus"] = dados_campus['campus']['codigo']
@@ -49,7 +51,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
       gerenciador.save_data(estudantes)
       response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
-      return  f"Resposta da tool: {response}"
+      print("Resposta da tool: ", response, "\n")
+      return  f"RESULTADO DO SQL: {response}"
      
    else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]

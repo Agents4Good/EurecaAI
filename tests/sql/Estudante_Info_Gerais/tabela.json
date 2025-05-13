@@ -27,12 +27,12 @@
         },
         "naturalidade": {
             "type": "TEXT",
-            "description": "Naturalidade do estudante",
+            "description": "Naturalidade do estudante é a sigla do estado ex: PB, MG etc",
             "mapper": "naturalidade"
         },
         "cor": {
             "type": "TEXT",
-            "description": "Cor do estudante",
+            "description": "Cor do estudante Parda, Branca, Preta, Amarela",
             "mapper": "cor"
         },
         "nacionalidade": {

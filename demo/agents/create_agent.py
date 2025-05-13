@@ -69,7 +69,7 @@ class CreateAgent():
             if prompt:
                 messages = [SystemMessage(content=prompt)] + messages
                 filtered_messages = [SystemMessage(content=prompt)] + filtered_messages
-            
+
             response = model.invoke(filtered_messages)
             response = extract_tool_calls(response)
 

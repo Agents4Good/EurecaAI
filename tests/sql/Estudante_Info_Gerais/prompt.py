@@ -15,8 +15,17 @@ Siga **rigorosamente** as instruções abaixo:
 - Gere o SQL no formato correto, apenas o SQL e mais nada.
 </RESTRIÇÕES>
 
-Responda com uma consulta SQL válida e mínima.
+
+Gere uma consulta SQL válida com a chave 'query' no formato JSON que responda  a pergunta:
 
 {input}
+
+
 """
+
+
+# {
+#     query: Coloque aqui a consulta SQL,
+#     question: {input}
+# }
 

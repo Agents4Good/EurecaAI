@@ -13,12 +13,13 @@ load_dotenv()
 
 tools = [
     obter_dados_de_curso_especifico,
-    obter_dados_de_todos_os_cursos
+    obter_dados_de_todos_os_cursos,
+    obter_grade_curricular_curso
 ]
 
 #agent = AgenteCursos(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 #agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgenteCursos(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
 question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)
@@ -47,4 +48,5 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "frances ingles sao ofericidos em que turno?"
 #question = "computação código?"
 #question = "qual o curso que mexe com compiuter?"
+#question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?"
 agent.run(question=question)

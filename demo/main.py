@@ -40,15 +40,16 @@ async def main():
 
     if len(sys.argv) < 2:
         query = "qual o código de ciência da computação?"
-        query = "Quais cursos foram criado em 2009" # DANDO PROBLEMA
-        query = "Quantas são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande na turma 1?"
-        #query = "O curso de Ciências Sociais está disponível em qual campus e quais são os cursos do campus de patos?" # INTEGRAR ALTERAÇÕES FEITAS EM CURSO DA BRANCH 'NOM'
-        #query = "Quais são os códigos e nomes das disciplinas no curso de computação"
-        #query = "As médias das notas da disciplina de compiladores em ciência da computação do campus campina grande e quais os cursos do campus de patos"
-        query = "Quantos alunos se matricularam, e quantos passaram na disciplina de Teoria da Computação do curso de Ciência da Computação no período 2024.1? E qual foi a maior nota da disciplina?"
-        query = "qual o plano de aula de teoria dos grafos de ciência da computação"
-        query = "Quais os horarios de teoria dos grafos em ciência da computação?"
-
+        #query = "Quais cursos foram criado em 2009" # DANDO PROBLEMA
+        #query = "Quais são as matrículas dos estudantes que cursaram Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?" # DANDO PROBLEMA
+        query = "O curso de Ciências Sociais está disponível em qual campus e quais são os cursos do campus de patos?" # INTEGRAR ALTERAÇÕES FEITAS EM CURSO DA BRANCH 'NOM'
+        query = "Quais são os códigos e nomes das disciplinas no curso de computação"
+        query = "Eu quero sabar a ementa da disciplina teoria da comuptação do curso de ciência da computação"
+        query = "Quantos esudantes estrangeiros tem no curso de ciência da computação do campus de campina grande?"
+        query = "Quantas estudantes mulheres tem no curso de ciência da computação do Campus de campina grande?"
+        query = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
+        #query = "As médias das notas de compiladores em ciência da computação"
+        
         #demo.run(query, config)
         await demo.run_async(query, config)
     else:

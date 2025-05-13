@@ -50,6 +50,9 @@ Regras de decisão:
 2. Se a pergunta for geral sobre todos os cursos (como "Quantos cursos têm no campus de Pombal?"), use:
    ➤ `obter_dados_de_todos_os_cursos`
 
+3. Se a pergunta envolver grade curricular, ementa de um curso, use:
+   ➤ `obter_grade_curricular_curso`
+   
 Não tente adivinhar ou responder por conta própria. Use **somente** as ferramentas disponíveis. Retorne as chamadas das tools em JSON válido.
 """
 

@@ -13,10 +13,13 @@ from ..prompts.supervisor_prompt import SUPERVISOR_PROMPT
 from ..prompts.aggregator_prompt import AGGREGATOR_PROMPT, AGGREGATOR_PROMPT_INFORMAL
 from ..prompts.curso_prompt import CURSO_PROMPT
 from ..prompts.disciplina_prompt import DISCIPLINA_PROMPT
+from ..prompts.estudante_prompt import ESTUDANTE_PROMPT
+
 
 
 from tests.tools.curso import *
 from tests.tools.disciplina import *
+from tests.tools.estudante import *
 
 from ..utils.supervisor_utils import *
 
@@ -31,10 +34,14 @@ DISCIPLINA_TOOLS = [
     get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas,
-    #get_plano_de_curso_disciplina,
+    get_plano_de_curso_disciplina,
     get_pre_requisitos_disciplina,
     get_disciplinas,
     #get_turmas_disciplina,
+]
+
+ESTUDANTE_TOOLS = [
+    obter_dados_gerais_de_todos_estudantes
 ]
 
 # SETAR ESTADO DO GRAFO GERAL (SUPERVISOR)
@@ -60,9 +67,15 @@ class EurecaChat:
         # Curso
         self.agent_curso = CreateAgent('Agente_Curso').create_with_tools(model=self.agents_model, prompt=CURSO_PROMPT, tools=CURSO_TOOLS)
         self.curso_node = functools.partial(self.agent_node, agent=self.agent_curso, name="Agente_Curso")
+
+        
         # Disciplina
         self.agent_disciplina = CreateAgent('Agente_Disciplina').create_with_tools(model=self.agents_model, prompt=DISCIPLINA_PROMPT, tools=DISCIPLINA_TOOLS)
         self.disciplina_node = functools.partial(self.agent_node, agent=self.agent_disciplina, name="Agente_Disciplina")
+
+        # Estudante
+        self.agent_estudante = CreateAgent('Agente_Estudante').create_with_tools(model=self.agents_model, prompt=ESTUDANTE_PROMPT, tools=ESTUDANTE_TOOLS)
+        self.estudante_node = functools.partial(self.agent_node, agent=self.agent_estudante, name="Agente_Estudante")
 
     
     def supervisor_node(self, state: AgentState):
@@ -145,7 +158,6 @@ class EurecaChat:
     async def agent_node(self, state: AgentState, agent, name: str):
         """
         """
-
         try:
             result = await agent.ainvoke(state)
             print("\nRESULTADO DO AGENTE: ", {"messages": [AIMessage(content=result["messages"][-1].content, name=name)]})
@@ -163,6 +175,7 @@ class EurecaChat:
         workflow.add_node("Agente_Agregador", self.aggregator_node)
         workflow.add_node("Agente_Curso", self.curso_node)
         workflow.add_node("Agente_Disciplina", self.disciplina_node)
+        workflow.add_node("Agente_Estudante", self.estudante_node)
 
         for member in MEMBERS:
             workflow.add_edge(member, "Agente_Supervisor")

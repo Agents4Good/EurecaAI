@@ -10,9 +10,8 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     Retorna o plano de curso de uma disciplina.
     
     Use esta função quando a pergunta envolver:
-    - ementa, objetivos, conteúdos;
+    - ementa da disciplina, objetivos, conteúdos;
     - metodologia, avaliação ou bibliografia.
-    Use quando a pergunta for sobre o plano de curso. 
     
     Args:
         nome_do_curso (Any): Nome do curso.

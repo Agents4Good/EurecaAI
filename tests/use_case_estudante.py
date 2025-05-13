@@ -29,10 +29,7 @@ question = "Quem são os estudantes que estão no 5 período do curso?"
 question = "Quem sao os estudantes que transferiram de curso que são da cidade de caturite?"
 question = "Quem são os alunos de escola pública que estudam no curso de ciencia da computacao que vieram da cidade de aroeiras"
 question = "qual é o índice de eficiência acadêmica de caique?"
-question = "quantos estudantes sao pardos e indigenas no curso de ciencia da computacao do campus de campina grande?" #GEROU SQL ERRADO
-# SELECT COUNT(*) FROM Estudante WHERE cor = 'Parda' AND naturalidade = 'PB' AND turno_do_curso = 'Integral' AND codigo_do_curriculo = 'Ciência da Computação' AND local_de_nascimento = 'Campina Grande
-question = "quantos estudantes sao pardos ou indigenas no curso de ciencia da computacao do campus de campina grande?" #GEROU SQL ERRADO
-# SELECT COUNT(*) FROM Estudante WHERE cor = 'Parda' OR cor = 'Indigena' AND turno_do_curso = 'Integral' AND local_de_nascimento = 'Campina Grande'
+question = "quantos estudantes sao pardos ou pretos no curso de ciencia da computacao do campus de campina grande?"
 
 #question = "quantas pessoas tem renda entre 1 a 10 salario minimo do campus Campina Grande?"  #VERIFICAR DEPOIS
 #TALVEZ SEJA NECESSSARIO INFORMAR O CAMPUS E O NOME DO CURSO?
@@ -50,5 +47,12 @@ question = "quantos estudantes sao pardos ou indigenas no curso de ciencia da co
 #question = "Quantos estudantes de escola pública e particular no curso de medicina do campus de campina grande?"
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 #question = "Quantos estudantes solteiros existem no curso de ciência da computação do campus Campina Grande?"
-question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
+
+
+#question = "Quantas estudantes mulheres existem no curso de ciência da computação do campus Campina Grande"
+#question = "Qual é a proporção de meninas com relação aos meninos no curso de ciência da cumptação cmapus campina grande"
+#question = "Qual a quantidade de estudantes do sexo feminino no curso de ciência da computação do campus Campina Grande?"
+#question = "QUero saber quantas meninas existem no curso de ciência da computação campus campina grande"
+question = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
+#question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
 agent.run(question=question)

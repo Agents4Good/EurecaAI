@@ -93,6 +93,5 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 
 question = "Quais são os códigos e nomes das disciplinas no curso de computação"
 
-#question = "Qual o meu CRA"
 
 agent.run(question=question)
