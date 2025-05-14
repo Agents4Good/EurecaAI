@@ -75,11 +75,6 @@
             "description": "Valor do auxílio transporte diário do estágio",
             "mapper": "auxilio_transporte_diario"
         },
-        "nome_do_setor": {
-            "type": "TEXT",
-            "description": "Nome do setor da universidade ao qual o estágio está vinculado",
-            "mapper": "nome_do_setor"
-        },
         "codigo_do_setor": {
             "type": "TEXT",
             "description": "Código do setor da universidade ao qual o estágio está vinculado",

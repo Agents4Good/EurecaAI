@@ -25,4 +25,6 @@ question = "Traga o nome dos professores dos estágios do curso de ciência da c
 question = "O professor Dalton foi orientador de quais estágios no ano 2024, ele é do curso de ciência da computação do campus Campina Grande."
 question = "Traga o nome dos professores que foram orientadores de estágio do centro de engenharia elétrica e informática no ano de 2024 do campus Campina Grande"
 question = "Traga informações sobre o valor da bolsa dos estágios do campus Campina Grande no ano 2024."
+question = "Quantos estagiarios tiveram no curso de ciencia da computacao do campus de campina grande em 2024?"
+question = "Qual é o valor médio das bolsas dos estagiarios do curso de engenharia eletrica do campus de campina grande?"
 agent.run(question=question)
