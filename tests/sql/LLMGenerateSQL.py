@@ -18,12 +18,12 @@ class LLMGenerateSQL:
         self.llm = LLM(model=model, temperature=temperature)
         self.prompt = prompt
   
-    def write_query_state(self, query, tabela)-> StateSQL:
+    def write_query_state(self, question, tabela)-> StateSQL:
        
         self.prompt = self.prompt.format(
             dialect="sqlite",
             table_info=tabela,
-            input=query
+            input=question
         )
        
         print(f"\nPrompt: {self.prompt}")
@@ -35,11 +35,11 @@ class LLMGenerateSQL:
         matches = re.findall(r'(?i)\bSELECT\b.*?;', result)
         return {"query": matches[0], "question": result["question"]}
     
-    def write_query(self, query, tabela):
+    def write_query(self, question, tabela):
         self.prompt = self.prompt.format(
             dialect="sqlite",
             table_info=tabela,
-            input=query
+            input=question
         )
 
         sql_gerado = self.llm.invoke(self.prompt).content

@@ -48,6 +48,7 @@ async def main():
         query = "Quantos esudantes estrangeiros tem no curso de ciência da computação do campus de campina grande?"
         query = "Quantas estudantes mulheres tem no curso de ciência da computação do Campus de campina grande?"
         query = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
+        
         #query = "As médias das notas de compiladores em ciência da computação"
         
         #demo.run(query, config)

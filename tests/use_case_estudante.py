@@ -54,5 +54,6 @@ question = "quantos estudantes sao pardos ou pretos no curso de ciencia da compu
 #question = "Qual a quantidade de estudantes do sexo feminino no curso de ciência da computação do campus Campina Grande?"
 #question = "QUero saber quantas meninas existem no curso de ciência da computação campus campina grande"
 question = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
+#question = "Traga o nome dos estudantes do curso de ciência da computação do campus Campina Grande que tema deficiência B10"
 #question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
 agent.run(question=question)

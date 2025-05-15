@@ -120,9 +120,17 @@ class GerenciadorSQLAutomatizado:
 
         dados = self._extract_campus()
         for dado in data_json:
+            valores_processados = []
+            for campo in dados:
+                valor = dado.get(campo)
+                # Se for uma lista, converte para a string com delimitadores
+                if isinstance(valor, list):
+                    valor = "," + ",".join(str(v) for v in valor) + ","
+                valores_processados.append(valor)
+
             cursor.execute(f"""
             INSERT OR IGNORE INTO {self.table_name} VALUES ({', '.join(['?' for _ in dados])})
-            """, tuple(dado[campo] for campo in dados))
+            """, tuple(valores_processados))
 
         conn.commit()
         conn.close()
@@ -152,10 +160,10 @@ class GerenciadorSQLAutomatizado:
             return [{"error": str(e)}]
     
     
-    def get_data(self, query: str, prompt, temperature: float = 0):
+    def get_data(self, question: str, prompt, temperature: float = 0):
         sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
-        result = sqlGenerateLLM.write_query(query=query, tabela=self.tabela)
+        result = sqlGenerateLLM.write_query(question=question, tabela=self.tabela)
         print(f"Query gerada: {result['query']}")
         result = self.__execute_sql(result['query'])
         print("RESULTADO DO SQL: ", result)

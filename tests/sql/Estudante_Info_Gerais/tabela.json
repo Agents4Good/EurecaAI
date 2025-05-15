@@ -42,8 +42,19 @@
         },
         "local_de_nascimento": {
             "type": "TEXT",
-            "description": "Local de nascimento do estudante",
-            "mapper": "local_de_nascimento"
+            "description": "Local de nascimento do estudante em letras maiúsculas ex: CAMPINA GRANDE",
+            "mapper": "local_de_nascimento"            
+        },
+        "email": {
+            "type": "TEXT",
+            "description": "Email do estudante",
+            "mapper": "email"
+        },
+        "telefone": {
+            "type": "TEXT",
+            "description": "Telefone do estudante",
+            "mapper": "telefone"
         }
+
     }
 }
