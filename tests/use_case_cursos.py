@@ -49,4 +49,6 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "computação código?"
 #question = "qual o curso que mexe com compiuter?"
 #question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?"
+
+question = "Traga todos os nomes e códigos dos cursos de graduação do campus de Campina Grande"
 agent.run(question=question)
