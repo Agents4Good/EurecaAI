@@ -155,18 +155,18 @@ class GerenciadorSQLAutomatizado:
                 str: A pergunta limpa.
         """
 
-        #model = ChatOllama(model="qwen3:8b", temperature=0.0)
         model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
+
         prompt = f"""
         Você é um assistente de IA especializado em limpar perguntas de usuários.
         Sua tarefa é **reformular** a pergunta original, removendo apenas os trechos que forem desconexos, redundantes ou que não agreguem sentido (ex: "no ano", "do campus", "do curso") **somente se estiverem mal encaixados ou sem sentido na frase**.
 
-        👉 Regras:
-        1. Preserve trechos que façam sentido dentro do contexto da pergunta.
-        2. Remova apenas termos ou fragmentos que quebram o significado ou deixem a pergunta confusa.
-        3. Não reescreva com outras palavras — mantenha a estrutura original, apenas removendo partes inúteis.
-        4. Não adicione comentários ou explicações.
-        5. Responda com **apenas a pergunta limpa**.
+        👉 **Regras**:
+        1. Analise a “Pergunta original” e identifique preposições ou fragmentos que criem quebras de contexto.  
+        2. Remova esses fragmentos, mantendo apenas o núcleo da pergunta.  
+        3. Remova também palavras que não fazem sentido ou que não agregam valor à pergunta.
+        4. Não adicione informações ou faça suposições sobre o que o usuário quis dizer.
+        5. Retorne **apenas** a “Pergunta limpa”, sem comentários, explicações ou markup adicional.
 
         **Pergunta original:**
         {question}
