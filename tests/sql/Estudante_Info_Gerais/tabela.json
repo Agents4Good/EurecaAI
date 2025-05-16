@@ -22,12 +22,12 @@
         },
         "situacao_do_estudante": {
             "type": "TEXT",
-            "description": "ENUM da situação do estudante no curso. Os ENM pode ser 'SUSPENSO', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTES', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS' E 'ATIVOS'.",
+            "description": "ENUM da situação do estudante no curso. Os ENUM pode ser 'ATIVO' ou 'INATIVO'.",
             "mapper": "situacao"
         },
         "naturalidade": {
             "type": "TEXT",
-            "description": "Naturalidade do estudante é a sigla do estado ex: PB, MG etc;",
+            "description": "Naturalidade do estudante é a sigla do estado em maiúsculo (2 letras). Só use esse atributo se na pergunta de fato especificar sobre a naturalidade ou de qual estado vem o estudante.",
             "mapper": "naturalidade"
         },
         "cor": {
@@ -37,12 +37,12 @@
         },
         "nacionalidade": {
             "type": "TEXT",
-            "description": "Nacionalidade do estudante, o ENUM pode ser 'Brasileira' ou 'Estrangeira';",
+            "description": "Nacionalidade do estudante, o ENUM pode ser 'Brasileira' ou 'Estrangeira', só use esse atributo se na pergunta de fato especificar sobre a nacionalidade do estundante;",
             "mapper": "nacionalidade"
         },
         "local_de_nascimento": {
             "type": "TEXT",
-            "description": "Cidade de local de nascimento do estudante",
+            "description": "Cidade de local de nascimento do estudante. Só use esse atributo se na pergunta de fato especificar sobre o local de nascimento.",
             "mapper": "local_de_nascimento"
         }
     }

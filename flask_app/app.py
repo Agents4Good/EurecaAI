@@ -15,7 +15,7 @@ app = Flask(__name__)
 # Inicializa o sistema de agentes ao iniciar o aplicativo
 system = EurecaChat(
     supervisor_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
-    aggregator_model=ChatDeepInfra(model="google/gemini-1.5-flash", temperature=0, max_tokens=2048),
+    aggregator_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0, max_tokens=2048),
     agents_model=ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
 ).build()
 

@@ -68,7 +68,6 @@ class EurecaChat:
         self.agent_curso = CreateAgent('Agente_Curso').create_with_tools(model=self.agents_model, prompt=CURSO_PROMPT, tools=CURSO_TOOLS)
         self.curso_node = functools.partial(self.agent_node, agent=self.agent_curso, name="Agente_Curso")
 
-        
         # Disciplina
         self.agent_disciplina = CreateAgent('Agente_Disciplina').create_with_tools(model=self.agents_model, prompt=DISCIPLINA_PROMPT, tools=DISCIPLINA_TOOLS)
         self.disciplina_node = functools.partial(self.agent_node, agent=self.agent_disciplina, name="Agente_Disciplina")
@@ -192,7 +191,3 @@ class EurecaChat:
         workflow.set_entry_point("Agente_Supervisor")
 
         return workflow.compile(checkpointer=self.checkpointer)
-
-
-
-

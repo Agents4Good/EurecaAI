@@ -57,6 +57,11 @@ Capacidades dos Agentes:
     * Buscar informações relevantes das disciplinas.
     * Essas informações podem ser: horário e carga horária, plano de aula, matrículas em uma disciplina, notas, pré-requisitos da disciplina, etc.
 
+3. Agente_Estudante:
+  - Especializado em informações gerais sobre os estudantes da UFCG.
+  - Capacidades:
+    * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade e local de nascimento.
+
 **Importante**
 - Quando a tarefa estiver completa, responda com: `{{"next": "FINISH"}}`
 - Caso outro agente deva ser chamado, responda exatamente com: `{{"next": "Agente_Curso"}}` ou `{{"next": "Agente_Disciplina"}}`
