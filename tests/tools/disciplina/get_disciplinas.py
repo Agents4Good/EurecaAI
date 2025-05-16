@@ -62,4 +62,4 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         gerenciador.save_data(disciplinas)
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

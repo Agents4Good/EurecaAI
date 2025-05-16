@@ -43,4 +43,4 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         gerenciador.save_data(cursos)
         return gerenciador.get_data(query, PROMPT_SQL_CURSOS, temperature=0)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

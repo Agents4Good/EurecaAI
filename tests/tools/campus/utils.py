@@ -5,8 +5,8 @@ from langchain_community.chat_models import ChatDeepInfra
 from ..utils.processar_json import processar_json
 
 
-#model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
-model = ChatOllama(model="llama3.1", temperature=0)
+model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+#model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}
 

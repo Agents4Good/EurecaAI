@@ -67,8 +67,5 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
             return [{"Error": "Ocorreu um erro para gerar a consulta SQL."}]
         print(dados)
         return dados
-        # gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
-        # gerenciador.save_data(estudantes_na_disciplina)
-        #return gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

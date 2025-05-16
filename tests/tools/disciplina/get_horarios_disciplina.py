@@ -5,7 +5,7 @@ from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ..utils.validacoes import valida_periodo_curriculo, validar_turma
 
-def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "01", periodo: Any = "") -> list:
+def get_horarios_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_da_disciplina: Any, turma: Any = "", periodo: Any = "") -> list:
     """_summary_
     Retorna os horários e sala de aula de uma disciplina.
     

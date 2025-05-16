@@ -15,8 +15,6 @@ from ..prompts.curso_prompt import CURSO_PROMPT
 from ..prompts.disciplina_prompt import DISCIPLINA_PROMPT
 from ..prompts.estudante_prompt import ESTUDANTE_PROMPT
 
-
-
 from tests.tools.curso import *
 from tests.tools.disciplina import *
 from tests.tools.estudante import *
@@ -48,6 +46,8 @@ ESTUDANTE_TOOLS = [
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
     next: str
+    # last_agent: Optional[str]
+    # agent_repetition_count: int
 
 # CRIAR INSTÂNCIA DE CHAT DO EURECA
 class EurecaChat:
@@ -83,28 +83,6 @@ class EurecaChat:
 
         query, formatted_responses = format_agent_responses(state["messages"])
 
-        # output_parser, format_instructions = get_supervisor_output_parser()
-
-        # prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT + "\n\n{format_instructions}", 
-        #                                  input_variables=["members", "query", "responses"], 
-        #                                  partial_variables={"format_instructions": format_instructions})
-        
-        # supervisor_chain = prompt_template | self.supervisor_model | output_parser
-
-        # filled_prompt = prompt_template.format(
-        #     members=MEMBERS,
-        #     query=query,
-        #     responses=formatted_responses
-        # )
-        # print("\nPROMPT DO SUPERVISOR: ", filled_prompt)
-        # result = supervisor_chain.invoke({
-        #     "members": MEMBERS,
-        #     "query": query,
-        #     "responses": formatted_responses
-        # })
-
-        # print("\nRESPOSTA DO SUPERVISOR: ", result)
-
         prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT, 
                                          input_variables=["members", "query", "responses"])
         
@@ -118,9 +96,26 @@ class EurecaChat:
         print(result)
         next_agent = extract_next_agent(result)
         print("PRÓXIMO AGENTE: ", next_agent)
+
+        # last_agent = state.get("last_agent", None)
+        # repetition_count = state.get("agent_repetition_count", 0)
+
+        # if next_agent == last_agent:
+        #     repetition_count += 1
+        # else:
+        #     repetition_count = 1
+        #     last_agent = next_agent
+        
+        # if repetition_count >= 3:
+        #     print(f"Agente {next_agent} foi selecionado 3 vezes seguidas. Redirecionando para Agente_Agregador.")
+        #     next_agent = "FINISH"
+        #     repetition_count = 0
+
         return {
             "messages": state["messages"],
             "next": next_agent
+            # "last_agent": last_agent,
+            # "agent_repetition_count": repetition_count
         }
     
     
@@ -157,6 +152,7 @@ class EurecaChat:
     async def agent_node(self, state: AgentState, agent, name: str):
         """
         """
+
         try:
             result = await agent.ainvoke(state)
             print("\nRESULTADO DO AGENTE: ", {"messages": [AIMessage(content=result["messages"][-1].content, name=name)]})
@@ -169,6 +165,7 @@ class EurecaChat:
     def build(self):
         """
         """
+
         workflow = StateGraph(AgentState)
         workflow.add_node("Agente_Supervisor", self.supervisor_node)
         workflow.add_node("Agente_Agregador", self.aggregator_node)

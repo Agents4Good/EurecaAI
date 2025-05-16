@@ -41,12 +41,9 @@ class LLMGenerateSQL:
         )
         
         sql_gerado = self.llm.invoke(self.prompt).content
-        #match = re.search(r'(?is)\bSELECT\b.*?(?:;|```)', sql_gerado)
-        #match = re.search(r'SELECT\s.+?(?=(```|$|\n\}|"\s*\}|\s*$))', sql_gerado, re.IGNORECASE | re.DOTALL)
         match = re.search(r'SELECT\b[\s\S]*?(?:;)?(?=\s*(?:```|\n?\}|"\s*\}|\s*$))', sql_gerado, re.IGNORECASE)
 
         if match:
-            #sql = match.group(0).strip().rstrip('```').strip()
             sql = match.group()
             sql = re.sub(r'\\n|\n', ' ', sql)
             sql = re.sub(r'\s+', ' ', sql).strip()

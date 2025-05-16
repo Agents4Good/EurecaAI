@@ -63,4 +63,4 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:
-      return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]
+      return [{"error_status": response.status_code, "msg": response.json()}]

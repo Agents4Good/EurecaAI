@@ -44,4 +44,4 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]
