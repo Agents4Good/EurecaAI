@@ -175,7 +175,7 @@ class GerenciadorSQLAutomatizado:
                 str: A pergunta limpa.
         """
 
-        model = ChatOllama(model="llama3.1", temperature=0.0)
+        model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
 
         prompt = f"""
         Você é um assistente de IA especializado em reescrever e simplificar perguntas de usuários.  
@@ -184,7 +184,9 @@ class GerenciadorSQLAutomatizado:
         👉 **Regras**:
         1. Analise a “Pergunta original” e identifique preposições ou fragmentos que criem quebras de contexto.  
         2. Remova esses fragmentos, mantendo apenas o núcleo da pergunta.  
-        3. Retorne **apenas** a “Pergunta limpa”, sem comentários, explicações ou markup adicional.
+        3. Remova também palavras que não fazem sentido ou que não agregam valor à pergunta.
+        4. Não adicione informações ou faça suposições sobre o que o usuário quis dizer.
+        5. Retorne **apenas** a “Pergunta limpa”, sem comentários, explicações ou markup adicional.
 
         **Pergunta original:**  
         {question}
@@ -203,7 +205,7 @@ class GerenciadorSQLAutomatizado:
     
     
     def get_data(self, question: str, prompt, temperature: float = 0):
-       # question = self.__clean_question(question)
+        question = self.__clean_question(question)
         sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
         result = sqlGenerateLLM.write_query(question=question, tabela=self.tabela)

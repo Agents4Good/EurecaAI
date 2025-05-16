@@ -20,11 +20,6 @@
             "description": "Matrícula do professor orientador",
             "mapper": "matricula_do_docente"
         },
-        "nome_do_professor": {
-            "type": "TEXT",
-            "description": "Nome do professor orientador",
-            "mapper": "nome_docente"
-        },
         "obrigatorio": {
             "type": "BOOLEAN",
             "description": "Indica se o estágio é obrigatório ou não",

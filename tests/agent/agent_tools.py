@@ -34,8 +34,8 @@ class AgentState(TypedDict):
 
 
 class AgentTools:
-    def __init__(self, LLM, model: str, tools: list, prompt: str, temperatura: int = 0):
-        self.model = LLM(model=model, temperature=temperatura).bind_tools(tools)
+    def __init__(self, LLM, model: str, tools: list, prompt: str, temperatura: int = 0, max_tokens: int = 2000):
+        self.model = LLM(model=model, temperature=temperatura, max_tokens=max_tokens).bind_tools(tools)
         self.tools = ToolNode(tools)
         self.prompt = prompt
         self.app = self.build()

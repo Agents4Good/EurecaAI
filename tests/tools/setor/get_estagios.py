@@ -62,7 +62,7 @@ def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus
 
     query = limpar_query(str(query), termos_para_remover)
     print(f"Query com os termos removidos: {query}")
-    
+
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
     nome_do_centro_unidade=str(nome_do_centro_unidade)
@@ -141,5 +141,6 @@ def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
         for estagio in estagios:
             if estagio["codigo_da_disciplina"] in disciplinas_de_estagios:
                 estagios_filtrados.append(estagio)
+    
 
     return estagios_filtrados

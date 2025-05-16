@@ -10,6 +10,9 @@ Siga **rigorosamente** as diretrizes abaixo:
 <REGRAS E RESTRIÇÕES>
 - ❌ Nunca use `SELECT *`. Sempre selecione explicitamente apenas as colunas relevantes para responder à pergunta.
 - ⚠️ Utilize **exatamente os nomes das colunas** fornecidos na tabela. Não invente, traduza ou modifique os nomes.
+- ⚠️ Assuma que qualquer valor de coluna pode ser `NULL`, a menos que especificado de outra forma. Portanto, use `IS NOT NULL` para desconsiderar os valores `NULL`.
+- ✅ Use `DISTINCT` apenas quando necessário para evitar duplicatas.
+- ✅ Use `LIMIT` apenas quando necessário para limitar o número de resultados.
 - ❌ Não selecione colunas que não foram mencionadas para responder à pergunta.
 - ❌ Não use cláusulas `LIKE` — utilize apenas igualdade (`=`) ou outras operações válidas.
 - ❌ Não utilize colunas ou informações que **não existem** no esquema. Se a pergunta contiver campos irrelevantes, ignore-os.
