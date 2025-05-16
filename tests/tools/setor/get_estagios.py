@@ -79,7 +79,7 @@ def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
 
         for estagio in estagios:
             codigo = estagio["codigo_da_disciplina"]
-            #EXISTEM ALGUNS CÒDIGOS QUE SÂO NONE
+            #EXISTEM ALGUNS CÓDIGOS QUE SÃO NONE
             if codigo is not None and str(codigo)[0] == codigo_campus:
                 estagios_filtrados.append(estagio)
     

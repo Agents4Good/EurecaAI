@@ -20,6 +20,7 @@ from ..prompts.estudante_prompt import ESTUDANTE_PROMPT
 from tests.tools.curso import *
 from tests.tools.disciplina import *
 from tests.tools.estudante import *
+from tests.tools.setor import *
 
 from ..utils.supervisor_utils import *
 
@@ -42,6 +43,10 @@ DISCIPLINA_TOOLS = [
 
 ESTUDANTE_TOOLS = [
     obter_dados_gerais_de_todos_estudantes
+]
+
+SETOR_TOOLS = [
+
 ]
 
 # SETAR ESTADO DO GRAFO GERAL (SUPERVISOR)
@@ -76,6 +81,9 @@ class EurecaChat:
         # Estudante
         self.agent_estudante = CreateAgent('Agente_Estudante').create_with_tools(model=self.agents_model, prompt=ESTUDANTE_PROMPT, tools=ESTUDANTE_TOOLS)
         self.estudante_node = functools.partial(self.agent_node, agent=self.agent_estudante, name="Agente_Estudante")
+
+        #Setor
+        # self.agent_setor = CreateAgent('Agente_Setor').create_with_tools(model=self.agents_model, prompt=SETOR_PROMPT, tools=SETOR_TOOLS)
 
     
     def supervisor_node(self, state: AgentState):
