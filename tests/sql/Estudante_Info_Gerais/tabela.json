@@ -22,7 +22,7 @@
         },
         "situacao_do_estudante": {
             "type": "TEXT",
-            "description": "ENUM da situação do estudante no curso. Os ENM pode ser 'SUSPENSO', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTES', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS' E 'ATIVOS'.",
+            "description": "ENUM da situação do estudante no curso. Os ENUM pode ser 'SUSPENSO', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTES', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS' E 'ATIVOS'.",
             "mapper": "situacao"
         },
         "naturalidade": {
@@ -44,6 +44,11 @@
             "type": "TEXT",
             "description": "Cidade de local de nascimento do estudante",
             "mapper": "local_de_nascimento"
+        },
+        "cra": {
+            "type": "REAL",
+            "description": "Coeficiente de rendimento acadêmico do estudante;",
+            "mapper": "cra"
         }
     }
 }

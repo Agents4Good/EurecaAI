@@ -7,7 +7,6 @@ load_dotenv()
 
 class StateSQL(TypedDict):
     query: str
-    question: str
 
 # class QueryOutput(TypedDict):
 #     query: Annotated[str, ..., "Syntactically valid SQL query."]
@@ -17,12 +16,16 @@ class LLMGenerateSQL:
         self.llm = LLM(model=model, temperature=temperature)
         self.prompt = prompt
   
-    def write_query(self, query, tabela)-> StateSQL:
+    def write_query(self, question, tabela)-> StateSQL:
         self.prompt = self.prompt.format(
             dialect="sqlite",
             table_info=tabela,
-            input=query
+            input=question
         )
 
-        sql_gerado = self.llm.invoke(self.prompt).content
-        return {"query": sql_gerado}
+       
+        structured_llm = self.llm.with_structured_output(StateSQL)
+        sql_gerado = structured_llm.invoke(self.prompt)
+
+        print("SQL GERADO ", sql_gerado["query"])
+        return {"query": sql_gerado["query"]}

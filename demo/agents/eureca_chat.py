@@ -14,12 +14,14 @@ from ..prompts.aggregator_prompt import AGGREGATOR_PROMPT, AGGREGATOR_PROMPT_INF
 from ..prompts.curso_prompt import CURSO_PROMPT
 from ..prompts.disciplina_prompt import DISCIPLINA_PROMPT
 from ..prompts.estudante_prompt import ESTUDANTE_PROMPT
+from ..prompts.setor_prompt import SETOR_PROMPT
 
 
 
 from tests.tools.curso import *
 from tests.tools.disciplina import *
 from tests.tools.estudante import *
+from tests.tools.setor import *
 from tests.tools.setor import *
 
 from ..utils.supervisor_utils import *
@@ -46,7 +48,9 @@ ESTUDANTE_TOOLS = [
 ]
 
 SETOR_TOOLS = [
-
+    get_estagios,
+    get_professores_setor,
+    get_todos_setores
 ]
 
 # SETAR ESTADO DO GRAFO GERAL (SUPERVISOR)
@@ -83,7 +87,8 @@ class EurecaChat:
         self.estudante_node = functools.partial(self.agent_node, agent=self.agent_estudante, name="Agente_Estudante")
 
         #Setor
-        # self.agent_setor = CreateAgent('Agente_Setor').create_with_tools(model=self.agents_model, prompt=SETOR_PROMPT, tools=SETOR_TOOLS)
+        self.agent_setor = CreateAgent('Agente_Setor').create_with_tools(model=self.agents_model, prompt=SETOR_PROMPT, tools=SETOR_TOOLS)
+        self.setor_node = functools.partial(self.agent_node, agent=self.agent_setor, name="Agente_Setor")
 
     
     def supervisor_node(self, state: AgentState):
@@ -184,6 +189,7 @@ class EurecaChat:
         workflow.add_node("Agente_Curso", self.curso_node)
         workflow.add_node("Agente_Disciplina", self.disciplina_node)
         workflow.add_node("Agente_Estudante", self.estudante_node)
+        workflow.add_node("Agente_Setor", self.setor_node)
 
         for member in MEMBERS:
             workflow.add_edge(member, "Agente_Supervisor")

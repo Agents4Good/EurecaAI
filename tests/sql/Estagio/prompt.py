@@ -1,22 +1,22 @@
 PROMPT_SQL_ESTAGIO = """
-Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
+Você é um gerador de SQL. Sua tarefa é criar uma **consulta SQL mínima, sintaticamente correta e precisa** no dialeto {dialect}, com base na pergunta fornecida.
 
-Use apenas a seguintes tabela a seguir:
+Considere apenas o seguinte esquema de tabela:
 
 {table_info}
 
-Siga **rigorosamente** as instruções abaixo:
+Siga **rigorosamente** as diretrizes abaixo:
 
-<RESTRIÇÕES>
-- Nunca use "SELECT *" — selecione somente as colunas relevantes.
-- Não invente ou modifique os nomes das colunas.
-- Nunca use a cláusula LIKE.
-- Se uma parte da pergunta não se relaciona com o esquema, ignore.
-- Gere o SQL no formato correto, apenas o SQL e mais nada.
-- Se a pergunta envolve algum campo que a tabela não tem, ignore esse campo.
-</RESTRIÇÕES>
+<REGRAS E RESTRIÇÕES>
+- ❌ Nunca use `SELECT *`. Sempre selecione explicitamente apenas as colunas relevantes para responder à pergunta.
+- ⚠️ Utilize **exatamente os nomes das colunas** fornecidos na tabela. Não invente, traduza ou modifique os nomes.
+- ❌ Não selecione colunas que não foram mencionadas para responder à pergunta.
+- ❌ Não use cláusulas `LIKE` — utilize apenas igualdade (`=`) ou outras operações válidas.
+- ❌ Não utilize colunas ou informações que **não existem** no esquema. Se a pergunta contiver campos irrelevantes, ignore-os.
+- ❌ Não gere comentários, explicações ou texto adicional. Retorne **apenas a consulta SQL**, nada mais.
+- ✅ A consulta deve ser **válida, enxuta e funcional**.
+</REGRAS E RESTRIÇÕES>
 
-Responda com uma consulta SQL válida e mínima.
-
+Pergunta:
 {input}
 """

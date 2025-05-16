@@ -1,10 +1,15 @@
 import sqlite3
 import json
 import os
+from typing import TypedDict
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class CleanQuestion(TypedDict):
+    question: str
 
 class GerenciadorSQLAutomatizado:
     def __init__ (self, table_name, db_name):
@@ -158,9 +163,47 @@ class GerenciadorSQLAutomatizado:
         except sqlite3.Error as e:
             conn.close()
             return [{"error": str(e)}]
+        
+    
+    def __clean_question(self, question: str):
+        """
+            Limpa a pergunta removendo os resíduos.
+
+            Args:
+                question (str): A pergunta a ser limpa.
+            Returns:
+                str: A pergunta limpa.
+        """
+
+        model = ChatOllama(model="llama3.1", temperature=0.0)
+
+        prompt = f"""
+        Você é um assistente de IA especializado em reescrever e simplificar perguntas de usuários.  
+        Sua tarefa é **reformular** a pergunta original, eliminando trechos desconexos ou redundantes (por exemplo, “no ano de”, “do campus de”, “do curso de”) que não agregam significado claro.
+
+        👉 **Regras**:
+        1. Analise a “Pergunta original” e identifique preposições ou fragmentos que criem quebras de contexto.  
+        2. Remova esses fragmentos, mantendo apenas o núcleo da pergunta.  
+        3. Retorne **apenas** a “Pergunta limpa”, sem comentários, explicações ou markup adicional.
+
+        **Pergunta original:**  
+        {question}
+        """
+
+        structured_output = model.with_structured_output(CleanQuestion)
+        response = structured_output.invoke(prompt)
+
+        if response['question']:
+            print("Pergunta limpa: ", response['question'])
+            return response['question']
+        else:
+            raise ValueError("Erro ao limpar a pergunta.")
+      
+       
     
     
     def get_data(self, question: str, prompt, temperature: float = 0):
+       # question = self.__clean_question(question)
         sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
         result = sqlGenerateLLM.write_query(question=question, tabela=self.tabela)
