@@ -1,6 +1,6 @@
-flask
+﻿flask
 dotenv
-﻿﻿langchain_core
+langchain_core
 langchain_openai
 langchain_ollama
 fastapi
