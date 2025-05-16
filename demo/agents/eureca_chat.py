@@ -77,6 +77,9 @@ class EurecaChat:
         self.agent_estudante = CreateAgent('Agente_Estudante').create_with_tools(model=self.agents_model, prompt=ESTUDANTE_PROMPT, tools=ESTUDANTE_TOOLS)
         self.estudante_node = functools.partial(self.agent_node, agent=self.agent_estudante, name="Agente_Estudante")
 
+        #Setores
+        self.agent_setor = CreateAgent('Agente_Setor').create_with_tools(model=self.agents_model,prompt=SETOR_PROMPT, tools=SETOR_TOOLS)
+
     
     def supervisor_node(self, state: AgentState):
         """

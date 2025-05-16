@@ -92,6 +92,7 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 #question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
 question = "Quais são os códigos e nomes das disciplinas no curso de computação"
+question = "Qual o plano de aula da disciplina de compiladores do curso de ciência da computação?"
 
 
 agent.run(question=question)

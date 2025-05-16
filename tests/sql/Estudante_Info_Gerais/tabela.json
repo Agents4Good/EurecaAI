@@ -54,6 +54,11 @@
             "type": "TEXT",
             "description": "Telefone do estudante",
             "mapper": "telefone"
+        },
+        "cra": {
+            "type": "REAL",
+            "description": "Coeficiente de rendimento acadêmico do estudante",
+            "mapper": "cra"
         }
 
     }
