@@ -1,5 +1,5 @@
-﻿﻿flask
 dotenv
+﻿﻿flask
 langchain_core
 langchain_openai
 langchain_ollama
