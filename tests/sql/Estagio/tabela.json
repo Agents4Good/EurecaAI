@@ -1,10 +1,5 @@
 {
     "Estagio": {
-        "id": {
-            "type": "INTEGER",
-            "description": "Identificador único do estágio",
-            "mapper": "id"
-        },
         "matricula_do_estudante": {
             "type": "TEXT",
             "description": "Matrícula do estudante",
@@ -17,7 +12,7 @@
         },
         "uf_concedente": {
             "type": "TEXT",
-            "description": "Unidade da federação do concedente, exemplo: PB",
+            "description": "Sigla da unidade da federação do concedente. (duas letras em maiúsculo). Use apenas quando tiver explicito na pergunta.",
             "mapper": "uf_concedente"
         },
         "matricula_do_professor": {
@@ -42,12 +37,12 @@
         },
         "data_inicio": {
             "type": "DATE",
-            "description": "Data de início do estágio",
+            "description": "Data de início do estágio no formato YYYY-MM-DD",
             "mapper": "inicio_vigencia"
         },
         "data_fim": {
             "type": "DATE",
-            "description": "Data de fim do estágio",
+            "description": "Data de fim do estágio no formato YYYY-MM-DD",
             "mapper": "final_vigencia"
         },
         "carga_horaria_semanal": {
@@ -74,11 +69,6 @@
             "type": "REAL",
             "description": "Valor do auxílio transporte diário do estágio",
             "mapper": "auxilio_transporte_diario"
-        },
-        "codigo_do_setor": {
-            "type": "TEXT",
-            "description": "Código do setor da universidade ao qual o estágio está vinculado",
-            "mapper": "codigo_do_setor"
         }
     }
 }

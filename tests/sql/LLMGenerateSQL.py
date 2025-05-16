@@ -4,7 +4,6 @@ from typing_extensions import Annotated
 from langchain import hub
 from dotenv import load_dotenv
 load_dotenv()
-import re
 
 class StateSQL(TypedDict):
     query: str
@@ -18,28 +17,11 @@ class LLMGenerateSQL:
         self.llm = LLM(model=model, temperature=temperature)
         self.prompt = prompt
   
-    def write_query_state(self, question, tabela)-> StateSQL:
-       
+    def write_query(self, query, tabela)-> StateSQL:
         self.prompt = self.prompt.format(
             dialect="sqlite",
             table_info=tabela,
-            input=question
-        )
-       
-        print(f"\nPrompt: {self.prompt}")
-        print("\n=========================\n")
-        structured_llm = self.llm.with_structured_output(StateSQL,  method="function_calling")
-        result = structured_llm.invoke(self.prompt)
-
-
-        matches = re.findall(r'(?i)\bSELECT\b.*?;', result)
-        return {"query": matches[0], "question": result["question"]}
-    
-    def write_query(self, question, tabela):
-        self.prompt = self.prompt.format(
-            dialect="sqlite",
-            table_info=tabela,
-            input=question
+            input=query
         )
 
         sql_gerado = self.llm.invoke(self.prompt).content

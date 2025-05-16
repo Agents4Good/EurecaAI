@@ -16,7 +16,7 @@ tools = [
     get_todos_setores
 ]
 
-agent = AgenteSetores(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
+agent = AgenteSetores(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
 
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"
 question = "Quais os códigos de todos os setores?"
@@ -26,5 +26,10 @@ question = "O professor Dalton foi orientador de quais estágios no ano 2024, el
 question = "Traga o nome dos professores que foram orientadores de estágio do centro de engenharia elétrica e informática no ano de 2024 do campus Campina Grande"
 question = "Traga informações sobre o valor da bolsa dos estágios do campus Campina Grande no ano 2024."
 question = "Quantos estagiarios tiveram no curso de ciencia da computacao do campus de campina grande em 2024?"
-question = "Qual é o valor médio das bolsas dos estagiarios do curso de engenharia eletrica do campus de campina grande?"
+question = "Qual é o valor médio das bolsas dos estagiarios do curso de engenharia eletrica do campus de campina grande em 2024?"
+question = "Some as bolsas de todos os estagiarios do campus de campina grande em 2024?"
+question = "Some as bolsas de todos os estagiarios da UFCG em 2020?"
+question = "Some as bolsas de todos os estagiarios da UFCG desde 2020?"
+
+
 agent.run(question=question)

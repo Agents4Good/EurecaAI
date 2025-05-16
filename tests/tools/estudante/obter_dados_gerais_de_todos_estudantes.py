@@ -56,6 +56,3 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
      
    else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]
-
-
-

@@ -12,13 +12,17 @@ import requests
 import json
 import unicodedata
 
-def get_estagios(query: Any, ano: Any = "",  nome_do_campus: Any = "", nome_do_centro_unidade: Any = "", nome_do_curso: Any = "") -> list:
+def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus: Any = "", nome_do_centro_unidade: Any = "", nome_do_curso: Any = "") -> list:
     """
     Buscar informações sobre estágios dos estudantes de uma centro da unidade de um curso.
+    Se for informado apenas um ano, usar o mesmo ano no parâmetrio ano_de e ano_ate.
+    Se for informado apenas um ano e você identificar que é a data de ínicio, mas que não é a de término, então só passe o ano apenas em ano_de.
+    Se for informado apenas um ano e você identificar que é a data limite, mas que não é de início, então so passe o ano apenas em ano_ate.
 
     Args:
         query (Any): Pergunta do usuário.
-        ano (Any): ano em valor inteiro (use o ano perguntado, se não souber use vazio ""). Defaults to "". 
+        ano_de (Any): ano em valor inteiro de início dos estágios (use o ano perguntado, se não souber use vazio ""). Defaults to "". 
+        ano_ate (Any): ano em valor inteiro do ano limite para busca (use o ano perguntado, se não souber use vazio ""). Defaults to "". 
         nome_do_campus (Any): O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... (se não foi informado ou se quiser saber sobre todos os centros, então passe a string vazia '').
         nome_do_centro_unidade (Any): nome do setor (nome do centro, nome da unidade ou nome do curso) do curso, e passe a informação completa como "centro de ..." ou "unidade academica de ...". (Caso queira de toda a UFCG passe o parâmetro com string vazia '').
         nome_do_curso (Any): Nome do curso.
@@ -31,14 +35,15 @@ def get_estagios(query: Any, ano: Any = "",  nome_do_campus: Any = "", nome_do_c
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
     nome_do_centro_unidade=str(nome_do_centro_unidade)
-    ano=str(ano)
-    if ano == "":
-        ano = str(datetime.now().year)
+    ano_de=str(ano_de)
+    ano_ate=str(ano_ate)
+    if ano_ate == "":
+        ano_ate = str(datetime.now().year)
     
-    print(f"Tool get_estagios chamada com nome_do_campus={nome_do_campus}, nome_do_centro_unidade={nome_do_centro_unidade}, nome_do_curso={nome_do_curso} e ano={ano}")
+    print(f"Tool get_estagios chamada com nome_do_campus={nome_do_campus}, nome_do_centro_unidade={nome_do_centro_unidade}, nome_do_curso={nome_do_curso}, ano_de={ano_de} e ano_ate={ano_ate}")
     params = {
-        "inicio-de": str(ano),
-        "fim-ate": str(ano)
+        "inicio-de": ano_de,
+        "fim-ate": ano_ate
     }
 
     response = requests.get(f'{URL_BASE}/estagios', params=params)
@@ -63,7 +68,11 @@ def get_estagios(query: Any, ano: Any = "",  nome_do_campus: Any = "", nome_do_c
 #FUNÇÂO AUXILIAR
 def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
     estagios_filtrados = []
-    if nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
+
+    if not nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
+        return estagios
+    
+    elif nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
         print("primeira condição")
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         codigo_campus = str(dados_campus["campus"]["codigo"])
