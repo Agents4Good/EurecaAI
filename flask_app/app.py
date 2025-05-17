@@ -7,6 +7,9 @@ from langchain_core.messages import HumanMessage
 import asyncio, json
 
 from demo.agents.eureca_chat import EurecaChat
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 app = Flask(__name__)
 
