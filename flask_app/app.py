@@ -33,26 +33,26 @@ async def process_query(query):
         response.append(chunk["messages"][-1].content)
     return response[-1] if response else "Desculpe, não consegui processar sua solicitação."
 
-@app.route('/')
+@app.route('/eureca-chat')
 def home():
     # Renderiza a página HTML onde o chatbot será exibido
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/eureca-chat/login')
 def login():
     # Renderiza a página HTML onde o login será exibido
     return render_template('login.html')
 
-@app.route('/politica_termos')
+@app.route('/eureca-chat/politica_termos')
 def politica_termos():
     # Renderiza a página HTML onde o login será exibido
     return render_template('politica_termos.html')
 
-@app.route('/delete_chat', methods=["POST"])
+@app.route('/eureca-chat/delete_chat', methods=["POST"])
 def delete_chat():
     return jsonify({"msg": "apagado"}), 200
 
-@app.route('/resumir', methods=["POST"])
+@app.route('/eureca-chat/resumir', methods=["POST"])
 def resumir():
     data = request.get_json()
 
@@ -84,7 +84,7 @@ def resumir():
     except Exception as e:
         return jsonify({"erro": f"Erro ao gerar resumo: {str(e)}"}), 500
 
-@app.route('/chat', methods=['POST'])
+@app.route('/eureca-chat/chat', methods=['POST'])
 def chat():
     # Recebe a mensagem do usuário
     user_message = request.form['user_input']
@@ -99,7 +99,7 @@ def chat():
         bot_message = "Desculpe, ocorreu um erro ao processar sua solicitação."
     return {'response': bot_message}
 
-@app.route("/voice-to-text", methods=["POST"])
+@app.route("/eureca-chat/voice-to-text", methods=["POST"])
 def voice_to_text():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
