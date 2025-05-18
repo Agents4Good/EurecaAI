@@ -11,7 +11,8 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-app = Flask(__name__, static_url_path="/static")
+app = Flask(__name__, static_url_path='/eureca-chat/static')
+app.config['APPLICATION_ROOT'] = '/eureca-chat'
 
 # Inicializa o sistema de agentes ao iniciar a aplicação
 system = EurecaChat(
