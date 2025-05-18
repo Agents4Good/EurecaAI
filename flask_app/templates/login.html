@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/login.css">
-    <link rel="icon" type="image/png" href="../static/images/ufcg.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/ufcg.png') }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon_package_v0.16/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package_v0.16//favicon-32x32.png">
@@ -23,7 +23,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
     <!--Import materialize.css-->
-    <link rel="stylesheet" href="../static/materialize/css/materialize.min.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='materialize/css/materialize.min.css') }}"  media="screen,projection"/>
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -113,7 +113,7 @@
 
             <div class="col s12">
                 <div class="center-align">
-                    <img class="responsive-img vertical" src="../static/images/Eureca_AI_logo.png">
+                    <img class="responsive-img vertical" src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}">
                 </div>
             </div>
 

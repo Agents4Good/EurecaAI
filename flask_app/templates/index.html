@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eureca AI</title>
-    <link rel="icon" type="image/png" href="../static/images/ufcg.png">
-    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/ufcg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!--<link rel="stylesheet" href="../static/css/index.css">-->
@@ -124,7 +124,7 @@
                                 <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
                                 <div class="bot_options">
                                     <button class="audio-button">
-                                        <img src="../static/images/audio.png" />
+                                        <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                     </button>
                                 </div>  
                             </div>
@@ -152,7 +152,7 @@
                             <p class="bot__name__response">Raciocinando...</p>
                             <div class="bot_options">
                                 <button class="audio-button">
-                                    <img src="../static/images/audio.png" />
+                                    <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                 </button>
                             </div>  
                         </div>
@@ -401,14 +401,14 @@
             const inputQuery = document.getElementsByClassName('query')[0]; 
 
             if (img.src.includes('microphone.png')) {
-                img.src = '../static/images/audio.png'; 
+                img.src = "{{ url_for('static', filename='images/audio.png') }}";
                 img.style.backgroundColor = "#30ABED";
                 inputQuery.disabled = true;
                 
                 inputQuery.style.backgroundColor = "white";
                 startRecording();
             } else {
-                img.src = '../static/images/microphone.png'; 
+                img.src = "{{ url_for('static', filename='images/microphone.png') }}"; 
                 img.style.backgroundColor = "#a6d1e9";
                 inputQuery.disabled = false; 
                 stopRecording();
@@ -453,7 +453,7 @@
         <div class="aside__mobile__button" onClick="openAsideBarMobile()">
             <i class='fas fa-bars fa-2x'></i>
         </div>
-        <img src="../static/images/Eureca_AI_logo.png" onClick="window.location.href='/eureca-chat'"/>
+        <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}" onClick="window.location.href='/eureca-chat'"/>
         <button class="login__button btn waves-effect waves-light azul-escuro-1" onClick="login_account()">
             <span>Login</span>
         </button>
@@ -470,18 +470,18 @@
                 <div class="input_container">
                     <textarea id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."></textarea>
                     <button class="send" type="submit">
-                        <img src="../static/images/arrow_icon.png"/>
+                        <img src="{{ url_for('static', filename='images/arrow_icon.png') }}"/>
                     </button>
                 </div>
                 <button class="record" onClick="changeImage(this)">
-                    <img src="../static/images/microphone.png" id="recordImage"/>
+                    <img src="{{ url_for('static', filename='images/microphone.png') }}" id="recordImage"/>
                 </button>
             </form>
         </section>
         <aside class="aside-chat">
             <div class="aside-title-container">
                 <div>
-                    <img src="../static/images/Eureca_AI_logo.png"/>
+                    <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}"/>
                     <button class="login_button_mobile" onClick="login_account()">
                         <span>Login</span>
                     </button>
