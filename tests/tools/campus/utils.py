@@ -3,9 +3,10 @@ from .get_campi import get_campi
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
 from ..utils.processar_json import processar_json
+from flask_app.langchain_models import model
 
 
-model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
+#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
 #model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}

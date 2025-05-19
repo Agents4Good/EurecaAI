@@ -6,10 +6,10 @@ from ..utils.processar_json import processar_json
 from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 from langchain_community.chat_models import ChatDeepInfra
+from flask_app.langchain_models import model
 
 
-
-model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
+#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
 #model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""

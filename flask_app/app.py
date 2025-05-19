@@ -20,6 +20,7 @@ system = EurecaChat(
     agents_model=ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
 ).build()
 
+
 async def process_query(query):
     """
     Processa a consulta do usuário usando o sistema de agentes.
