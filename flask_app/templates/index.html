@@ -157,7 +157,7 @@
         // Função que adiciona a mensagem do bot
         function addBotMessage() {
             var botMessageBlock = `
-                <div class="bot">
+                <div class="bot skeleton">
                     <div class="bot__container">
                         <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
                         <div class="bot__response">
@@ -166,7 +166,7 @@
                             </div>
                             <p class="bot__name__response">Os agentes geralmente levam alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados.</p>
                             <div class="bot_options">
-                                <button class="audio-button">
+                                <button class="audio-button" style="display: none;">
                                     <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                 </button>
                             </div>  
@@ -289,7 +289,10 @@
                 success: function (response) {
                     const markdownResponse = response.response;
                     const htmlResponse = marked.parse(markdownResponse);
-                    $('.bot__name__response').last().html(htmlResponse);
+                    const $lastBotResponse = $('.bot__name__response').last();
+                    $('.bot').last().find('.audio-button').show();
+                    $lastBotResponse.html(htmlResponse);
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
         

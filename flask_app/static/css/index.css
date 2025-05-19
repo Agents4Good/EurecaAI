@@ -52,6 +52,10 @@ header {
     header img {
         display: none;
     }
+
+    header {
+        height: 30px;
+    }
 }
 
 header img {
@@ -117,7 +121,7 @@ section {
 
 .query__container {
     grid-area: query;
-    width: calc(100%-8px);
+    width: calc(100% - 8px);
     min-height: 60px;
     max-height: 230px;
     display: flex;
@@ -330,7 +334,7 @@ section {
     justify-content: center;
     align-items: center;
     border: 0px;
-    background-color: white;
+    background-color: transparent;
     cursor: pointer;
 }
 
@@ -346,7 +350,7 @@ main {
 
 aside {
     position: absolute;
-    height: calc(100% + 40px);
+    height: calc(100% + 70px);
     width: 300px;
     background-color: transparent;
     left: 10px;
@@ -474,7 +478,7 @@ aside {
     section {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: calc(100dvh - 166px) 40px;
+        grid-template-rows: calc(100dvh - 154px) 40px; /* Altera a margem do input */
         grid-template-areas: "chat" "query";
     }
 }
@@ -488,7 +492,6 @@ aside {
 
     .query__container {
         width: 90%;
-        margin: auto;
     }
 
     header img {
@@ -608,4 +611,30 @@ aside {
 
 .fab-menu a:last-child {
     border-bottom: none;
+}
+
+
+
+
+/* Base skeleton style */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 5s infinite;
+    border-radius: 4px;
+}
+
+/* Animation keyframes */
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }

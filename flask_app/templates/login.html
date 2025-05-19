@@ -103,6 +103,10 @@
             document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
         }
 
+        function levarPaginaInicial() {
+            window.location.href = "/";
+        }
+
     </script>
 </head>
 <body class="valign-wrapper">
@@ -113,7 +117,7 @@
 
             <div class="col s12">
                 <div class="center-align">
-                    <img class="responsive-img vertical" src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}">
+                    <img class="responsive-img vertical" src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}" onclick="levarPaginaInicial()">
                 </div>
             </div>
 
