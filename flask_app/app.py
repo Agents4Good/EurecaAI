@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, Blueprint
+from flask import Flask, request, render_template, jsonify
 import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
@@ -11,8 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-app = Flask(__name__, static_url_path='/static')
-bp = Blueprint('eureca', __name__, url_prefix='/eureca-chat')
+app = Flask(__name__, static_url_path="/static")
 
 # Inicializa o sistema de agentes ao iniciar a aplicação
 system = EurecaChat(
@@ -34,26 +33,26 @@ async def process_query(query):
         response.append(chunk["messages"][-1].content)
     return response[-1] if response else "Desculpe, não consegui processar sua solicitação."
 
-@bp.route('/')
+@app.route('/')
 def home():
     # Renderiza a página HTML onde o chatbot será exibido
     return render_template('index.html')
 
-@bp.route('/login')
+@app.route('/login')
 def login():
     # Renderiza a página HTML onde o login será exibido
     return render_template('login.html')
 
-@bp.route('/politica_termos')
+@app.route('/politica_termos')
 def politica_termos():
     # Renderiza a página HTML onde o login será exibido
     return render_template('politica_termos.html')
 
-@bp.route('/delete_chat', methods=["POST"])
+@app.route('/delete_chat', methods=["POST"])
 def delete_chat():
     return jsonify({"msg": "apagado"}), 200
 
-@bp.route('/resumir', methods=["POST"])
+@app.route('/resumir', methods=["POST"])
 def resumir():
     data = request.get_json()
 
@@ -85,7 +84,7 @@ def resumir():
     except Exception as e:
         return jsonify({"erro": f"Erro ao gerar resumo: {str(e)}"}), 500
 
-@bp.route('/chat', methods=['POST'])
+@app.route('/chat', methods=['POST'])
 def chat():
     # Recebe a mensagem do usuário
     user_message = request.form['user_input']
@@ -100,7 +99,7 @@ def chat():
         bot_message = "Desculpe, ocorreu um erro ao processar sua solicitação."
     return {'response': bot_message}
 
-@bp.route("/voice-to-text", methods=["POST"])
+@app.route("/voice-to-text", methods=["POST"])
 def voice_to_text():
     if 'file' not in request.files:
         return jsonify({"error": "No file part"}), 400
@@ -126,8 +125,6 @@ def voice_to_text():
         return jsonify({"error": "Não foi possível entender o áudio"}), 400
     except sr.RequestError as e:
         return jsonify({"error": f"Erro ao tentar usar o serviço de reconhecimento de fala: {e}"}), 500
-
-app.register_blueprint(bp)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
