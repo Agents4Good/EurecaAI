@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-app = Flask(__name__, static_url_path='/eureca-chat/static')
+app = Flask(__name__, static_url_path='/static')
 bp = Blueprint('eureca', __name__, url_prefix='/eureca-chat')
 
 # Inicializa o sistema de agentes ao iniciar a aplicação
@@ -44,7 +44,7 @@ def login():
     # Renderiza a página HTML onde o login será exibido
     return render_template('login.html')
 
-@bp.route('/login')
+@bp.route('/politica_termos')
 def politica_termos():
     # Renderiza a página HTML onde o login será exibido
     return render_template('politica_termos.html')
