@@ -9,7 +9,7 @@ from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 from langchain_community.chat_models import ChatDeepInfra
 
 
-model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 
