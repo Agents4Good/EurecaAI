@@ -15,6 +15,21 @@
     <script>
         let idChatLocal = null;
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById('user_input');
+
+            function atualizarPlaceholder() {
+                if (window.innerWidth < 600) {
+                    textarea.placeholder = "Digite sua dúvida sobre a UFCG...";
+                } else {
+                    textarea.placeholder = "Pergunte informações sobre a UFCG...";
+                }
+            }
+
+            atualizarPlaceholder(); // Atualiza ao carregar
+            window.addEventListener('resize', atualizarPlaceholder); // Atualiza ao redimensionar
+        });
+
         $(document).ready(function () {
             $('#chat_form').on('keydown', function (event) {
                 if (event.keyCode == 13) {
