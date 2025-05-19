@@ -169,12 +169,12 @@
             const wordMobile = botaologinMobile.querySelector("span");
         
             if (word.textContent === "Login" || wordMobile.textContent === "Login") {
-                window.location.href = '/login';
+                window.location.href = '/eureca-chat/login';
             } else if (word.textContent === "Sair" || wordMobile.textContent === "Sair" ) {
                 deleteCookie("profile").then(() => {
                     word.textContent = "Login";
                     wordMobile.textContent = "Login";
-                    window.location.href = "";
+                    window.location.href = "/eureca-chat/";
                 });
             }
         }
@@ -218,7 +218,7 @@
             } else {
                 $.ajax({
                     type: 'POST',
-                    url: '/delete_chat',
+                    url: '/eureca-chat/delete_chat',
                     timeout: 400000,
                     success: function (response) {
                         apagar_chat_pelo_id(id);
@@ -229,7 +229,7 @@
         
         async function get_resumo(texto) {
             try {
-                const response = await fetch('/resumir', {
+                const response = await fetch('/eureca-chat/resumir', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -268,7 +268,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/chat',
+                url: '/eureca-chat/chat',
                 timeout: 120000,
                 data: { user_input: message },
                 success: function (response) {
@@ -377,7 +377,7 @@
 
                     $.ajax({
                         type: 'POST',
-                        url: '/voice-to-text',
+                        url: '/eureca-chat/voice-to-text',
                         data: formData,
                         processData: false,
                         contentType: false,
@@ -503,7 +503,7 @@
             </div>
             <div class="about">
                 <p>© 2025 UFCG</p>
-                <p onClick="window.location.href='/politica_termos'">Política e Termos</p>
+                <p onClick="window.location.href='/eureca-chat/politica_termos'">Política e Termos</p>
             </div>
         </aside>
     </main>
