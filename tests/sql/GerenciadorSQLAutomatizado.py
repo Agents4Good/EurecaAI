@@ -195,6 +195,7 @@ class GerenciadorSQLAutomatizado:
         #sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
        
 
+        #sql = sqlgen.write_query(question=question)["query"]
         sql = sqlgen.generate_sql(question=question)
     
         print("\n=============================================\n")
