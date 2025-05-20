@@ -1,5 +1,6 @@
 from typing import Any
 from ..utils.validacoes import valida_periodo_curriculo
+from ..setor.utils import get_setor_most_similar
 from ..curso.utils import get_curso_most_similar
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
@@ -46,23 +47,27 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
-    response = requests.get(f'{URL_BASE}/turmas', params=params)
+    response = requests.get(f'{URL_BASE}/turmas-por-curso', params=params)
     
     if response.status_code == 200:
         print("Turmas retornadas com sucesso")
         turmas = json.loads(response.text)
         codigo_disciplinas = list(set(turma["codigo_da_disciplina"] for turma in turmas))
 
-        disciplinas = []
-        for codigo_disciplina in codigo_disciplinas:
-            response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "disciplina": codigo_disciplina })
-            if response_disciplina.status_code == 200:
-                disciplinas.append(json.loads(response_disciplina.text)[0])
+        setor_mais_similar = get_setor_most_similar(nome_do_campus=nome_do_campus, nome_do_centro_setor=nome_do_curso, filtro="UNID")
 
+        disciplinas_dentro = []
+        response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "setor": setor_mais_similar["setor"]["codigo"], "curso": dados_curso['curso']['codigo']})
+        if response_disciplina.status_code == 200:
+            disciplinas_curso = json.loads(response_disciplina.text)
+            for disciplina in disciplinas_curso:
+                if disciplina["codigo_da_disciplina"] in codigo_disciplinas:
+                    disciplinas_dentro.append(disciplina)
+        
         if query == "":
-            return disciplinas
+            return disciplinas_dentro
         gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite")
-        gerenciador.save_data(disciplinas)
+        gerenciador.save_data(disciplinas_dentro)
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     
     else:
