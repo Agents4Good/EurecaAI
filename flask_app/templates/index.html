@@ -306,7 +306,7 @@
                         
                         get_resumo(message).then((resumo) => {
                             newDiv.innerHTML = `
-                            <p>${resumo}</p>
+                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
                             <div class="fab-wrapper">
                                 <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
                                 <div class="fab-menu" id="${id}_menu">
