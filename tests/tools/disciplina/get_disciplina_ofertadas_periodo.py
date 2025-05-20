@@ -61,9 +61,9 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
 
         if query == "":
             return disciplinas
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite")
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA, temperature=0)
         gerenciador.save_data(disciplinas)
-        return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
+        return gerenciador.get_data("disciplina", query)
     
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

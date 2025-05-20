@@ -2,13 +2,15 @@ import sqlite3
 import json
 import os
 from .LLMGenerateSQL import LLMGenerateSQL
+from .SQLGeneratorVanna import SQLGeneratorVanna
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class GerenciadorSQLAutomatizado:
-    def __init__ (self, table_name, db_name):
+    def __init__ (self, table_name, db_name, prompt, temperature: float = 0):
         self.table_name = table_name
+        self.temperature = temperature
         self.db_name = db_name
         self.path = os.path.join(BASE_DIR, "", self.table_name, "tabela.json")
         print(f"Path do arquivo JSON: {self.path}")   
@@ -16,7 +18,8 @@ class GerenciadorSQLAutomatizado:
         if not os.path.exists(self.path):
             raise ValueError("Arquivo JSON não encontrado. Verifique o caminho do arquivo.")
         
-        self.tabela = self.__create_table()
+        self.table_info = self.__create_table()
+        self.prompt = prompt
 
     def __create_table(self):
         """
@@ -51,31 +54,6 @@ class GerenciadorSQLAutomatizado:
         sql = f"{self.table_name}(\n" + "\n".join(linhas) + "\n);"
         return sql
        
-
-    def _extract_campus_types_description(self):
-        """
-            Extrai os nomes dos campos, os tipos e a descrição no arquivo JSON.
-            ex: nome_do_curso é mapeado para descricao
-
-            Returns:
-                list: Uma lista de campos mapeados da tabela.
-        """
-
-        with open(self.path, 'r') as file:
-            try:
-                data = json.load(file)
-            except json.JSONDecodeError as e:
-                raise ValueError(f"Erro ao carregar o arquivo JSON: {e}")
-        
-        # Verifica se a tabela existe no JSON
-        if self.table_name not in data:
-            raise ValueError(f"A tabela '{self.table_name}' não foi encontrada no arquivo JSON.")
-        
-        campus_tabela = []
-        for column, column_type in data[self.table_name].items():
-            campus_tabela.append(f"{column} {column_type['type']} -- {column_type['description']}")
-
-        return campus_tabela     
 
     def _extract_campus(self):
         """
@@ -115,7 +93,7 @@ class GerenciadorSQLAutomatizado:
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
 
-        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.tabela}")
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.table_info}")
         cursor.execute(f"DELETE FROM {self.table_name}")
 
         dados = self._extract_campus()
@@ -158,14 +136,44 @@ class GerenciadorSQLAutomatizado:
         except sqlite3.Error as e:
             conn.close()
             return [{"error": str(e)}]
+        
+
+    def build_prompt(self, question: str):
+        """
+        Constrói o prompt no formato esperado pelo modelo Ollama (estilo chat).
+        :param question: Pergunta a ser feita.
+        :return: Lista de mensagens (chat) com system e user.
+        """
+        if self.prompt:
+            builded_prompt = self.prompt.format(
+                dialect="sqlite",
+                table_info=self.table_info,
+                input=question
+            )
+
+            return builded_prompt
+        else:
+            raise ValueError("Prompt não definido. Defina um prompt antes de chamar esta função.")
     
-    
-    def get_data(self, question: str, prompt, temperature: float = 0):
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
+    def get_data(self, model_name: str, question: str):
+        #prompt = self.build_prompt(question)
+        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
-        result = sqlGenerateLLM.write_query(question=question, tabela=self.tabela)
-        print(f"Query gerada: {result['query']}")
-        result = self.__execute_sql(result['query'])
-        print("RESULTADO DO SQL: ", result)
+        
+        sqlgen = SQLGeneratorVanna(model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature })
+
+        sql = sqlgen.generate_sql(question=question)
+
+        result = self.__execute_sql(sql)
+
+        print(f"Query gerada: {sql}")
+
         return result
+
+        #result = sqlGenerateLLM.write_query(question=question, tabela=self.table_info)
+        # print(f"Query gerada: {result["query"]}")
+        # result = self.__execute_sql(result["query"])
+        # # print("RESULTADO DO SQL: ", sql)
+        # return result
+        #return result
     

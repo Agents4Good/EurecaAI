@@ -22,16 +22,16 @@ tools = [
 agent = AgenteCursos(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
-question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)
-question = "Quantos cursos diurnos tem no campus de patos?"
+#question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)
+#question = "Quantos cursos diurnos tem no campus de patos?"
 #question = "Quantos cursos de turno integral tem no campus de patos?"
 #question = "Quantos cursos noturnos tem no campus de patos?"
 
-question = "O curso de Engenharia Elétrica é oferecido em qual campus?"
+#question = "O curso de Engenharia Elétrica é oferecido em qual campus?"
 
 #question = "Quais os cursos de graduação noturnos do campus I?"
 #question = "Traga todos os cursos do setor de computação"
-question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciatura do campus da ufcg?"
+#question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciatura da ufcg?"
 #question = "Qual é o grau do curso de Matemática?"
 #question = "Em que campus é oferecido o curso de História?"
 #question = "Qual é o turno do curso de Geografia?"
@@ -48,7 +48,7 @@ question = "Quais são os códigos dos cursos e os nomes dos cursos de licenciat
 #question = "frances ingles sao ofericidos em que turno?"
 #question = "computação código?"
 #question = "qual o curso que mexe com compiuter?"
-#question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?"
+#question = "De todos os cursos de graduação do campus de sumé quais deles são relacionados a área de idiomas?"
 
-question = "Traga todos os nomes e códigos dos cursos de graduação do campus de Campina Grande"
+#question = "Traga todos os nomes e códigos dos cursos de graduação do campus de Campina Grande"
 agent.run(question=question)

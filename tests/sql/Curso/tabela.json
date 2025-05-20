@@ -22,7 +22,7 @@
         },
         "nome_do_campus": {
             "type": "TEXT",
-            "description": "Nome do campus",
+            "description": "Nome do campus pode ser 'Campina Grande', 'Cajazeiras', 'Sousa', 'Patos', 'Cuité', 'Pombal', 'Sumé'",
             "mapper": "nome_do_campus"
         },
         "turno": {

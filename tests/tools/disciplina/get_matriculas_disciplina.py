@@ -56,16 +56,16 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
 
     if response.status_code == 200:
         estudantes_na_disciplina = json.loads(response.text)
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
-        gerenciador.save_data(estudantes_na_disciplina)
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite", prompt=PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
+        gerenciador.save_data('estudante_na_disciplina', estudantes_na_disciplina)
 
         try:
-            dados = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
+            dados = gerenciador.get_data(query, )
             if len(dados) == 0:
                 return ["Não foi encontrado nada"]
         except TypeError as e:
             return [{"Error": "Ocorreu um erro para gerar a consulta SQL."}]
-        print(dados)
+       
         return dados
         # gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
         # gerenciador.save_data(estudantes_na_disciplina)

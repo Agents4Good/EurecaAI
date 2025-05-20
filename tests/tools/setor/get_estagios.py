@@ -49,15 +49,15 @@ def get_estagios(query: Any, ano: Any = "",  nome_do_campus: Any = "", nome_do_c
     estagios = json.loads(response.text)
     estagios_filtrados = filtragem(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, nome_do_centro_unidade=nome_do_centro_unidade, estagios=estagios)
     
-    print("Okay")
+    
     if len(estagios_filtrados) == 0:
         return "Erro: Informe para passar os dados necessarios nessa ferramenta"
-    print("Okay2")
+    
 
     estagios_filtrados_normalizados = normalize_data_estagio(estagios_filtrados)
-    gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite")
+    gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite", prompt= PROMPT_SQL_ESTAGIO, temperature=0)
     gerenciador.save_data(estagios_filtrados_normalizados)
-    return gerenciador.get_data(query, PROMPT_SQL_ESTAGIO, temperature=0)
+    return gerenciador.get_data('estagio', query)
 
 
 #FUNÇÂO AUXILIAR
