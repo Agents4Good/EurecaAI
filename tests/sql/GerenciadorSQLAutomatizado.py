@@ -204,7 +204,7 @@ class GerenciadorSQLAutomatizado:
             question = self.__clean_question(question)
         prompt = self.__build_prompt(question)
 
-        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
+        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=self.temperature)
         #sqlgen = LLMGenerateSQL(LLM=ChatOllama, model="llama3.1", prompt=prompt, temperature=self.temperature)
         
         sqlgen = SQLGeneratorVanna(model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 4000, "language": "portuguese"})
@@ -215,11 +215,15 @@ class GerenciadorSQLAutomatizado:
         #     sql ="SELECT naturalidade, COUNT(*) as quantidade FROM Estudante_Info_Gerais GROUP BY naturalidade;"
         # )
 
+        #sql = sqlgen.write_query(question=question)["query"]
         sql = sqlgen.generate_sql(question=question)
+        
+        print("=============================================")
+        print(f"Query gerada: {sql}")
+        print("=============================================")
+
 
         result = self.__execute_sql(sql)
-
-        print(f"Query gerada: {sql}")
 
         return result
 
