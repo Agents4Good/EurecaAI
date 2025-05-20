@@ -1,5 +1,5 @@
 {
-    "Estudante_na_Disciplina": {
+    "Estudante_Disciplinas_Gerais": {
         "matricula_do_estudante": {
             "type": "TEXT",
             "description": "Matrícula do estudante",
@@ -19,6 +19,11 @@
             "type": "TEXT",
             "description": "ENUM pode ser 'Sim' ou 'Não'. Indica se o estudante dispensou a disciplina",
             "mapper": "dispensas"
+        },
+        "nome_da_disciplina": {
+            "type": "TEXT",
+            "description": "Nome da disciplina",
+            "mapper": "nome_da_disciplina"
         },
         "turma": {
             "type": "INTEGER",

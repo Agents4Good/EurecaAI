@@ -6,6 +6,7 @@ from .utils import get_disciplina_grade_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
+from ...sql.Estudante_Disciplinas_Gerais.prompt import PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ..utils.validacoes import validar_turma
 from langchain_core.tools import tool
@@ -21,10 +22,10 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     - quantidade de estudantes em uma disciplina de um curso.
     
     Args:
-        query (Any): Pergunta do usuário.
-        nome_da_disciplina (Any): Nome da disciplina.
-        nome_do_curso (Any): Nome do curso. Defaults to "".
+        query (Any): Pergunta completa do usuário.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        nome_do_curso (Any): Nome do curso. Defaults to "".
+        nome_da_disciplina (Any): Nome da disciplina.
         periodo (Any, optional): Período do curso. Defaults to "".
 
     Returns:
@@ -35,20 +36,15 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
-    turma=str(turma)
     periodo=str(periodo)
     curriculo=""
-    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
-
-    validou_turma, mensagem = validar_turma(turma_usada=turma)
-    if not validou_turma: return mensagem
+    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo={periodo} e curriculo={curriculo}")
     
     periodo = periodo if periodo != "" else get_periodo_mais_recente()
 
     params = {
         "periodo-de": periodo,
-        "periodo-ate": periodo,
-        "turma": turma
+        "periodo-ate": periodo
     }
 
     if nome_do_curso:
@@ -63,12 +59,20 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:
+        prompt = ""
         estudantes_na_disciplina = json.loads(response.text)
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
-        gerenciador.save_data(estudantes_na_disciplina)
+
+        if nome_da_disciplina != "":
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
+            gerenciador.save_data(estudantes_na_disciplina)
+            prompt = PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
+        else:
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_Disciplinas_Gerais", db_name="db_estudante_disciplinas_gerais.sqlite")
+            gerenciador.save_data(estudantes_na_disciplina)
+            prompt = PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
 
         try:
-            dados = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
+            dados = gerenciador.get_data(query, prompt, temperature=0)
             if len(dados) == 0:
                 return ["Não foi encontrado nada"]
         except TypeError as e:
