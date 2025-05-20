@@ -45,10 +45,11 @@ class SQLGeneratorVanna:
 
         # self.vanna.submit_prompt(prompt)
         
-        
+
         resposta = self.vanna.generate_sql(question=question, visualize=visualize, print_results=print_results, allow_llm_to_see_data=allow_llm_to_see_data)
+
         return resposta
-    
+        
     def _train_ddl(self):
         """
         Treina o modelo com o DDL do banco de dados.

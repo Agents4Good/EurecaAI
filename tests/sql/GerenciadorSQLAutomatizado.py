@@ -1,11 +1,16 @@
 import sqlite3
 import json
 import os
+from typing import TypedDict
 from .LLMGenerateSQL import LLMGenerateSQL
 from .SQLGeneratorVanna import SQLGeneratorVanna
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+class CleanQuestion(TypedDict):
+    question: str
 
 class GerenciadorSQLAutomatizado:
     def __init__ (self, table_name, db_name, prompt, temperature: float = 0):
@@ -137,30 +142,78 @@ class GerenciadorSQLAutomatizado:
             conn.close()
             return [{"error": str(e)}]
         
-
-    def build_prompt(self, question: str):
-        """
-        Constrói o prompt no formato esperado pelo modelo Ollama (estilo chat).
-        :param question: Pergunta a ser feita.
-        :return: Lista de mensagens (chat) com system e user.
-        """
-        if self.prompt:
-            builded_prompt = self.prompt.format(
-                dialect="sqlite",
-                table_info=self.table_info,
-                input=question
-            )
-
-            return builded_prompt
-        else:
-            raise ValueError("Prompt não definido. Defina um prompt antes de chamar esta função.")
     
-    def get_data(self, model_name: str, question: str):
-        #prompt = self.build_prompt(question)
-        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
-        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
+    def __clean_question(self, question: str):
+        """
+            Limpa a pergunta removendo os resíduos.
+
+            Args:
+                question (str): A pergunta a ser limpa.
+            Returns:
+                str: A pergunta limpa.
+        """
+
+        model = ChatOllama(model="qwen3:8b", temperature=0.0)
+        #model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
+        prompt = f"""
+        Você é um assistente de IA especializado em limpar perguntas de usuários.
+        Sua tarefa é **reformular** a pergunta original, removendo apenas os trechos que forem desconexos, redundantes ou que não agreguem sentido (ex: "no ano", "do campus", "do curso") **somente se estiverem mal encaixados ou sem sentido na frase**.
+
+        👉 Regras:
+        1. Preserve trechos que façam sentido dentro do contexto da pergunta.
+        2. Remova apenas termos ou fragmentos que quebram o significado ou deixem a pergunta confusa.
+        3. Não reescreva com outras palavras — mantenha a estrutura original, apenas removendo partes inúteis.
+        4. Não adicione comentários ou explicações.
+        5. Responda com **apenas a pergunta limpa**.
+
+        **Pergunta original:**
+        {question}
+        """
+
+        structured_output = model.with_structured_output(CleanQuestion)
+        response = structured_output.invoke(prompt)
+
+        if response['question']:
+            print("Pergunta limpa: ", response['question'])
+            return response['question']
+        else:
+            raise ValueError("Erro ao limpar a pergunta.")
+      
+       
+    def __build_prompt(self, question: str):
+        """
+            Constrói o prompt para o modelo.
+
+            Args:
+                question (str): A pergunta a ser feita.
+            Returns:
+                str: O prompt formatado.
+        """
         
-        sqlgen = SQLGeneratorVanna(model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature })
+        prompt = self.prompt.format(
+            dialect="sqlite",
+            table_info=self.table_info,
+            input=question
+        )
+
+        return prompt
+    
+    
+    def get_data(self, model_name:str, question: str, clean_question: bool = False):
+        if clean_question:
+            question = self.__clean_question(question)
+        prompt = self.__build_prompt(question)
+
+        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
+        #sqlgen = LLMGenerateSQL(LLM=ChatOllama, model="llama3.1", prompt=prompt, temperature=self.temperature)
+        
+        sqlgen = SQLGeneratorVanna(model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 4000, "language": "portuguese"})
+
+        
+        # sqlgen.train(
+        #     question="De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país",
+        #     sql ="SELECT naturalidade, COUNT(*) as quantidade FROM Estudante_Info_Gerais GROUP BY naturalidade;"
+        # )
 
         sql = sqlgen.generate_sql(question=question)
 

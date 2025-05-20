@@ -58,7 +58,7 @@
                 utterance.rate = 1;
                 
                 const voices = synth.getVoices();
-                utterance.voice = voices[1]; // Escolher voz
+                utterance.voice = voices.find(voice => voice.lang === 'pt-BR') || voices[0];
 
                 synth.speak(utterance);
                 isSpeaking = true;
@@ -219,7 +219,7 @@
                 $.ajax({
                     type: 'POST',
                     url: '/delete_chat',
-                    timeout: 120000,
+                    timeout: 400000,
                     success: function (response) {
                         apagar_chat_pelo_id(id);
                     }
@@ -249,10 +249,23 @@
             }
         }
 
+        function enable_input() {
+            const textarea = document.getElementById('user_input');
+            textarea.disabled = false;
+            document.querySelector('.record').disabled = true;
+        }
+
+        function disable_input() {
+            const textarea = document.getElementById('user_input');
+            textarea.disabled = true;
+            document.querySelector('.record').disabled = true;
+        }
 
         // Função que envia a mensagem e manipula a resposta do bot
         function sendMessage(message) {
             addBotMessage();
+            disable_input();
+
             $.ajax({
                 type: 'POST',
                 url: '/chat',
@@ -290,13 +303,16 @@
                     }
 
                     scrollToBottom();
+                    enable_input();
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     if (textStatus === 'timeout') {
                         $('.bot__name__response').last().text('Desculpe, o tempo de espera foi excedido.');
                     } else {
                         $('.bot__name__response').last().text('Desculpe, algo deu errado.');
-                    } 
+                    }
+
+                    enable_input();
                 }
             });
         }

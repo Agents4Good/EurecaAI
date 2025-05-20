@@ -16,15 +16,20 @@ tools = [
     get_todos_setores
 ]
 
-agent = AgenteSetores(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
+agent = AgenteSetores(LLM= ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL1)
+#agent = AgenteSetores(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
 
-question = "Quais são os professores de ciencia da computacao do campus de campina grande?"
-question = "Quais os códigos de todos os setores?"
-question = "Traga os professores dos estágios do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS do campus de campina grande no ano de 2024"
-question = "Traga o nome dos professores dos estágios do curso de ciência da computação campus Campina Grande no ano de 2024"
-question = "O professor Dalton foi orientador de quais estágios no ano 2024, ele é do curso de ciência da computação do campus Campina Grande."
-question = "Traga o nome dos professores que foram orientadores de estágio do centro de engenharia elétrica e informática no ano de 2024 do campus Campina Grande"
-question = "Traga informações sobre o valor da bolsa dos estágios do campus Campina Grande no ano 2024."
-question = "Quantos estagiarios tiveram no curso de ciencia da computacao do campus de campina grande em 2024?"
-question = "Qual é o valor médio das bolsas dos estagiarios do curso de engenharia eletrica do campus de campina grande?"
+question = "Quais são os professores de ciencia da computacao do campus de campina grande?"# DEVIDO TER PASADO O CURSO ELE PEGOU UNID. ACAD. DE SISTEMAS E COMPUTAÇÃO POR CONTA DO RAG!
+
+#question = "Quais os códigos de todos os setores?" #RESPOSTA MUITO GRANDE, TEM QUE ESPECFICAR O CAMPOUS
+#question = "Traga os professores dos estágios do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS do campus de campina grande no ano de 2024" #NOT OK
+#question = "Traga o nome dos professores que foram orientadores de estágio do centro de engenharia elétrica e informática no ano de 2024 do campus Campina Grande" #CHAMOU A TOOL CERTA DE PRIMEIRA, MAS CHAMOU OUTRA TOOL EM SEGUIDA
+#question = "Traga informações sobre o valor da bolsa dos estágios do campus Campina Grande no ano 2024." #OK
+#question = "Quantos estagiarios tiveram no curso de engenharia civil do campus de campina grande em 2024?" #OK
+#question = "Qual é o valor médio das bolsas dos estagiarios do curso de engenharia eletrica do campus de campina grande em 2024?" #OK
+#question = "Some as bolsas de todos os estagiarios do campus de campina grande em 2024?" #OK
+#question = "Some as bolsas de todos os estagiarios da UFCG em 2020?" # PERGUNTA MUITO DEMORADA DEVIDO AOS DADOS
+
+question = "Some as bolsas de todos os estagiarios da UFCG no ano 2020 do campus Campina Grande do curso de engenharia civil?" #OK
+
 agent.run(question=question)

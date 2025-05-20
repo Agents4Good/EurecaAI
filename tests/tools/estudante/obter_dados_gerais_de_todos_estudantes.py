@@ -1,10 +1,11 @@
+import inspect
 import json
 from typing import Any
 import requests
 from ..campus.utils import get_campus_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-
+from ..utils.remove_term import limpar_query
 
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
@@ -27,7 +28,15 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
 
    print(f"Tool obter_dados_de_todos_estudantes chamada com nome_do_curso={nome_do_curso} e nome_do_campus={nome_do_campus}.")    
    params = {"situacao-do-estudante": "ATIVOS" }
-   query = str(query)
+
+   
+   frame = inspect.currentframe()
+   args, _, _, values = inspect.getargvalues(frame)
+   parametros = {arg: values[arg] for arg in args if arg != 'query' and arg != 'self'}
+   termos_para_remover = [str(v) for v in parametros.values() if v]
+   query = limpar_query(str(query), termos_para_remover)
+   print(f"Query com os termos removidos: {query}")
+
    nome_do_campus = str(nome_do_campus)
    nome_do_curso = str(nome_do_curso)
       
@@ -49,11 +58,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       estudantes = normalize_data_estudante(json.loads(response.text))
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", "db_estudantes.sqlite", PROMPT_SQL_ESTUDANTES_INFO_GERAIS, temperature=0)
       gerenciador.save_data(estudantes)
-      response = gerenciador.get_data('estudante_info_gerais', query)
+      response = gerenciador.get_data('estudante_info_gerais', query, True)
       return  f"RESULTADO DO SQL: {response}"
      
    else:
       return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos estudantes da UFCG."}]
-
-
-

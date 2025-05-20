@@ -2,64 +2,53 @@
     "Estudante_Info_Gerais": {
         "matricula_do_estudante": {
             "type": "TEXT",
-            "description": "Matrícula do estudante",
+            "description": "Código da matrícula do estudante;",
             "mapper": "matricula_do_estudante"
         },
         "nome_do_estudante": {
             "type": "TEXT",
-            "description": "Nome do estudante",
+            "description": "Nome do estudante;",
             "mapper": "nome"
         },
         "sexo": {
             "type": "TEXT",
-            "description": "Sexo do estudante FEMININO ou MASCULINO",
+            "description": "Sexo do estudante ENUM 'FEMININO' ou 'MASCULINO';",
             "mapper": "sexo"
         },
         "idade": {
             "type": "INTEGER",
-            "description": "Idade do estudante",
+            "description": "Idade do estudante;",
             "mapper": "idade"
         },
         "situacao_do_estudante": {
             "type": "TEXT",
-            "description": "Situação do estudante no curso ENUM SUSPENSO, REINGRESSOS, REATIVADOS, DESISTENTES, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS E ATIVOS.",
+            "description": "ENUM da situação do estudante no curso. Os ENUM pode ser 'SUSPENSO', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTES', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS' E 'ATIVOS'.",
             "mapper": "situacao"
         },
         "naturalidade": {
             "type": "TEXT",
-            "description": "Naturalidade do estudante é a sigla do estado ex: PB, MG etc",
+            "description": "Naturalidade do estudante é a sigla do estado onde ele nasceu como PB, MG entre outros;",
             "mapper": "naturalidade"
         },
         "cor": {
             "type": "TEXT",
-            "description": "Cor do estudante Parda, Branca, Preta, Amarela",
+            "description": "ENUM da Cor do estudante, pode ser 'Parda', 'Branca', 'Preta', 'Amarela';",
             "mapper": "cor"
         },
         "nacionalidade": {
             "type": "TEXT",
-            "description": "Nacionalidade do estudante pode ser Brasileira ou Estrangeira",
+            "description": "Nacionalidade do estudante, o ENUM pode ser 'Brasileira' ou 'Estrangeira';",
             "mapper": "nacionalidade"
         },
         "local_de_nascimento": {
             "type": "TEXT",
-            "description": "Local de nascimento do estudante em letras maiúsculas ex: CAMPINA GRANDE",
-            "mapper": "local_de_nascimento"            
-        },
-        "email": {
-            "type": "TEXT",
-            "description": "Email do estudante",
-            "mapper": "email"
-        },
-        "telefone": {
-            "type": "TEXT",
-            "description": "Telefone do estudante",
-            "mapper": "telefone"
+            "description": "Cidade de local de nascimento do estudante",
+            "mapper": "local_de_nascimento"
         },
         "cra": {
             "type": "REAL",
-            "description": "Coeficiente de rendimento acadêmico do estudante",
+            "description": "Coeficiente de rendimento acadêmico do estudante;",
             "mapper": "cra"
         }
-
     }
 }
