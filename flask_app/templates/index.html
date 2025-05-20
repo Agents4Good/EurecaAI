@@ -280,6 +280,7 @@
         function sendMessage(message) {
             addBotMessage();
             disable_input();
+            const $lastBotResponse = $('.bot__name__response').last();
 
             $.ajax({
                 type: 'POST',
@@ -289,7 +290,6 @@
                 success: function (response) {
                     const markdownResponse = response.response;
                     const htmlResponse = marked.parse(markdownResponse);
-                    const $lastBotResponse = $('.bot__name__response').last();
                     $('.bot').last().find('.audio-button').show();
                     $lastBotResponse.html(htmlResponse);
                     $lastBotResponse.closest('.bot').removeClass('skeleton');
@@ -329,7 +329,7 @@
                     } else {
                         $('.bot__name__response').last().text('Desculpe, algo deu errado.');
                     }
-
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     enable_input();
                 }
             });

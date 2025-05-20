@@ -2,6 +2,7 @@
     margin: 0;
     font-family: 'Be Vietnam Pro', Verdana, Tahoma;
     font-weight: 300;
+    cursor: default;
 }
 
 @font-face {
@@ -96,6 +97,7 @@ header h1 {
     color: white;
     font-size: 1rem;
     padding-top: 8px;
+    cursor: pointer;
 }
 
 body {
@@ -148,6 +150,7 @@ section {
     padding-top: 20px;
     resize: none;
     background-color: transparent;
+    cursor: text;
 }
 
 .query:focus {
@@ -200,6 +203,9 @@ section {
 
 .bot {
     width: 80%;
+    padding-left: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
 }
 
 @media (max-width: 800px) {
@@ -300,6 +306,7 @@ section {
     border-radius: 25px;
     margin-top: 2px;
     margin-right: -2px;
+    cursor: pointer;
 }
 
 .record img {
@@ -309,6 +316,7 @@ section {
     border-radius: 25px;
     margin-right: -2px;
     padding: 2px;
+    cursor: pointer;
 }
 
 .send img:hover {
@@ -342,6 +350,7 @@ section {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    cursor: pointer;
 }
 
 main {
@@ -414,6 +423,7 @@ aside {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 
 .history_item p {
@@ -581,6 +591,10 @@ aside {
     z-index: 5;
 }
 
+.fab * {
+    cursor: pointer;
+}
+
 .fab-menu {
     position: absolute;
     top: -60px; /* sobe acima do botão */
@@ -625,7 +639,7 @@ aside {
         #f0f0f0 75%
     );
     background-size: 200% 100%;
-    animation: skeleton-loading 5s infinite;
+    animation: skeleton-loading 3s infinite;
     border-radius: 4px;
 }
 
