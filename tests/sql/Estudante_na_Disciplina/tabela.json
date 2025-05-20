@@ -19,6 +19,16 @@
             "type": "TEXT",
             "description": "ENUM pode ser 'Sim' ou 'Não'. Indica se o estudante dispensou a disciplina",
             "mapper": "dispensas"
+        },
+        "nome_da_disciplina": {
+            "type": "TEXT",
+            "description": "Nome da disciplina",
+            "mapper": "nome_da_disciplina"
+        },
+        "turma": {
+            "type": "INTEGER",
+            "description": "Número da turma",
+            "mapper": "turma"
         }
     }
 }

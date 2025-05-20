@@ -3,13 +3,14 @@ import requests
 from typing import Any
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
+from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ..utils.validacoes import validar_turma
 from langchain_core.tools import tool
 
-def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "", periodo: Any = "") -> list:
+def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo: Any = "") -> list:
     """_summary_
     Retorna informações das matrículos dos alunos em uma disciplina.
     
@@ -22,9 +23,8 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
     Args:
         query (Any): Pergunta do usuário.
         nome_da_disciplina (Any): Nome da disciplina.
-        nome_do_curso (Any): Nome do curso.
+        nome_do_curso (Any): Nome do curso. Defaults to "".
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
-        turma (Any, optional): Número da turma. Defaults to "".
         periodo (Any, optional): Período do curso. Defaults to "".
 
     Returns:
@@ -44,14 +44,22 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
     if not validou_turma: return mensagem
     
     periodo = periodo if periodo != "" else get_periodo_mais_recente()
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
-    
+
     params = {
         "periodo-de": periodo,
         "periodo-ate": periodo,
-        "disciplina": dados_disciplina["disciplina"]["codigo"],
         "turma": turma
     }
+
+    if nome_do_curso:
+        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        params["curso"] = dados_curso["curso"]["codigo"]
+
+    if nome_da_disciplina:
+        dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+        params["disciplina"] = dados_disciplina["disciplina"]["codigo"]
+
+    print(params)
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:

@@ -2,6 +2,7 @@
     margin: 0;
     font-family: 'Be Vietnam Pro', Verdana, Tahoma;
     font-weight: 300;
+    cursor: default;
 }
 
 @font-face {
@@ -20,6 +21,7 @@ body{
         linear-gradient(to right, rgb(231, 231, 231) 1px, transparent 1px),
         linear-gradient(to bottom, rgb(231, 231, 231) 1px, transparent 1px);
     background-color: rgb(251, 251, 255);
+    overflow: hidden;
 }
 
 header {
@@ -50,6 +52,10 @@ header {
 
     header img {
         display: none;
+    }
+
+    header {
+        height: 30px;
     }
 }
 
@@ -91,18 +97,19 @@ header h1 {
     color: white;
     font-size: 1rem;
     padding-top: 8px;
+    cursor: pointer;
 }
 
 body {
     width: 100%;
-    height: 100vh;
+    height: 100dvh;
     position: relative;
 }
 
 section {
     display: grid;
     grid-template-columns: 1fr 2.8fr 0.2fr;
-    grid-template-rows: calc(100vh - 166px) 40px;
+    grid-template-rows: calc(100dvh - 166px) 40px;
     grid-template-areas: ". chat ." ". query .";
 }
 
@@ -116,7 +123,7 @@ section {
 
 .query__container {
     grid-area: query;
-    width: calc(100%-8px);
+    width: calc(100% - 8px);
     min-height: 60px;
     max-height: 230px;
     display: flex;
@@ -143,6 +150,7 @@ section {
     padding-top: 20px;
     resize: none;
     background-color: transparent;
+    cursor: text;
 }
 
 .query:focus {
@@ -195,6 +203,9 @@ section {
 
 .bot {
     width: 80%;
+    padding-left: 10px;
+    padding-top: 10px;
+    box-sizing: border-box;
 }
 
 @media (max-width: 800px) {
@@ -295,6 +306,7 @@ section {
     border-radius: 25px;
     margin-top: 2px;
     margin-right: -2px;
+    cursor: pointer;
 }
 
 .record img {
@@ -304,6 +316,7 @@ section {
     border-radius: 25px;
     margin-right: -2px;
     padding: 2px;
+    cursor: pointer;
 }
 
 .send img:hover {
@@ -329,7 +342,7 @@ section {
     justify-content: center;
     align-items: center;
     border: 0px;
-    background-color: white;
+    background-color: transparent;
     cursor: pointer;
 }
 
@@ -337,6 +350,7 @@ section {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    cursor: pointer;
 }
 
 main {
@@ -345,7 +359,7 @@ main {
 
 aside {
     position: absolute;
-    height: calc(100% + 20px);
+    height: calc(100% + 70px);
     width: 300px;
     background-color: transparent;
     left: 10px;
@@ -409,6 +423,7 @@ aside {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 
 .history_item p {
@@ -473,7 +488,7 @@ aside {
     section {
         display: grid;
         grid-template-columns: 1fr;
-        grid-template-rows: calc(100vh - 166px) 40px;
+        grid-template-rows: calc(100dvh - 154px) 40px; /* Altera a margem do input */
         grid-template-areas: "chat" "query";
     }
 }
@@ -487,7 +502,6 @@ aside {
 
     .query__container {
         width: 90%;
-        margin: auto;
     }
 
     header img {
@@ -577,6 +591,10 @@ aside {
     z-index: 5;
 }
 
+.fab * {
+    cursor: pointer;
+}
+
 .fab-menu {
     position: absolute;
     top: -60px; /* sobe acima do botão */
@@ -607,4 +625,30 @@ aside {
 
 .fab-menu a:last-child {
     border-bottom: none;
+}
+
+
+
+
+/* Base skeleton style */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        #f0f0f0 25%,
+        #e0e0e0 50%,
+        #f0f0f0 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 3s infinite;
+    border-radius: 4px;
+}
+
+/* Animation keyframes */
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
