@@ -224,7 +224,7 @@ section {
     width: 50px;
     height: 50px;
     grid-area: bot-img;
-    border-radius: 30px;
+    border-radius: 4px;
 }
 
 .bot__response {
@@ -359,7 +359,7 @@ main {
 
 aside {
     position: absolute;
-    height: calc(100% + 70px);
+    height: calc(100% + 20px);
     width: 300px;
     background-color: transparent;
     left: 10px;
@@ -428,6 +428,10 @@ aside {
 
 .history_item p {
     font-weight: bold;
+}
+
+.history_item * {
+    cursor: pointer;
 }
 
 .history_item i {
@@ -627,6 +631,11 @@ aside {
     border-bottom: none;
 }
 
+@media (max-width: 1000px) {
+    aside {
+        height: calc(100% + 70px);
+    }
+}
 
 
 
