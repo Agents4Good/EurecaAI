@@ -64,14 +64,32 @@ def format_md_grafico_barra(resultado_listas, titulo="Gráfico de Barras Gerado"
         "options": {
             "title": {
                 "display": "true",
-                "text": titulo
+                "text": titulo,
+                "fontSize": 8  # Tamanho da fonte do título
+            },
+             "legend": {
+                "labels": {
+                    "fontSize": 7  # Tamanho da fonte da legenda
+                }
+            },
+            "scales": {
+                "xAxes": [{
+                    "ticks": {
+                        "fontSize": 7  # Tamanho da fonte no eixo X
+                    }
+                }],
+                "yAxes": [{
+                    "ticks": {
+                        "fontSize": 7  # Tamanho da fonte no eixo Y
+                    }
+                }]
             }
         }
     }
 
     base_url = "https://quickchart.io/chart"
     chart_param = urllib.parse.quote(str(chart_config).replace("'", '"'))
-    chart_url = f"{base_url}?c={chart_param}"
+    chart_url = f"{base_url}?c={chart_param}&width=400&height=200"
 
     return f"Link do gráfico gerado a seguir (devolva o link neste exato formato): ![{titulo}]({chart_url})"
 
