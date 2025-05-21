@@ -28,13 +28,13 @@ CURSO_TOOLS = [
 ]
 
 DISCIPLINA_TOOLS = [
-    #get_disciplina_ofertadas_periodo,
+    get_disciplina_ofertadas_periodo,
     get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas,
     get_plano_de_curso_disciplina,
     get_pre_requisitos_disciplina,
-    get_disciplinas,
+    #get_disciplinas,
     #get_turmas_disciplina,
 ]
 

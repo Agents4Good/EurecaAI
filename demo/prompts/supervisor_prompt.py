@@ -61,6 +61,7 @@ Capacidades dos Agentes:
   - Especializado em informações gerais sobre os estudantes da UFCG.
   - Capacidades:
     * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade e local de nascimento.
+    * Também é capaz de gerar gráficos com base nas informações recuperadas (em formato de link).
 
 **Importante**
 - Quando a tarefa estiver completa, responda com: `{{"next": "FINISH"}}`

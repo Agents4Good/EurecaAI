@@ -35,7 +35,7 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
     nome_do_curso=str(nome_do_curso)    
     nome_do_campus=str(nome_do_campus)
     periodo=str(periodo)
-    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e periodo={periodo}.")
+    print(f"Tool `get_disciplina_ofertadas_periodo` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e periodo={periodo}.")
 
     periodo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="", periodo=periodo)
     if mensagem != "": return mensagem
@@ -47,7 +47,7 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
-    response = requests.get(f'{URL_BASE}/turmas-por-curso', params=params)
+    response = requests.get(f'{URL_BASE}/turmas-por-cursos', params=params)
     
     if response.status_code == 200:
         print("Turmas retornadas com sucesso")
@@ -71,4 +71,5 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        print(response.json())
+        return [{"error_status": response.status_code, "msg": response.json()}]
