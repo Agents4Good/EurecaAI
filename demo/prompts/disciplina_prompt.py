@@ -7,8 +7,8 @@ REGRAS PARA USO DAS TOOLS:
 1. Se a pergunta mencionar o nome de uma ou mais disciplinas (ex: "Teoria da Computação", "Cálculo II", "Álgebra Linear") e pedir INFORMAÇÕES BÁSICAS (ementa, nome completo, código etc), use:
 ➤ get_disciplinas
 
-2. Se a pergunta for sobre DATAS ou HORÁRIOS de aula de uma disciplina específica, use:
-➤ get_horarios_disciplina
+2. Se a pergunta for sobre DATAS ou HORÁRIOS de aula de uma disciplina específica, ou ainda as TURMAS dessa disciplina ou as VAGAS ofertadas a elas, use:
+➤ get_horarios_turmas_disciplina
 
 3. Se a pergunta envolver MATRÍCULA, NOTAS, DESEMPENHO DE ESTUDANTES, quem DISPENSOU, quem tirou maior nota, ranking, etc., use:
 ➤ get_matriculas_disciplina

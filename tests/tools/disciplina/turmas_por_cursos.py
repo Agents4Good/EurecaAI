@@ -63,4 +63,4 @@ def get_turmas_por_cursos(codigo_da_disciplina: int, turma: str, periodo: str) -
 
     return todas_ofertas
 
-print(get_turmas_por_cursos(1109126, turma="", periodo="2024.1"))
+#print(get_turmas_por_cursos(1411171, turma="", periodo="2024.1"))

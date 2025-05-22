@@ -3,10 +3,9 @@ import requests
 from typing import Any
 from .utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-from langchain.tools import tool
 
-@tool
-def get_todos_curriculos_do_curso(nome_do_curso: Any, nome_do_campus: Any, ) -> list:
+
+def get_todos_curriculos_do_curso(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     _summary_
     Buscar pelos currículos de um único curso.
@@ -31,7 +30,7 @@ def get_todos_curriculos_do_curso(nome_do_curso: Any, nome_do_campus: Any, ) -> 
     response = requests.get(f'{URL_BASE}/curriculos?curso={dados_curso["curso"]["codigo"]}')
 
     if response.status_code == 200:
-        return json.loads(response.text)[::-1]
+        return json.loads(response.text)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
 

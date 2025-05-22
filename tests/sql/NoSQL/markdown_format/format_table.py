@@ -151,4 +151,4 @@ def carregar_dados(resultado_listas: list):
     
     return labels, valores
 
-print(format_md_grafico_pizza([(None, 16), ('AL', 2), ('BA', 2), ('CE', 5), ('DF', 2), ('GO', 1), ('PB', 344), ('PE', 26), ('PI', 7), ('RJ', 8), ('RN', 14), ('SP', 15)]))
+#print(format_md_grafico_pizza([(None, 16), ('AL', 2), ('BA', 2), ('CE', 5), ('DF', 2), ('GO', 1), ('PB', 344), ('PE', 26), ('PI', 7), ('RJ', 8), ('RN', 14), ('SP', 15)]))

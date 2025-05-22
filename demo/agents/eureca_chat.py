@@ -29,6 +29,7 @@ from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
 
 from tests.tools.setor.get_estagios import get_estagios
 
+# TOOLS USADAS
 CAMPUS_TOOLS = [
     get_campi,
     get_calendarios,
@@ -39,7 +40,6 @@ SETOR_TOOLS = [
     get_estagios
 ]
 
-# TOOLS USADAS
 CURSO_TOOLS = [
     obter_dados_de_curso_especifico, 
     obter_dados_de_todos_os_cursos,
@@ -48,7 +48,7 @@ CURSO_TOOLS = [
 
 DISCIPLINA_TOOLS = [
     get_disciplina_ofertadas_periodo,
-    get_horarios_disciplina,
+    get_horarios_turmas_vagas_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas,
     get_plano_de_curso_disciplina,
