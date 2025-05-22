@@ -18,7 +18,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    """
       _summary_
       Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
-      Como quantidade, nome, matrícula, idade, sexo, cor, naturalidade, nacionalidade, local de nascimento.
+      Como quantidade, nome, matrícula, idade, sexo, cor, naturalidade, nacionalidade e local de nascimento.
 
       Args:
          query: Pergunta feita pelo usuário.

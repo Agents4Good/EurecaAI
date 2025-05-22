@@ -9,7 +9,7 @@ from .tools.disciplina.get_matriculas_disciplina import get_matriculas_disciplin
 from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from .tools.disciplina.get_disciplinas import get_disciplinas
-from .tools.disciplina.test_estudante import estudante_info
+from .tools.estudante.get_estudante import estudante_info
 from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplina_ofertadas_periodo
 
 tools = [

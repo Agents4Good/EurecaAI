@@ -5,7 +5,7 @@ from langchain_community.chat_models import ChatDeepInfra
 
 from .tools.curso.obter_dados_de_curso_especifico import obter_dados_de_curso_especifico
 from .tools.curso.obter_dados_de_todos_os_cursos import obter_dados_de_todos_os_cursos
-from .tools.curso.obter_grade_curricular_curso import obter_grade_curricular_curso
+from .tools.curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 
 from dotenv import load_dotenv
 
@@ -14,12 +14,12 @@ load_dotenv()
 tools = [
     obter_dados_de_curso_especifico,
     obter_dados_de_todos_os_cursos,
-    obter_grade_curricular_curso
+    get_todos_curriculos_do_curso
 ]
 
 #agent = AgenteCursos(LLM=ChatOllama, model="qwen3:4b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 #agent = AgenteCursos(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT1)
-agent = AgenteCursos(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
+agent = AgenteCursos(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT2)
 
 question = "quais são os cursos que tiveram o currículo renovado a partir de 2010?"
 question = "De todos os cursos de graduação do campus de sume quais deles são relacionados a área de idiomas?" # retornando sem output estrurado correto (VALIDAR!!!)

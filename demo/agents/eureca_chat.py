@@ -20,11 +20,30 @@ from tests.tools.disciplina import *
 from tests.tools.estudante import *
 
 from ..utils.supervisor_utils import *
+from tests.tools.curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
+from tests.tools.estudante.obter_ingressantes_sisu import get_ingressantes_sisu
+
+from tests.tools.campus.get_calendarios import get_calendarios
+from tests.tools.campus.get_campi import get_campi
+from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
+
+from tests.tools.setor.get_estagios import get_estagios
+
+CAMPUS_TOOLS = [
+    get_campi,
+    get_calendarios,
+    get_periodo_mais_recente
+]
+
+SETOR_TOOLS = [
+    get_estagios
+]
 
 # TOOLS USADAS
 CURSO_TOOLS = [
     obter_dados_de_curso_especifico, 
     obter_dados_de_todos_os_cursos,
+    get_todos_curriculos_do_curso,
 ]
 
 DISCIPLINA_TOOLS = [
@@ -39,7 +58,8 @@ DISCIPLINA_TOOLS = [
 ]
 
 ESTUDANTE_TOOLS = [
-    obter_dados_gerais_de_todos_estudantes
+    obter_dados_gerais_de_todos_estudantes,
+    get_ingressantes_sisu
 ]
 
 # SETAR ESTADO DO GRAFO GERAL (SUPERVISOR)
