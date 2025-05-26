@@ -1,0 +1,35 @@
+{
+    "question_1": {
+        "question": "Quantos estudantes foram reprovados por nota?",
+        "sql": "SELECT COUNT(*) AS total_reprovados_por_nota FROM Estudante_na_DisciplinaWHERE status = 'Reprovado por Nota';"
+    },
+    "question_2": {
+        "question": "Quantos estudantes foram reprovados por falta?",
+        "sql": "SELECT COUNT(*) AS total_reprovados_por_falta FROM Estudante_na_Disciplina WHERE status = 'Reprovado por Falta';"
+    },
+    "question_3": {
+        "question": "Qual a média das notas dos estudantes que foram aprovados?",
+        "sql": "SELECT AVG(nota_na_disciplina) AS media_aprovados FROM Estudante_na_Disciplina WHERE status = 'Aprovado';"
+    },
+    "question_4": {
+        "question": "Qual é a maior nota registrada na disciplina?",
+        "sql": "SELECT MAX(nota_na_disciplina) AS maior_nota FROM Estudante_na_Disciplina;"
+    },
+    "question_5": {
+        "question": "Quantos estudantes dispensaram a disciplina?",
+        "sql": "SELECT COUNT(*) AS total_dispensas FROM Estudante_na_Disciplina WHERE dispensas = 'S';"
+    },
+    "question_6": {
+        "question": "Quantos estudantes trancaram a disciplina?",
+        "sql": "SELECT COUNT(*) AS total_trancados FROM Estudante_na_Disciplina WHERE status = 'Trancado';"
+    },
+    "question_7": {
+        "question": "Quantos estudantes foram aprovados, reprovados por nota e reprovados por falta?",
+        "sql": "SELECT status, COUNT(*) AS quantidade FROM Estudante_na_Disciplina WHERE status IN ('Aprovado', 'Reprovado por Nota', 'Reprovado por Falta') GROUP BY status;"
+    },
+    "question_8": {
+        "question": "Quantos estudantes foram reprovados (por nota ou falta)?",
+        "sql": "SELECT COUNT(*) AS total_reprovados FROM Estudante_na_Disciplina WHERE status IN ('Reprovado por Nota', 'Reprovado por Falta');"
+    }
+
+}

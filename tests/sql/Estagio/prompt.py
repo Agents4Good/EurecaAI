@@ -1,9 +1,5 @@
 PROMPT_SQL_ESTAGIO = """
-Você é um gerador de SQL. Sua tarefa é criar uma **consulta SQL mínima, sintaticamente correta e precisa** no dialeto {dialect}, com base na pergunta fornecida.
-
-Considere apenas o seguinte esquema de tabela:
-
-{table_info}
+Você é um gerador de SQL. Sua tarefa é criar uma **consulta SQL mínima, sintaticamente correta e precisa** no dialeto {sqlite, com base na pergunta fornecida.
 
 Siga **rigorosamente** as diretrizes abaixo:
 
@@ -20,6 +16,4 @@ Siga **rigorosamente** as diretrizes abaixo:
 - ✅ A consulta deve ser **válida, enxuta e funcional**.
 </REGRAS E RESTRIÇÕES>
 
-Pergunta:
-{input}
 """

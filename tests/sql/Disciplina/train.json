@@ -1,0 +1,11 @@
+{
+    "question_1": {
+        "question": "Quantas disciplinas são do tipo atividade complementar",
+        "sql": "SELECT COUNT(*) AS total_atividades_complementares FROM Disciplina WHERE tipo_de_componente_curricular = 'Atividade Complementar';"
+    },
+    "question_2": {
+        "question": "Liste as disciplinas junto com sua carga horária total (teórica + prática)",
+        "sql": "SELECT nome_da_disciplina, (carga_horaria_teorica_semanal + carga_horaria_pratica_semanal) AS carga_total_semanal FROM Disciplina;"
+    }
+
+}

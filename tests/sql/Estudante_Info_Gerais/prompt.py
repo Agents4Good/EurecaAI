@@ -1,9 +1,5 @@
 PROMPT_SQL_ESTUDANTES_INFO_GERAIS = """
-Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
-
-Use apenas a seguintes tabela a seguir:
-
-{table_info}
+Dada uma pergunta de entrada, crie uma consulta (sqlite) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 Siga **rigorosamente** as instruções abaixo:
 
@@ -16,8 +12,6 @@ Siga **rigorosamente** as instruções abaixo:
 </RESTRIÇÕES>
 
 Gere uma consulta SQL válida que responda a pergunta:
-
-{input}
 
 """
 

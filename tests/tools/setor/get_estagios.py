@@ -1,4 +1,3 @@
-import inspect
 from .get_professores_setor import get_professores_setor
 from ..campus.utils import get_campus_most_similar
 from ..disciplina.get_disciplinas import get_disciplinas
@@ -7,7 +6,7 @@ from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estagio.normalize_data import normalize_data_estagio
 from ...sql.Estagio.prompt import PROMPT_SQL_ESTAGIO
 from ..utils.base_url import URL_BASE
-from ..utils.remove_term import limpar_query
+from ..utils.remover_parametros_query import remover_parametros_da_query
 from datetime import datetime
 from typing import Any
 import requests
@@ -53,13 +52,9 @@ def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus
     
     """
 
-    frame = inspect.currentframe()
-    args, _, _, values = inspect.getargvalues(frame)
-    parametros = {arg: values[arg] for arg in args if arg != 'query' and arg != 'self'}
-    termos_para_remover = [str(v) for v in parametros.values() if v]
-    query = limpar_query(str(query), termos_para_remover)
+    
+    query = remover_parametros_da_query(query, excluir=['self'])
     print(f"Query com os termos removidos: {query}")
-
 
 
     nome_do_campus=str(nome_do_campus)

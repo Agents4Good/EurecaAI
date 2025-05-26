@@ -1,5 +1,6 @@
-from vanna.ollama import Ollama
+#from vanna.ollama import Ollama
 from vanna.vannadb import VannaDB_VectorStore
+from .CustomLLMVanna import MyCustomLLmVanna
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -9,23 +10,64 @@ load_dotenv()
 VANNA_API_KEY_VECTORSTORE = os.getenv('VANNA_API_KEY_VECTORSTORE')
 
 
-class MyVanna(VannaDB_VectorStore, Ollama):
-    def __init__(self, model_name: str,  config=None):
+class MyVanna(VannaDB_VectorStore, MyCustomLLmVanna):
+    def __init__(self, LLM, model_name: str,  config=None):
         MY_VANNA_MODEL = model_name
         VannaDB_VectorStore.__init__(self, vanna_model=MY_VANNA_MODEL, vanna_api_key=VANNA_API_KEY_VECTORSTORE, config=config,)
-        Ollama.__init__(self, config=config)
+        MyCustomLLmVanna.__init__(self, LLM, config=config)
+
+    def get_sql_prompt(
+        self,
+        initial_prompt: str,
+        question: str,
+        question_sql_list: list,
+        ddl_list: list,
+        doc_list: list,
+        **kwargs
+    ):
+        if initial_prompt is None:
+            initial_prompt = f"You are a {self.dialect} expert. " + \
+            "Please help to generate a SQL query to answer the question. Your response should ONLY be based on the given context and follow the format instructions. "
+
+        # Adiciona DDL ao prompt
+        initial_prompt = self.add_ddl_to_prompt(
+            initial_prompt, ddl_list, max_tokens=self.max_tokens
+        )
+
+        # Adiciona documentação estática, se houver
+        if self.static_documentation != "":
+            doc_list.append(self.static_documentation)
+
+        # Adiciona documentação ao prompt
+        initial_prompt = self.add_documentation_to_prompt(
+            initial_prompt, doc_list, max_tokens=self.max_tokens
+        )
+
+        # >>>> Removido: trecho que adicionava os "Response Guidelines"
+        message_log = [self.system_message(initial_prompt)]
+
+        for example in question_sql_list[:2]:  # Limita a 5 exemplos
+            if example is None:
+                print("example is None")
+            else:
+                if "question" in example and "sql" in example:
+                    message_log.append(self.user_message(example["question"]))
+                    message_log.append(self.assistant_message(example["sql"]))
+
+        message_log.append(self.user_message(question))
+
+        return message_log
 
 
 class SQLGeneratorVanna:
-    def __init__(self, model_name: str = "your-model", db_path: str = None, config=None):
-        self.vanna = MyVanna(model_name=model_name, config=config)
+    def __init__(self, LLM,  model_name: str = "your-model", db_path: str = None, config=None):
+        self.vanna = MyVanna(LLM, model_name=model_name, config=config)
         
         if db_path:
             self.vanna.connect_to_sqlite(db_path)
         
         training_data = self.vanna.get_training_data()
         if training_data.empty:
-            # Treina o modelo com o DDL do banco de dados
             self._train_ddl()
 
     def generate_sql(self, question: str, visualize: bool = False, print_results: bool = False, allow_llm_to_see_data: bool = False):
@@ -37,15 +79,7 @@ class SQLGeneratorVanna:
         :param allow_llm_to_see_data: Se True, permite que o LLM veja os dados.
         :return: SQL gerado.
         """
-
-        # prompt = [
-        #     self.vanna.system_message(self.prompt),
-        #     self.vanna.user_message(question),
-        # ]
-
-        # self.vanna.submit_prompt(prompt)
-        
-
+    
         resposta = self.vanna.generate_sql(question=question, visualize=visualize, print_results=print_results, allow_llm_to_see_data=allow_llm_to_see_data)
 
         return resposta

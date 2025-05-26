@@ -5,6 +5,7 @@ from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ..utils.remover_parametros_query import remover_parametros_da_query
 from ..utils.validacoes import valida_periodo_curriculo
 
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
@@ -30,7 +31,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         list: Uma lista com informações relevantes sobre a pergunta a respeito da(s) disciplina(s).
     """
     
-    query=str(query)
+    query = remover_parametros_da_query(query, excluir=['self'])
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
@@ -60,6 +61,6 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
             return disciplinas
         gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA, temperature=0)
         gerenciador.save_data(disciplinas)
-        return gerenciador.get_data("disciplina", query)
+        return gerenciador.get_data("disciplina", query, True)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

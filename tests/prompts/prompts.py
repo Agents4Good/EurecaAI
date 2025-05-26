@@ -139,6 +139,7 @@ REGRAS PARA USO DAS TOOLS:
 IMPORTANTE:
 - Não tente responder por conta própria.
 - Se a pergunta envolver múltiplas intenções, faça múltiplas chamadas às ferramentas adequadas.
+
 """
 
 ZERO_SHOT_PROMPT_CAMPUS_SQL = """
@@ -210,7 +211,6 @@ Você é um assistente da Universidade Federal de Campina Grande (UFCG), e seu t
 
 1. 📝 Perguntas sobre estágios (ex: bolsas, carga horária, empresa, datas, setor, curso):  
 → Use a ferramenta `get_estagios`.
-
    - Se a pergunta contiver "desde [ano]", passe apenas `ano_de=ANO`.
    - Se disser "até [ano]", passe apenas `ano_ate=ANO`.
    - Se disser "em [ano]", passe `ano_de=ANO` e `ano_ate=ANO`.

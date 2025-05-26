@@ -5,7 +5,7 @@ import requests
 from ..campus.utils import get_campus_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-from ..utils.remove_term import limpar_query
+from ..utils.remover_parametros_query import remover_parametros_da_query
 
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
@@ -30,11 +30,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    params = {"situacao-do-estudante": "ATIVOS" }
 
    
-   frame = inspect.currentframe()
-   args, _, _, values = inspect.getargvalues(frame)
-   parametros = {arg: values[arg] for arg in args if arg != 'query' and arg != 'self'}
-   termos_para_remover = [str(v) for v in parametros.values() if v]
-   query = limpar_query(str(query), termos_para_remover)
+   query = remover_parametros_da_query(query, excluir=['self'])
    print(f"Query com os termos removidos: {query}")
 
    nome_do_campus = str(nome_do_campus)

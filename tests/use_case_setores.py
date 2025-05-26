@@ -31,5 +31,6 @@ question = "Quais são os professores de ciencia da computacao do campus de camp
 #question = "Some as bolsas de todos os estagiarios da UFCG em 2020?" # PERGUNTA MUITO DEMORADA DEVIDO AOS DADOS
 
 question = "Some as bolsas de todos os estagiarios da UFCG no ano 2020 do campus Campina Grande do curso de engenharia civil?" #OK
+question = "Quantos estagiários tem no campus sume em 2024"
 
 agent.run(question=question)

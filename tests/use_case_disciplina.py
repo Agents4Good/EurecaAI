@@ -91,6 +91,8 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
 question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
+
+#question = "Quais os pré-requistos da disciplina de programação para web 1 do curso de ciência da computação?"
 #question = "Quais são os códigos e nomes das disciplinas no curso de computação"
 #question = "Qual o plano de aula da disciplina de compiladores do curso de ciência da computação?"
 
