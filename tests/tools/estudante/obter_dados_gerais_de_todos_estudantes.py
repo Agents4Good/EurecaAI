@@ -58,6 +58,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
 
    print(f"Tool `obter_dados_de_todos_estudantes` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, situacao_estudante={situacao_estudante}, motivo_de_evasao={motivo_de_evasao}, periodo_de_ingresso_de={periodo_de_ingresso_de}, periodo_de_ingresso_ate={periodo_de_ingresso_ate}, periodo_de_evasao_de={periodo_de_evasao_ate}, periodo_de_evasao_ate={periodo_de_evasao_ate}")
    print(f"A query da pergunta foi: {query}")
+   
    query = str(query)
    nome_do_campus = str(nome_do_campus)
    nome_do_curso = str(nome_do_curso)

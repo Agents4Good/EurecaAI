@@ -54,7 +54,7 @@ def train_vanna(model_name: str, train_path: str, db_path: str = None):
 
 
 #Treinamento de Estudante na Disciplina
-train_vanna(model_name="estudante_na_disciplina",train_path="Estudante_na_Disciplina/train.json",db_path="db_estudante_disciplina.sqlite")
+#train_vanna(model_name="estudante_na_disciplina",train_path="Estudante_na_Disciplina/train.json",db_path="db_estudante_disciplina.sqlite")
 
 #Treinamento de Estudante Info Gerais
 #train_vanna(model_name="estudante_info_gerais",train_path="Estudante_Info_Gerais/train.json",db_path="db_estudantes.sqlite")

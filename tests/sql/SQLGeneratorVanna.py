@@ -1,5 +1,4 @@
 #from vanna.ollama import Ollama
-import re
 from vanna.vannadb import VannaDB_VectorStore
 from .CustomLLMVanna import MyCustomLLmVanna
 from dotenv import load_dotenv
