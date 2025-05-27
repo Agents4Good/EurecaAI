@@ -10,7 +10,7 @@ from ..utils.validacoes import valida_periodo_curriculo
 
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """_summary_
-    Retorna as disciplinas ofertadas por um curso.
+    Informações de todas as disciplinas de um curso.
     
     Use esta função quando a pergunta envolver:
     - código, nome, créditos ou carga horária da disciplina;
@@ -63,4 +63,4 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         gerenciador.save_data(disciplinas)
         return gerenciador.get_data("disciplina", query, True)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

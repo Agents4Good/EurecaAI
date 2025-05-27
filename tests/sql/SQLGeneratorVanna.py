@@ -1,4 +1,5 @@
 #from vanna.ollama import Ollama
+import re
 from vanna.vannadb import VannaDB_VectorStore
 from .CustomLLMVanna import MyCustomLLmVanna
 from dotenv import load_dotenv
@@ -46,7 +47,7 @@ class MyVanna(VannaDB_VectorStore, MyCustomLLmVanna):
         # >>>> Removido: trecho que adicionava os "Response Guidelines"
         message_log = [self.system_message(initial_prompt)]
 
-        for example in question_sql_list[:2]:  # Limita a 5 exemplos
+        for example in question_sql_list[:2]:  # Limita a 3 exemplos
             if example is None:
                 print("example is None")
             else:
@@ -66,9 +67,9 @@ class SQLGeneratorVanna:
         if db_path:
             self.vanna.connect_to_sqlite(db_path)
         
-        training_data = self.vanna.get_training_data()
-        if training_data.empty:
-            self._train_ddl()
+        #training_data = self.vanna.get_training_data()
+        #if training_data.empty:
+        self._train_ddl()
 
     def generate_sql(self, question: str, visualize: bool = False, print_results: bool = False, allow_llm_to_see_data: bool = False):
         """
@@ -81,7 +82,7 @@ class SQLGeneratorVanna:
         """
     
         resposta = self.vanna.generate_sql(question=question, visualize=visualize, print_results=print_results, allow_llm_to_see_data=allow_llm_to_see_data)
-
+       
         return resposta
         
     def _train_ddl(self):

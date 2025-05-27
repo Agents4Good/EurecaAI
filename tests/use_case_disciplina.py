@@ -4,17 +4,16 @@ from langchain_community.chat_models import ChatDeepInfra
 from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
-from .tools.disciplina.get_horarios_disciplina import get_horarios_disciplina
+from .tools.disciplina.get_horarios_turmas_vagas_disciplina import get_horarios_turmas_vagas_disciplina
 from .tools.disciplina.get_matriculas_disciplina import get_matriculas_disciplina
 from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
 from .tools.disciplina.get_disciplinas import get_disciplinas
-from .tools.disciplina.test_estudante import estudante_info
+from .tools.estudante.get_estudante import estudante_info
 from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplina_ofertadas_periodo
 
 tools = [
     get_disciplina_ofertadas_periodo,
-    get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
@@ -92,6 +91,7 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
 
+#question = "Traga o código de todas as disciplinas do curso de ciência da computação do campus de campina grande"
 #question = "Quais os pré-requistos da disciplina de programação para web 1 do curso de ciência da computação?"
 #question = "Quais são os códigos e nomes das disciplinas no curso de computação"
 #question = "Qual o plano de aula da disciplina de compiladores do curso de ciência da computação?"

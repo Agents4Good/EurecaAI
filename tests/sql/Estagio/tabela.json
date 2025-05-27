@@ -22,7 +22,7 @@
         },
         "obrigatorio": {
             "type": "BOOLEAN",
-            "description": "Indica se o estágio é obrigatório ou não",
+            "description": "Indica se o estágio é obrigatório ou não, pode ser 0 ou 1",
             "mapper": "obrigatorio"
         },
         "data_inicio": {

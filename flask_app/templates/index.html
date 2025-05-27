@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eureca AI</title>
-    <link rel="icon" type="image/png" href="../static/images/ufcg.png">
-    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/ufcg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <!--<link rel="stylesheet" href="../static/css/index.css">-->
@@ -14,6 +14,21 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         let idChatLocal = null;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById('user_input');
+
+            function atualizarPlaceholder() {
+                if (window.innerWidth < 600) {
+                    textarea.placeholder = "Digite sua dúvida sobre a UFCG...";
+                } else {
+                    textarea.placeholder = "Pergunte informações sobre a UFCG...";
+                }
+            }
+
+            atualizarPlaceholder(); // Atualiza ao carregar
+            window.addEventListener('resize', atualizarPlaceholder); // Atualiza ao redimensionar
+        });
 
         $(document).ready(function () {
             $('#chat_form').on('keydown', function (event) {
@@ -124,7 +139,7 @@
                                 <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
                                 <div class="bot_options">
                                     <button class="audio-button">
-                                        <img src="../static/images/audio.png" />
+                                        <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                     </button>
                                 </div>  
                             </div>
@@ -142,17 +157,17 @@
         // Função que adiciona a mensagem do bot
         function addBotMessage() {
             var botMessageBlock = `
-                <div class="bot">
+                <div class="bot skeleton">
                     <div class="bot__container">
                         <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
                         <div class="bot__response">
                             <div class="bot__name">
                                 <p>Assistente:</p>
                             </div>
-                            <p class="bot__name__response">Raciocinando...</p>
+                            <p class="bot__name__response">Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  <img src="{{ url_for('static', filename='images/brilhos.gif') }}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;"></p>
                             <div class="bot_options">
-                                <button class="audio-button">
-                                    <img src="../static/images/audio.png" />
+                                <button class="audio-button" style="display: none;">
+                                    <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                 </button>
                             </div>  
                         </div>
@@ -265,6 +280,7 @@
         function sendMessage(message) {
             addBotMessage();
             disable_input();
+            const $lastBotResponse = $('.bot__name__response').last();
 
             $.ajax({
                 type: 'POST',
@@ -274,7 +290,9 @@
                 success: function (response) {
                     const markdownResponse = response.response;
                     const htmlResponse = marked.parse(markdownResponse);
-                    $('.bot__name__response').last().html(htmlResponse);
+                    $('.bot').last().find('.audio-button').show();
+                    $lastBotResponse.html(htmlResponse);
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
         
@@ -288,7 +306,7 @@
                         
                         get_resumo(message).then((resumo) => {
                             newDiv.innerHTML = `
-                            <p>${resumo}</p>
+                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
                             <div class="fab-wrapper">
                                 <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
                                 <div class="fab-menu" id="${id}_menu">
@@ -311,7 +329,7 @@
                     } else {
                         $('.bot__name__response').last().text('Desculpe, algo deu errado.');
                     }
-
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     enable_input();
                 }
             });
@@ -401,14 +419,14 @@
             const inputQuery = document.getElementsByClassName('query')[0]; 
 
             if (img.src.includes('microphone.png')) {
-                img.src = '../static/images/audio.png'; 
+                img.src = "{{ url_for('static', filename='images/audio.png') }}";
                 img.style.backgroundColor = "#30ABED";
                 inputQuery.disabled = true;
                 
                 inputQuery.style.backgroundColor = "white";
                 startRecording();
             } else {
-                img.src = '../static/images/microphone.png'; 
+                img.src = "{{ url_for('static', filename='images/microphone.png') }}"; 
                 img.style.backgroundColor = "#a6d1e9";
                 inputQuery.disabled = false; 
                 stopRecording();
@@ -453,7 +471,7 @@
         <div class="aside__mobile__button" onClick="openAsideBarMobile()">
             <i class='fas fa-bars fa-2x'></i>
         </div>
-        <img src="../static/images/Eureca_AI_logo.png" onClick="window.location.href='/'"/>
+        <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}" onClick="window.location.href=''"/>
         <button class="login__button btn waves-effect waves-light azul-escuro-1" onClick="login_account()">
             <span>Login</span>
         </button>
@@ -470,18 +488,18 @@
                 <div class="input_container">
                     <textarea id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."></textarea>
                     <button class="send" type="submit">
-                        <img src="../static/images/arrow_icon.png"/>
+                        <img src="{{ url_for('static', filename='images/arrow_icon.png') }}"/>
                     </button>
                 </div>
                 <button class="record" onClick="changeImage(this)">
-                    <img src="../static/images/microphone.png" id="recordImage"/>
+                    <img src="{{ url_for('static', filename='images/microphone.png') }}" id="recordImage"/>
                 </button>
             </form>
         </section>
         <aside class="aside-chat">
             <div class="aside-title-container">
                 <div>
-                    <img src="../static/images/Eureca_AI_logo.png"/>
+                    <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}"/>
                     <button class="login_button_mobile" onClick="login_account()">
                         <span>Login</span>
                     </button>

@@ -5,7 +5,7 @@ from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
 from langchain_community.chat_models import ChatDeepInfra
 
-model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
 mapper_setor = {"nome": "descricao", "codigo": "codigo_do_setor"}
 
@@ -21,6 +21,7 @@ def get_setor_most_similar(nome_do_centro_setor: str, nome_do_campus: str, filtr
     Returns:
         dict: dicionário contendo código e o nome do setor.
     """
+    print(f"`get_setor_most_similar` chamado com nome_do_centro_setor={nome_do_centro_setor}, nome_do_campus={nome_do_campus}, filtro={filtro}")
     
     setores_campus = get_todos_setores(nome_do_campus=nome_do_campus, filtro="UNID")
     setores_filtrados = [setor for setor in setores_campus if filtro.lower() in setor["descricao"].lower()]

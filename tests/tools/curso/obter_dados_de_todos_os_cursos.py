@@ -10,7 +10,8 @@ from ..utils.remover_parametros_query import remover_parametros_da_query
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
     _summary_
-    Buscar informações relativo a todos os cursos da UFCG, como nome do curso, nome do campus, turno do curso, período do de inicio do curso, data de criação do curso, código inep, modalidade academica (grau do curso) e curriculo atual e enade.
+    Buscar informações relativo a todos os cursos da UFCG, como código do curso, nome do curso, código do setor, nome do setor, 
+    nome do campus, turno do curso, período do de inicio do curso, código inep, modalidade academica (grau do curso), curriculo atual, ciclo enade e data de criação do curso.
     Use esta função quando o usuário fizer uma pergunta **geral** sobre cursos da UFCG, sem mencionar nomes específicos.
     
     Exemplos de uso:

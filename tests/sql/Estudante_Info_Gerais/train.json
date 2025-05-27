@@ -1,35 +1,42 @@
 {
     "question_1": {
-        "question": "Quantos estudantes foram reprovados por nota?",
-        "sql": "SELECT COUNT(*) AS total_reprovados_por_nota FROM Estudante_na_DisciplinaWHERE status = 'Reprovado por Nota';"
+        "question": "Quantos estudantes estão com a situação ativa?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE situacao = 'ATIVOS';"
     },
     "question_2": {
-        "question": "Quantos estudantes foram reprovados por falta?",
-        "sql": "SELECT COUNT(*) AS total_reprovados_por_falta FROM Estudante_na_Disciplina WHERE status = 'Reprovado por Falta';"
+        "question": "Qual é a média de idade dos estudantes do curso?",
+        "sql": "SELECT AVG(idade) FROM Estudante_Info_Gerais;"
     },
     "question_3": {
-        "question": "Qual a média das notas dos estudantes que foram aprovados?",
-        "sql": "SELECT AVG(nota_na_disciplina) AS media_aprovados FROM Estudante_na_Disciplina WHERE status = 'Aprovado';"
+        "question": "Quantos estudantes são do sexo feminino?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE sexo = 'FEMININO';"
     },
     "question_4": {
-        "question": "Qual é a maior nota registrada na disciplina?",
-        "sql": "SELECT MAX(nota_na_disciplina) AS maior_nota FROM Estudante_na_Disciplina;"
+        "question": "Quantos estudantes possuem CRA maior que 8?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE cra > 8;"
     },
     "question_5": {
-        "question": "Quantos estudantes dispensaram a disciplina?",
-        "sql": "SELECT COUNT(*) AS total_dispensas FROM Estudante_na_Disciplina WHERE dispensas = 'S';"
+        "question": "Quais são os nomes dos estudantes com CRA abaixo de 6?",
+        "sql": "SELECT nome FROM Estudante_Info_Gerais WHERE cra < 6;"
     },
     "question_6": {
-        "question": "Quantos estudantes trancaram a disciplina?",
-        "sql": "SELECT COUNT(*) AS total_trancados FROM Estudante_na_Disciplina WHERE status = 'Trancado';"
+        "question": "Quantos estudantes são da cor parda?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE cor = 'Parda';"
     },
     "question_7": {
-        "question": "Quantos estudantes foram aprovados, reprovados por nota e reprovados por falta?",
-        "sql": "SELECT status, COUNT(*) AS quantidade FROM Estudante_na_Disciplina WHERE status IN ('Aprovado', 'Reprovado por Nota', 'Reprovado por Falta') GROUP BY status;"
+        "question": "Qual o número de estudantes por situação no curso?",
+        "sql": "SELECT situacao, COUNT(*) FROM Estudante_Info_Gerais GROUP BY situacao;"
     },
     "question_8": {
-        "question": "Quantos estudantes foram reprovados (por nota ou falta)?",
-        "sql": "SELECT COUNT(*) AS total_reprovados FROM Estudante_na_Disciplina WHERE status IN ('Reprovado por Nota', 'Reprovado por Falta');"
+        "question": "Quais são os estudantes que têm mais de 30 anos?",
+        "sql": "SELECT nome FROM Estudante_Info_Gerais WHERE idade > 30;"
+    },
+    "question_9": {
+        "question": "Quantos estudantes são brasileiros?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE nacionalidade = 'Brasileira';"
+    },
+    "question_10": {
+        "question": "Quantos estudantes nasceram no estado de SP?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE naturalidade = 'SP';"
     }
-
 }

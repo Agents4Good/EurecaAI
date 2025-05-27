@@ -8,7 +8,8 @@ def get_curriculo_mais_recente_curso(nome_do_curso: Any, nome_do_campus: Any) ->
     """
     _summary_
     Buscar o currículo mais recente de um curso.
-
+    Chame essa ferramenta passando apenas um único curso por vez. Se houver mais de um curso, você deve chamar essa ferramenta para cada curso.
+    
     Args:
         nome_do_curso: nome do curso.
         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...

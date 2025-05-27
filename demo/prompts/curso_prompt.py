@@ -12,5 +12,7 @@ Regras de decisão:
 2. Se a pergunta for geral sobre todos os cursos (como "Quantos cursos têm no campus de Pombal?"), use:
    ➤ `obter_dados_de_todos_os_cursos`
 
+3. Se a pergunta for sobre números de cŕeditos, número de carga horária das disciplinas de um curso, ou número de horas citando o nome do curso mas sem citar o nome da disciplina, use:
+   ➤ `get_todos_curriculos_do_curso`
 Não tente adivinhar ou responder por conta própria. Use **somente** as ferramentas disponíveis. Retorne as chamadas das tools em JSON válido.
 """

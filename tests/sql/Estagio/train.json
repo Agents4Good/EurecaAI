@@ -1,0 +1,26 @@
+{
+    "question_1": {
+        "question": "Quantos estágios obrigatórios iniciaram após 2023-01-01 e possuem carga horária semanal superior a 20 horas?",
+        "sql": "SELECT COUNT(*) FROM Estagio WHERE obrigatorio = 1 AND data_inicio > '2023-01-01' AND carga_horaria_semanal > 20;"
+    },
+    "question_2": {
+        "question": "Qual é a média da bolsa mensal para estágios com status Termo celebrado realizados no estado de São Paulo (SP)?",
+        "sql": "SELECT AVG(bolsa_mensal) FROM Estagio WHERE status = 'Termo celebrado' AND uf_concedente = 'SP';"
+    },
+    "question_3": {
+        "question": "Liste as matrículas dos estudantes e o código da disciplina dos estágios iniciados em 2022 que ainda estão ativos (sem data de fim ou com data futura).",
+        "sql": "SELECT matricula_do_estudante, codigo_da_disciplina FROM Estagio WHERE strftime('%Y', data_inicio) = '2022' AND (data_fim IS NULL OR data_fim > DATE('now'));"
+    },
+    "question_4": {
+        "question": "Qual o valor total estimado gasto com bolsa mensal e auxílio transporte diário (considerando 22 dias úteis) em estágios obrigatórios realizados na empresa de ID 123 durante o ano de 2023?",
+        "sql": "SELECT SUM(bolsa_mensal + auxilio_transporte_diario * 22) AS total_estimado FROM Estagio WHERE obrigatorio = TRUE AND id_empresa = 123 AND data_inicio >= '2023-01-01' AND data_fim <= '2023-12-31';"
+    },
+    "question_5": {
+        "question": "Quais professores orientadores supervisionaram mais de 5 estágios com status 'Plano aprovado CPE/Centro'?",
+        "sql": "SELECT matricula_do_professor, COUNT(*) AS total FROM Estagio WHERE status = 'Plano aprovado CPE/Centro' GROUP BY matricula_do_professor HAVING COUNT(*) > 5;"
+    },
+    "question_6": {
+        "question": "Quais são os códigos das disciplinas e a soma da carga horária semanal dos estágios não obrigatórios por estado do concedente?",
+        "sql": "SELECT codigo_da_disciplina, uf_concedente, SUM(carga_horaria_semanal) AS soma_carga FROM Estagio WHERE obrigatorio = FALSE GROUP BY codigo_da_disciplina, uf_concedente;"
+    }
+}

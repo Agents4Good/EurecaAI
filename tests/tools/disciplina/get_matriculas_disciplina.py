@@ -4,14 +4,17 @@ from typing import Any
 
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
+from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
-from ...sql.Estudante_Info_Gerais import normalize_data
+from ...sql.Estudante_Disciplinas_Gerais.prompt import PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
+from ...sql.Estudante_na_Disciplina.normalize_data import normalize_data
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
+from ..utils.remover_parametros_query import remover_parametros_da_query
 from ..utils.validacoes import validar_turma
 
 
-def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso: Any, nome_do_campus: Any, turma: Any = "", periodo: Any = "") -> list:
+def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo: Any = "") -> list:
     """_summary_
     Retorna informações das matrículos dos alunos em uma disciplina.
     
@@ -22,53 +25,59 @@ def get_matriculas_disciplina(query: Any, nome_da_disciplina: Any, nome_do_curso
     - quantidade de estudantes em uma disciplina de um curso.
     
     Args:
-        query (Any): Pergunta do usuário.
-        nome_da_disciplina (Any): Nome da disciplina.
-        nome_do_curso (Any): Nome do curso.
+        query (Any): Pergunta completa do usuário.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
-        turma (Any, optional): Número da turma. Defaults to "".
+        nome_do_curso (Any): Nome do curso. Defaults to "".
+        nome_da_disciplina (Any): Nome da disciplina.
         periodo (Any, optional): Período do curso. Defaults to "".
 
     Returns:
         list: Uma lista com informações relevantes a respeito das matrículas dos estudantes de uma disciplina.
     """
 
-    query=str(query)    
+    query= remover_parametros_da_query(query, excluir=['self'])   
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
-    turma=str(turma)
     periodo=str(periodo)
     curriculo=""
-    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, turma={turma}, periodo={periodo} e curriculo={curriculo}")
-
-    validou_turma, mensagem = validar_turma(turma_usada=turma)
-    if not validou_turma: return mensagem
+    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo={periodo} e curriculo={curriculo}")
     
     periodo = periodo if periodo != "" else get_periodo_mais_recente()
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
-    
+
     params = {
         "periodo-de": periodo,
-        "periodo-ate": periodo,
-        "disciplina": dados_disciplina["disciplina"]["codigo"],
-        "turma": turma
+        "periodo-ate": periodo
     }
+
+    if nome_do_curso:
+        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        params["curso"] = dados_curso["curso"]["codigo"]
+
+    if nome_da_disciplina:
+        dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+        params["disciplina"] = dados_disciplina["disciplina"]["codigo"]
+
+
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:
         estudantes_na_disciplina = normalize_data(json.loads(response.text))
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite", prompt=PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA, temperature=0)
-        gerenciador.save_data(estudantes_na_disciplina)
+
+        if nome_da_disciplina != "":
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite", prompt=PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA)
+            gerenciador.save_data(estudantes_na_disciplina)
+        else:
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_Disciplinas_Gerais", db_name="db_estudante_disciplinas_gerais.sqlite", prompt=PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS)
+            gerenciador.save_data(estudantes_na_disciplina)
 
         try:
-            dados = gerenciador.get_data('estudante_na_disciplina', query, True)
+            dados = gerenciador.get_data("estudante_na_disciplina",query,True)
             if len(dados) == 0:
                 return ["Não foi encontrado nada"]
         except TypeError as e:
             return [{"Error": "Ocorreu um erro para gerar a consulta SQL."}]
        
         return dados
-   
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

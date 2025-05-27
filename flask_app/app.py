@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, jsonify
-from src.agents.build_graph import build
 import speech_recognition as sr
 from pydub import AudioSegment
 from io import BytesIO
@@ -7,27 +6,29 @@ from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage
 import asyncio, json
 
+from .langchain_models import supervisor_model, aggregator_model, agents_model
 from demo.agents.eureca_chat import EurecaChat
-from src.guardrails.validate_input import validate
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv(override=True)
 
-# Inicializa o sistema de agentes ao iniciar o aplicativo
+app = Flask(__name__, static_url_path="/static")
+
+# Inicializa o sistema de agentes ao iniciar a aplicação
 system = EurecaChat(
-    supervisor_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
-    aggregator_model=ChatDeepInfra(model="google/gemini-1.5-flash", temperature=0, max_tokens=2048),
-    agents_model=ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
+    supervisor_model=supervisor_model,
+    aggregator_model=aggregator_model,
+    agents_model=agents_model
 ).build()
+
 
 async def process_query(query):
     """
     Processa a consulta do usuário usando o sistema de agentes.
     """
     config = {"configurable": {"thread_id": "1"}}
-    inputs = {"messages": [HumanMessage(content=validate(query))]}
+    inputs = {"messages": [HumanMessage(content=query)]}
     response = []
-
-    print(inputs)
 
     async for chunk in system.astream(inputs, config, stream_mode="values"):
         chunk["messages"][-1].pretty_print()

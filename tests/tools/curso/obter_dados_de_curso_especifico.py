@@ -7,8 +7,11 @@ import json
 def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> list:
     """
     _summary_
-    Buscar informação de um curso específico da UFCG a partir do nome do curso.
-    Use esta função APENAS quando a pergunta mencionar um ou mais cursos específicos pelo nome.
+    Buscar informação a partir do nome de um curso específico da UFCG.
+    Use esta função APENAS quando a pergunta mencionar um ou mais cursos específicos pelo nome. 
+    Se for você identificar mais de um curso, chame essa ferramenta separadamente para cada curso.
+    Essa ferramenta tem várias informações que pode responder muitas perguntas a respeito de apenas um único curso. 
+    Chame essa ferramenta passando um curso por vez. Se houver mais de um curso, você deve chamar essa ferramenta para cada curso.
     
     Exemplos de uso:
         - "O curso de Engenharia Elétrica é oferecido em qual turno?"
@@ -17,7 +20,7 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     
     Args:
         nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus. Se o nome do campus não tiver sido fornecido, use 'campina grande' por padrão.
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser todos os cursos de todos os campus, passe a string vazia ''.
     
     Returns:
         Lista com informações relevantes do curso específico, como código do curso, código do inep, código e nome do setor desse curso, período de início, etc.
@@ -44,4 +47,4 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     if response.status_code == 200:
         return json.loads(response.text)
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        return [{"error_status": response.status_code, "msg": response.json()}]

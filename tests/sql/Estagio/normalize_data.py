@@ -16,7 +16,10 @@ def normalize_data_estagio(data_json):
             "codigo_do_setor": ""
         }
 
-       
+    
+        item["obrigatorio"] = 1 if item["obrigatorio"] is True else 0
+ 
+    
         #ALGUNS ESTAGIOS TEM CODIGO DA DISCIPLINA COMO NONE  ELES FICAM COM NOME DO SETOR E CODIGO DO SETOR COMO VAZIO
         if item["codigo_da_disciplina"] is not None:
             disciplina = obter_disciplina_codigo(item["codigo_da_disciplina"])

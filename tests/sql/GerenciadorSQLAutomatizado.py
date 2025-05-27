@@ -184,15 +184,16 @@ class GerenciadorSQLAutomatizado:
         if clean_question:
             question = self.__clean_question(question)
        
-        sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 4000, "initial_prompt": self.prompt})
+        #O qwen3 precisa de regex
+        sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
 
         sql = sqlgen.generate_sql(question=question)
-        
+
         print("\n=============================================\n")
         print(f"Query gerada: {sql}")
         print("\n=============================================\n")
 
-        result = self.__execute_sql(sql)
-        return  result
+        # result = self.__execute_sql(sql)
+        return  
 
     

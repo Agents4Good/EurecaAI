@@ -1,6 +1,39 @@
 {
-    "question_01": {
-        "question": "",
-        "sql": ""
+    "question_1": {
+        "question": "Quais cursos do campus de Campina Grande são do tipo Bacharelado e funcionam no turno diurno?",
+        "sql": "SELECT descricao FROM Curso WHERE nome_do_campus = 'Campina Grande' AND modalidade_academica = 'BACHARELADO' AND turno = 'Diurno';"
+    },
+    "question_2": {
+        "question": "Quantos cursos de Licenciatura existem em cada campus?",
+        "sql": "SELECT nome_do_campus, COUNT(*) AS total FROM Curso WHERE modalidade_academica = 'LICENCIATURA' GROUP BY nome_do_campus;"
+    },
+    "question_3": {
+        "question": "Liste os cursos com ciclo Enade igual a 3 e currículo atualizado a partir de 2020.",
+        "sql": "SELECT descricao FROM Curso WHERE ciclo_enade = 3 AND curriculo_atual >= '2020';"
+    },
+    "question_4": {
+        "question": "Qual o número total de cursos técnicos oferecidos por campus?",
+        "sql": "SELECT nome_do_campus, COUNT(*) AS total_tecnicos FROM Curso WHERE modalidade_academica = 'TECNICO' GROUP BY nome_do_campus;"
+    },
+    "question_5": {
+        "question": "Quais cursos iniciaram no período 2021.1 ou depois?",
+        "sql": "SELECT descricao FROM Curso WHERE periodo_de_inicio >= '2021.1';"
+    },
+    "question_6": {
+        "question": "Qual é o código INEP dos cursos noturnos do campus de Patos?",
+        "sql": "SELECT descricao, codigo_inep FROM Curso WHERE nome_do_campus = 'Patos' AND turno = 'Noturno';"
+    },
+    "question_7": {
+        "question": "Liste os cursos e seus respectivos setores onde o setor é o mesmo de código 110.",
+        "sql": "SELECT descricao, nome_do_setor FROM Curso WHERE codigo_do_setor = 110;"
+    },
+    "question_8": {
+        "question": "Quais são os cursos que têm currículo atual anterior ao ano de 2018 e são do tipo Licenciatura?",
+        "sql": "SELECT descricao FROM Curso WHERE curriculo_atual < '2018' AND modalidade_academica = 'LICENCIATURA';"
+    },
+    "question_9": {
+        "question": "Quais os cursos do ceei?",
+        "sql": "SELECT nome_do_curso, codigo_do_curso FROM Curso WHERE nome_do_setor = 'CEEI - CENTRO DE ENGENHARIA ELÉTRICA E INFORMÁTICA';"
     }
+
 }

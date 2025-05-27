@@ -16,8 +16,6 @@ from ..prompts.disciplina_prompt import DISCIPLINA_PROMPT
 from ..prompts.estudante_prompt import ESTUDANTE_PROMPT
 from ..prompts.setor_prompt import SETOR_PROMPT
 
-
-
 from tests.tools.curso import *
 from tests.tools.disciplina import *
 from tests.tools.estudante import *
@@ -25,26 +23,46 @@ from tests.tools.setor import *
 from tests.tools.setor import *
 
 from ..utils.supervisor_utils import *
+from tests.tools.curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
+from tests.tools.estudante.obter_ingressantes_sisu import get_ingressantes_sisu
+
+from tests.tools.campus.get_calendarios import get_calendarios
+from tests.tools.campus.get_campi import get_campi
+from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
+
+from tests.tools.setor.get_estagios import get_estagios
 
 # TOOLS USADAS
+CAMPUS_TOOLS = [
+    get_campi,
+    get_calendarios,
+    get_periodo_mais_recente
+]
+
+SETOR_TOOLS = [
+    get_estagios
+]
+
 CURSO_TOOLS = [
     obter_dados_de_curso_especifico, 
     obter_dados_de_todos_os_cursos,
+    get_todos_curriculos_do_curso,
 ]
 
 DISCIPLINA_TOOLS = [
-    #get_disciplina_ofertadas_periodo,
-    get_horarios_disciplina,
+    get_disciplina_ofertadas_periodo,
+    get_horarios_turmas_vagas_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas,
     get_plano_de_curso_disciplina,
     get_pre_requisitos_disciplina,
-    get_disciplinas,
+    #get_disciplinas,
     #get_turmas_disciplina,
 ]
 
 ESTUDANTE_TOOLS = [
-    obter_dados_gerais_de_todos_estudantes
+    obter_dados_gerais_de_todos_estudantes,
+    get_ingressantes_sisu
 ]
 
 SETOR_TOOLS = [
@@ -57,6 +75,8 @@ SETOR_TOOLS = [
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
     next: str
+    # last_agent: Optional[str]
+    # agent_repetition_count: int
 
 # CRIAR INSTÂNCIA DE CHAT DO EURECA
 class EurecaChat:
@@ -77,7 +97,6 @@ class EurecaChat:
         self.agent_curso = CreateAgent('Agente_Curso').create_with_tools(model=self.agents_model, prompt=CURSO_PROMPT, tools=CURSO_TOOLS)
         self.curso_node = functools.partial(self.agent_node, agent=self.agent_curso, name="Agente_Curso")
 
-        
         # Disciplina
         self.agent_disciplina = CreateAgent('Agente_Disciplina').create_with_tools(model=self.agents_model, prompt=DISCIPLINA_PROMPT, tools=DISCIPLINA_TOOLS)
         self.disciplina_node = functools.partial(self.agent_node, agent=self.agent_disciplina, name="Agente_Disciplina")
@@ -97,28 +116,6 @@ class EurecaChat:
 
         query, formatted_responses = format_agent_responses(state["messages"])
 
-        # output_parser, format_instructions = get_supervisor_output_parser()
-
-        # prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT + "\n\n{format_instructions}", 
-        #                                  input_variables=["members", "query", "responses"], 
-        #                                  partial_variables={"format_instructions": format_instructions})
-        
-        # supervisor_chain = prompt_template | self.supervisor_model | output_parser
-
-        # filled_prompt = prompt_template.format(
-        #     members=MEMBERS,
-        #     query=query,
-        #     responses=formatted_responses
-        # )
-        # print("\nPROMPT DO SUPERVISOR: ", filled_prompt)
-        # result = supervisor_chain.invoke({
-        #     "members": MEMBERS,
-        #     "query": query,
-        #     "responses": formatted_responses
-        # })
-
-        # print("\nRESPOSTA DO SUPERVISOR: ", result)
-
         prompt_template = PromptTemplate(template=SUPERVISOR_PROMPT, 
                                          input_variables=["members", "query", "responses"])
         
@@ -132,9 +129,26 @@ class EurecaChat:
         print(result)
         next_agent = extract_next_agent(result)
         print("PRÓXIMO AGENTE: ", next_agent)
+
+        # last_agent = state.get("last_agent", None)
+        # repetition_count = state.get("agent_repetition_count", 0)
+
+        # if next_agent == last_agent:
+        #     repetition_count += 1
+        # else:
+        #     repetition_count = 1
+        #     last_agent = next_agent
+        
+        # if repetition_count >= 3:
+        #     print(f"Agente {next_agent} foi selecionado 3 vezes seguidas. Redirecionando para Agente_Agregador.")
+        #     next_agent = "FINISH"
+        #     repetition_count = 0
+
         return {
             "messages": state["messages"],
             "next": next_agent
+            # "last_agent": last_agent,
+            # "agent_repetition_count": repetition_count
         }
     
     
@@ -171,6 +185,7 @@ class EurecaChat:
     async def agent_node(self, state: AgentState, agent, name: str):
         """
         """
+
         try:
             result = await agent.ainvoke(state)
             print("\nRESULTADO DO AGENTE: ", {"messages": [AIMessage(content=result["messages"][-1].content, name=name)]})
@@ -183,6 +198,7 @@ class EurecaChat:
     def build(self):
         """
         """
+
         workflow = StateGraph(AgentState)
         workflow.add_node("Agente_Supervisor", self.supervisor_node)
         workflow.add_node("Agente_Agregador", self.aggregator_node)
@@ -206,7 +222,3 @@ class EurecaChat:
         workflow.set_entry_point("Agente_Supervisor")
 
         return workflow.compile(checkpointer=self.checkpointer)
-
-
-
-

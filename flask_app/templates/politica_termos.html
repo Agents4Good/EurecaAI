@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/politica_termos.css">
-    <link rel="icon" type="image/png" href="../static/images/ufcg.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/politica_termos.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/ufcg.png') }}">
     <title>EurecaAI - Termos de serviço</title>
     <link/>
 </head>
 <body>
     <header>
-        <img src="../static/images/Eureca_AI_logo.png" onClick="window.location.href='/'"/>
+        <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}" onClick="window.location.href='/'"/>
     </header>
     <main class="flex-duo">
         <section class="card">

@@ -6,6 +6,34 @@
     "question_2": {
         "question": "Liste as disciplinas junto com sua carga horária total (teórica + prática)",
         "sql": "SELECT nome_da_disciplina, (carga_horaria_teorica_semanal + carga_horaria_pratica_semanal) AS carga_total_semanal FROM Disciplina;"
+    },
+    "question_3": {
+        "question": "Quais disciplinas possuem mais de 4 créditos e carga horária total superior a 60 horas?",
+        "sql": "SELECT nome FROM Disciplina WHERE quantidade_de_creditos > 4 AND horas_totais > 60;"
+    },
+    "question_4": {
+        "question": "Liste os nomes das disciplinas que possuem mais teoria do que prática na carga horária semanal.",
+        "sql": "SELECT nome FROM Disciplina WHERE carga_horaria_teorica_semanal > carga_horaria_pratica_semanal;"
+    },
+    "question_5": {
+        "question": "Quantas disciplinas são do tipo 'Atividade Complementar'?",
+        "sql": "SELECT COUNT(*) FROM Disciplina WHERE tipo_de_componente_curricular = 'Atividade Complementar';"
+    },
+    "question_6": {
+        "question": "Qual é a carga horária total média das disciplinas do tipo 'Normal'?",
+        "sql": "SELECT AVG(horas_totais) FROM Disciplina WHERE tipo_de_componente_curricular = 'Normal';"
+    },
+    "question_7": {
+        "question": "Quais disciplinas têm exatamente 3 créditos e uma carga horária prática semanal igual ou superior a 2 horas?",
+        "sql": "SELECT nome FROM Disciplina WHERE quantidade_de_creditos = 3 AND carga_horaria_pratica_semanal >= 2"
+    },
+    "question_8": {
+        "question": "Existe alguma disciplina que tenha 0 horas práticas e mais de 60 horas totais?",
+        "sql": "SELECT nome FROM Disciplina WHERE carga_horaria_pratica_semanal = 0 AND horas_totais > 60;"
+    },
+    "question_9": {
+        "question": "Liste o nome e a carga horária total das disciplinas ordenadas da maior para a menor carga horária.",
+        "sql": "SELECT nome, horas_totais FROM Disciplina ORDER BY horas_totais DESC;"
     }
-
+    
 }

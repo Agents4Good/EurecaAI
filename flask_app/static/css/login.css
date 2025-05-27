@@ -22,6 +22,7 @@ body {
 
 .thin{
     font-weight: 100;
+    cursor: default;
 }
 
 .extralight{
@@ -120,6 +121,7 @@ body {
 .vertical{
     margin-top: 40px;
     margin-bottom: 30px;
+    cursor: pointer;
 }
 
 .popup {
@@ -172,4 +174,35 @@ body {
 }
 .show {
     display: block;
+}
+
+footer {
+    cursor: default;
+}
+
+@media (max-width: 600px) {
+    .col.s4 + .col.s4 {
+      width: 100%;
+    }
+  
+    .card {
+      margin: 0 auto;
+    }
+  
+    .responsive-img.vertical {
+      width: 80%;
+    }
+  
+    .input-field input {
+      font-size: 16px;
+    }
+  
+    footer {
+      font-size: 12px;
+      padding: 10px;
+    }
+  
+    .card-content p {
+      font-size: 14px;
+    }
 }

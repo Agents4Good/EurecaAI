@@ -1,5 +1,5 @@
 {
-    "Estudante_na_Disciplina": {
+    "Estudante_Disciplinas_Gerais": {
         "matricula_do_estudante": {
             "type": "TEXT",
             "description": "Matrícula do estudante",
@@ -10,7 +10,7 @@
             "description": "ENUM pode ser 'Aprovado', 'Trancado', 'Reprovado por Nota', 'Reprovado por Falta'. E quando peguntar apenas uma palavra próximo a reprovação sem especificar se foi por nota ou por falta use 'Reprovado por Nota' OR Reprovado por Falta",
             "mapper": "status"
         },
-        "media_final": {
+        "nota_na_disciplina": {
             "type": "REAL",
             "description": "Nota final do estudante na disciplina",
             "mapper": "media_final"
@@ -19,6 +19,11 @@
             "type": "TEXT",
             "description": "ENUM pode ser 'S' ou 'N'. Indica se o estudante dispensou a disciplina",
             "mapper": "dispensas"
+        },
+        "nome_da_disciplina": {
+            "type": "TEXT",
+            "description": "Nome da disciplina",
+            "mapper": "nome_da_disciplina"
         },
         "turma": {
             "type": "INTEGER",
