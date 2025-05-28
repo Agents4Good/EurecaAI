@@ -4,8 +4,6 @@ import requests
 from ..campus.utils import get_campus_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
-
-
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
 from ...sql.Estudante_Info_Gerais.normalize_data import normalize_data_estudante
@@ -43,12 +41,10 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       params = {"situacao-do-estudante": situacao_estudante}
    else:
       return ["Por favor informe a situação dos estudantes correta.\n Pode ser uma dessas: SUSPENSOS, REINGRESSOS, REATIVADOS, DESISTENTE, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS, ATIVOS"]
-      
+   
    if (nome_do_curso != "" and nome_do_campus != ""):
       dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-      dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
       params["curso"] = dados_curso['curso']['codigo']
-      params["campus"] = dados_campus['campus']['codigo']
    elif (nome_do_curso == "" and nome_do_campus != ""):
       dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
       params["campus"] = dados_campus['campus']['codigo']

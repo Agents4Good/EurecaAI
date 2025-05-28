@@ -4,7 +4,8 @@ from ..campus.get_calendarios import get_calendarios
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
-
+from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso_por_codigo
+from ..curso.utils import get_curso_most_similar
 
 ano_inicio = 2002
 
@@ -62,12 +63,13 @@ def busca_curriculo_no_periodo(periodo: str, todos_curriculos: list):
 
 def valida_periodo_curriculo(nome_do_campus: str, nome_do_curso: str, periodo: str, curriculo: str):
     mensagem = ""
+    dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
 
     if periodo == "":
         periodo = get_periodo_mais_recente()
     
     if curriculo == "":
-        todos_curriculos = get_todos_curriculos_do_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        todos_curriculos = get_todos_curriculos_do_curso_por_codigo(codigo_do_curso=dados_curso["curso"]["codigo"])
         curriculo_atual = todos_curriculos[-1]
         if int(periodo.split(".")[0]) < int(curriculo_atual['codigo_do_curriculo']):
             curriculo = busca_curriculo_no_periodo(periodo=periodo, todos_curriculos=todos_curriculos)
@@ -79,4 +81,4 @@ def valida_periodo_curriculo(nome_do_campus: str, nome_do_curso: str, periodo: s
         if int(periodo.split(".")[0]) < int(curriculo):
             mensagem = f"Erro: O período {periodo} não pode ser anterior ao curriculo de {curriculo}. Precisa ser igual ou superior."
     
-    return periodo, curriculo, mensagem
+    return dados_curso, curriculo, periodo, mensagem

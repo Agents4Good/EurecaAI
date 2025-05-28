@@ -28,6 +28,7 @@ from tests.tools.campus.get_campi import get_campi
 from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
 
 from tests.tools.setor.get_estagios import get_estagios
+from tests.tools.setor.get_professores_setor import get_professores_setor
 
 # TOOLS USADAS
 CAMPUS_TOOLS = [
@@ -37,7 +38,8 @@ CAMPUS_TOOLS = [
 ]
 
 SETOR_TOOLS = [
-    get_estagios
+    get_estagios,
+    get_professores_setor
 ]
 
 CURSO_TOOLS = [

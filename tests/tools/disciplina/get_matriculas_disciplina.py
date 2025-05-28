@@ -8,8 +8,6 @@ from ..utils.base_url import URL_BASE
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
 from ...sql.Estudante_Disciplinas_Gerais.prompt import PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
-from ..utils.validacoes import validar_turma
-from langchain_core.tools import tool
 
 def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo: Any = "") -> list:
     """_summary_
@@ -47,13 +45,15 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
         "periodo-ate": periodo
     }
 
-    if nome_do_curso:
-        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
-        params["curso"] = dados_curso["curso"]["codigo"]
-
-    if nome_da_disciplina:
+    if nome_da_disciplina and nome_do_campus:
         dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
         params["disciplina"] = dados_disciplina["disciplina"]["codigo"]
+
+    elif nome_do_curso:
+        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        params["curso"] = dados_curso["curso"]["codigo"]
+    
+    else: return "Erro: Informe que ele deve escolher o curso ou a disciplina junto do curso."
 
     print(params)
     response = requests.get(f'{URL_BASE}/matriculas', params=params)

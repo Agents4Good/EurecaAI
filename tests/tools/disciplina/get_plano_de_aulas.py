@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Any
-from .utils import get_disciplina_grade_most_similar
+from .utils import get_disciplina_grade_most_similar_por_codigo_do_curso
 from ..utils.base_url import URL_BASE
 from ..utils.validacoes import validar_turma, valida_periodo_curriculo
 
@@ -38,10 +38,10 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
 
-    periodo, curriculo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo=curriculo)
+    dados_curso, curriculo, periodo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo=curriculo)
     if mensagem != "": return mensagem
 
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar_por_codigo_do_curso(codigo_do_curso=dados_curso["curso"]["codigo"], nome_da_disciplina=nome_da_disciplina, curriculo=curriculo)
 
     if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
        return dados_disciplina[0]["msg"]

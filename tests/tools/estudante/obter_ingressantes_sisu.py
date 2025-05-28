@@ -51,9 +51,7 @@ def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", per
     
     if (nome_do_curso != "" and nome_do_campus != ""):
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params["curso"] = dados_curso['curso']['codigo']
-        params["campus"] = dados_campus['campus']['codigo']
     elif (nome_do_curso == "" and nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         params["campus"] = dados_campus['campus']['codigo']

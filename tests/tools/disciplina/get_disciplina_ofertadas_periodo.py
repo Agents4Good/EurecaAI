@@ -37,11 +37,9 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
     periodo=str(periodo)
     print(f"Tool `get_disciplina_ofertadas_periodo` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e periodo={periodo}.")
 
-    periodo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="", periodo=periodo)
+    dados_curso, _, periodo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="", periodo=periodo)
     if mensagem != "": return mensagem
     
-    dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-
     params = {
         'curso': dados_curso['curso']['codigo'],
         'periodo-de': periodo,

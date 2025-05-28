@@ -4,12 +4,13 @@ import requests
 from ..utils.base_url import URL_BASE
 import json
 
-def get_professores_setor(nome_do_centro_setor: Any, nome_do_campus: Any = "") -> list:
+def get_professores_setor(nome_da_unidade_academica: Any, nome_do_centro: Any = "", nome_do_campus: Any = "") -> list:
     """_summary_
     Busca as informações de professores ativos nos setores(centros) da UFCG ou de toda a UFCG. Ou seja, busca quais são os professores.
     
     Args:
-        nome_do_centro_setor: nome do setor (nome do centro, nome da unidade ou nome do curso) do curso, e passe a informação completa como "centro de ..." ou "unidade academica de ...". (Caso queira de toda a UFCG passe o parâmetro com string vazia '').
+        nome_da_unidade_academica: nome da unidade, passe a informação completa como "unidade academica de ...". (Caso queira de toda a UFCG passe o parâmetro com string vazia '').
+        nome_do_centro: nome do centro, passe a informação completa como "centro ...". (Caso queira de toda a UFCG passe o parâmetro com string vazia '').
         nome_do_campus: nome do campus. O parametro campus é o nome da cidade e ela pode ser Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... (Caso queira de toda a UFCG passe o parâmetro com string vazia '').
 
     Returns:
@@ -17,18 +18,23 @@ def get_professores_setor(nome_do_centro_setor: Any, nome_do_campus: Any = "") -
     """
 
     nome_do_campus=str(nome_do_campus)
-    nome_do_centro_setor=str(nome_do_centro_setor)
-    print(f"Tool get_professores chamada com nome_do_centro_setor={nome_do_centro_setor} e nome_do_campus={nome_do_campus}")
+    nome_da_unidade_academica=str(nome_da_unidade_academica)
+    nome_do_centro=str(nome_do_centro)
+    print(f"Tool get_professores chamada com nome_da_unidade_academica={nome_da_unidade_academica}, nome_do_centro={nome_do_centro} e nome_do_campus={nome_do_campus}")
     
     params = { "status": "ATIVO" }
-    
-    if (nome_do_centro_setor != ""):
-        dados_setor = get_setor_most_similar(nome_do_centro_setor=nome_do_centro_setor, nome_do_campus=nome_do_campus, filtro="UNID")
-        params["setor"] = dados_setor["setor"]["codigo"]
+    if (nome_da_unidade_academica != ""):
+        dados_setor = get_setor_most_similar(nome_da_unidade_academica=nome_da_unidade_academica, nome_do_campus=nome_do_campus, filtro="UNID")
+        params["setor"] = dados_setor["setor"]["codigo"]        
     
     response = requests.get(f'{URL_BASE}/professores', params=params)
 
     if response.status_code == 200:
-        return json.loads(response.text)
+        professores = json.loads(response.text)
+
+        if nome_do_centro != "" and not nome_da_unidade_academica:
+            dados_setor = get_setor_most_similar(nome_da_unidade_academica=nome_da_unidade_academica, nome_do_campus=nome_do_campus, filtro="CENTRO")
+            professores = [professor for professor in professores if str(professor["codigo_do_setor"])[0:2] == str(dados_setor["setor"]["codigo"])[0:2]]
+        return professores, f"total de professores: {len(professores)}"
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]

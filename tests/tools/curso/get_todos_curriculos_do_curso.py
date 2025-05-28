@@ -37,11 +37,10 @@ def get_todos_curriculos_do_curso(nome_do_curso: Any, nome_do_campus: Any) -> li
 
 def get_todos_curriculos_do_curso_por_codigo(codigo_do_curso: Any) -> list:
     """
-    Buscar o currículo mais recente de um curso.
+    Buscar o currículo mais recente de um curso a partir do seu código do curso.
 
     Args:
-        nome_do_curso: nome do curso.
-        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+        codigo_do_curso: código do curso.
 
     Returns:
         Lista com informações relevantes do currículo mais recente do curso específico.
