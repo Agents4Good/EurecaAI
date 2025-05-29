@@ -93,10 +93,9 @@ def get_disciplina_grade_most_similar_por_codigo_do_curso(codigo_do_curso: Any, 
         dict: dicionário contendo o nome e código da disciplina ou uma mensagem de erro.
     """
 
-    print(f"get_disciplina_grade_most_similar chamada com campus={nome_do_campus}, codigo_do_curso={codigo_do_curso}, nome_da_disciplina={nome_da_disciplina} e curriculo={curriculo} chamada.")
+    print(f"get_disciplina_grade_most_similar_por_codigo_do_curso chamada com codigo_do_curso={codigo_do_curso}, nome_da_disciplina={nome_da_disciplina} e curriculo={curriculo} chamada.")
     nome_da_disciplina = get_most_similar_acronym(str(nome_da_disciplina), "disciplina")
     codigo_do_curso = str(codigo_do_curso)
-    nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
     
     todas_disciplinas_curso = get_disciplinas_por_codigo(codigo_do_curso=codigo_do_curso, curriculo=curriculo)

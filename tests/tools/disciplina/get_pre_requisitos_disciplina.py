@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Any
-from .utils import get_disciplina_grade_most_similar_por_codigo_do_curso
+from .utils import get_disciplina_grade_most_similar_por_codigo_do_curso, get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 
@@ -39,9 +39,12 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
     print(f"Tool pre_requisitos_disciplinas chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}")
     
     if curriculo == "":
-        curriculo = get_curriculo_mais_recente_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)["codigo_do_curriculo"]
+        curriculo = get_curriculo_mais_recente_curso(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        dados_disciplina, _ = get_disciplina_grade_most_similar_por_codigo_do_curso(nome_da_disciplina=nome_da_disciplina, codigo_do_curso=curriculo["codigo_do_curso"], curriculo=curriculo["codigo_do_curriculo"])
+        curriculo = curriculo["codigo_do_curriculo"]
+    else:
+        dados_disciplina, _ = get_disciplina_grade_most_similar(nome_do_campus=nome_do_campus, nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, curriculo=curriculo)
 
-    dados_disciplina, _ = get_disciplina_grade_most_similar_por_codigo_do_curso(nome_da_disciplina=nome_da_disciplina, codigo_do_curso=curriculo, curriculo=curriculo)
     if type(dados_disciplina) == list and type(dados_disciplina[0]) == dict and "error_status" in dados_disciplina[0]:
        return dados_disciplina[0]["msg"]
     
@@ -58,6 +61,8 @@ def get_pre_requisitos_disciplina(nome_da_disciplina:Any, nome_do_curso:Any, nom
             disciplina_req = get_disciplina_for_tool(requisito['condicao'])
             disciplinas.append(disciplina_req[0]['nome'])
 
-        return list(set(disciplinas))
+        resultado = list(set(disciplinas))
+        print(resultado)
+        return resultado
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]

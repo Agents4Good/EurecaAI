@@ -56,6 +56,8 @@ def get_plano_de_aulas(nome_do_curso: Any, nome_do_campus: Any, nome_da_discipli
     response = requests.get(f'{URL_BASE}/aulas', params=params)
 
     if response.status_code == 200:
-        return json.loads(response.text)
+        resultado = json.loads(response.text)
+        print(resultado)
+        return resultado
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]

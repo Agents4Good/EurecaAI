@@ -1,6 +1,6 @@
 from typing import Any
 from ..utils.validacoes import valida_periodo_curriculo
-from ..setor.utils import get_setor_most_similar
+from ..setor.utils import get_setor_most_similar, get_setor_most_similar_por_codigo
 from ..curso.utils import get_curso_most_similar
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
@@ -51,8 +51,8 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         print("Turmas retornadas com sucesso")
         turmas = json.loads(response.text)
         codigo_disciplinas = list(set(turma["codigo_da_disciplina"] for turma in turmas))
-
-        setor_mais_similar = get_setor_most_similar(nome_do_campus=nome_do_campus, nome_do_centro_setor=nome_do_curso, filtro="UNID")
+        print(dados_curso["curso"]["codigo"][0])
+        setor_mais_similar = get_setor_most_similar_por_codigo(codigo_do_campus=str(dados_curso["curso"]["codigo"][0]), nome_do_centro_setor=nome_do_curso, filtro="UNID")
 
         disciplinas_dentro = []
         response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "setor": setor_mais_similar["setor"]["codigo"], "curso": dados_curso['curso']['codigo']})

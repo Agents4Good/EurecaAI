@@ -9,7 +9,7 @@ from ..utils.validacoes import valida_periodo_curriculo
 
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """_summary_
-    Informações de todas as disciplinas de um curso.
+    Informações de todas as disciplinas da grade de um curso.
     
     Use esta função quando a pergunta envolver:
     - código, nome, créditos ou carga horária da disciplina;

@@ -60,7 +60,7 @@ def get_horarios_turmas_vagas_disciplina(nome_do_curso: Any, nome_do_campus: Any
 
     if response.status_code == 200:
         horarios = json.loads(response.text)
-            
+        
         filtros_horarios = []
         turmas_map = {}
         dias = {"2": "Segunda-feira", "3": "Terça-feira", "4": "Quarta-feira", "5": "Quinta-feira", "6": "Sexta-feira", "7": "Sábado"}

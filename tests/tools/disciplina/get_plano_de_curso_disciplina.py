@@ -46,7 +46,9 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
     response = requests.get(f'{URL_BASE}/planos-de-curso', params=params)
 
     if response.status_code == 200:
-        return json.loads(response.text)
+        resultado = json.loads(response.text)
+        print(resultado)
+        return resultado
     else:
         return [{
             "error_status": response.status_code, 
