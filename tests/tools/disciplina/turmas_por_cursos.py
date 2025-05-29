@@ -11,6 +11,7 @@ def get_turmas_por_cursos(codigo_da_disciplina: int, turma: str, periodo: str) -
         "periodo-de": periodo,
         "periodo-ate": periodo
     }
+    
     response = requests.get(f"{URL_BASE}/turmas-por-cursos", params=params)
     if response.status_code != 200:
         return {"status_code": response.status_code, "msg": response.json()}
