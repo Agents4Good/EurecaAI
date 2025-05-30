@@ -3,6 +3,7 @@ import json
 import os
 from typing import TypedDict
 from .SQLGeneratorVanna import SQLGeneratorVanna
+from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -186,9 +187,10 @@ class GerenciadorSQLAutomatizado:
        
         #O qwen3 precisa de regex
         sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+       
 
         sql = sqlgen.generate_sql(question=question)
-
+    
         print("\n=============================================\n")
         print(f"Query gerada: {sql}")
         print("\n=============================================\n")

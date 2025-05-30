@@ -53,7 +53,8 @@ def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus
     """
 
     
-    query = remover_parametros_da_query(query, excluir=['self'])
+    #query = remover_parametros_da_query(query, excluir=['self'])
+    query = str(query)
     print(f"Query com os termos removidos: {query}")
 
 
@@ -88,7 +89,7 @@ def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus
     estagios_filtrados_normalizados = normalize_data_estagio(estagios_filtrados)
     gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite", prompt= PROMPT_SQL_ESTAGIO, temperature=0)
     gerenciador.save_data(estagios_filtrados_normalizados)
-    return gerenciador.get_data('estagio', query, True)
+    return gerenciador.get_data('estagio', query, False)
 
 
 #FUNÇÂO AUXILIAR

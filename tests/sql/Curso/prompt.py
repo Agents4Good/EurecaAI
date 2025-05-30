@@ -12,7 +12,5 @@ Siga **rigorosamente** as instruções abaixo:
 - Gere o SQL no formato correto, apenas o SQL e mais nada.
 </RESTRIÇÕES>
 
-Responda com uma consulta SQL válida e mínima.
-
 '''
 

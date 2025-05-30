@@ -16,8 +16,8 @@ tools = [
     get_todos_setores
 ]
 
-agent = AgenteSetores(LLM= ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL1)
-#agent = AgenteSetores(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
+#agent = AgenteSetores(LLM= ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL1)
+agent = AgenteSetores(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_SETORES_SQL)
 
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"# DEVIDO TER PASADO O CURSO ELE PEGOU UNID. ACAD. DE SISTEMAS E COMPUTAÇÃO POR CONTA DO RAG!
 
@@ -31,6 +31,6 @@ question = "Quais são os professores de ciencia da computacao do campus de camp
 #question = "Some as bolsas de todos os estagiarios da UFCG em 2020?" # PERGUNTA MUITO DEMORADA DEVIDO AOS DADOS
 
 question = "Some as bolsas de todos os estagiarios da UFCG no ano 2020 do campus Campina Grande do curso de engenharia civil?" #OK
-question = "Quantos estagiários tem no campus sume em 2024"
+#question = "Quantos estagiários tem no campus sume em 2024"
 
 agent.run(question=question)

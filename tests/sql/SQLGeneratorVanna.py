@@ -47,7 +47,7 @@ class MyVanna(VannaDB_VectorStore, MyCustomLLmVanna):
         # >>>> Removido: trecho que adicionava os "Response Guidelines"
         message_log = [self.system_message(initial_prompt)]
 
-        for example in question_sql_list[:2]:  # Limita a 3 exemplos
+        for example in question_sql_list[:3]:  # Limita a 3 exemplos
             if example is None:
                 print("example is None")
             else:

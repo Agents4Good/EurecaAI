@@ -1,5 +1,5 @@
 PROMPT_SQL_ESTAGIO = """
-Você é um gerador de SQL. Sua tarefa é criar uma **consulta SQL mínima, sintaticamente correta e precisa** no dialeto {sqlite, com base na pergunta fornecida.
+Você é um gerador de SQL. Sua tarefa é criar uma **consulta SQL mínima, sintaticamente correta e precisa** no dialeto (sqlite) , com base na pergunta fornecida.
 
 Siga **rigorosamente** as diretrizes abaixo:
 
@@ -15,5 +15,4 @@ Siga **rigorosamente** as diretrizes abaixo:
 - ❌ Não gere comentários, explicações ou texto adicional. Retorne **apenas a consulta SQL**, nada mais.
 - ✅ A consulta deve ser **válida, enxuta e funcional**.
 </REGRAS E RESTRIÇÕES>
-
 """

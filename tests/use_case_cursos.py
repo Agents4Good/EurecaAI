@@ -51,4 +51,5 @@ question = "quais são os cursos que tiveram o currículo renovado a partir de 2
 #question = "De todos os cursos de graduação do campus de sumé quais deles são relacionados a área de idiomas?"
 
 #question = "Traga todos os nomes e códigos dos cursos de graduação do campus de Campina Grande"
+question = "Qual o nome dos cursos do ceei do campus de campina grande"
 agent.run(question=question)
