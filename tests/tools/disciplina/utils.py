@@ -100,7 +100,7 @@ def get_disciplina_grade_most_similar_por_codigo_do_curso(codigo_do_curso: Any, 
     
     todas_disciplinas_curso = get_disciplinas_por_codigo(codigo_do_curso=codigo_do_curso, curriculo=curriculo)
     print("todas as disciplinas do curso foram recuperadas")
-    disciplinas_most_similar, top_k = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
+    disciplinas_most_similar, top_k = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.35)
     print("\n\n\n\n\n", disciplinas_most_similar, top_k, "\n\n\n\n")
 
     response = model.invoke(

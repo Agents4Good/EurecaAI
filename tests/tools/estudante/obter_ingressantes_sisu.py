@@ -81,6 +81,3 @@ def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", per
     
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]
-    
-
-print(get_ingressantes_sisu(nome_do_campus="campina grande", nome_do_curso="ciência da computação", periodo="2024.1"))

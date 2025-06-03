@@ -9,20 +9,22 @@ from ..curso.utils import get_curso_most_similar
 
 ano_inicio = 2002
 
-def validar_periodo(periodo: str):
+def validar_periodo(*periodos: str):
     padrao = r'^(20\d{2})\.(1|2)$'
-    match = re.match(padrao, periodo)
-    if match:
-        ano = int(match.group(1))
-        result = ano_inicio <= ano <= date.today().year
-        if result: 
-            print("-------- Período válido --------")
-            return True, ""
-    
-    print("-------- Períoodo inválido --------")
     calendarios = get_calendarios()
-    periodos = [calendario["periodo"] for calendario in calendarios]
-    return False, f"Período inválido. Informe ao usuário que os períodos que ele pode acessar são {', '.join(periodos)} e que o período mais recente é o de {periodos[-1]}."
+    periodos_validos = [calendario["periodo"] for calendario in calendarios]
+    
+    for periodo in periodos:
+        print(periodo)
+        if periodo == "":
+            continue
+        match = re.match(padrao, periodo)
+        if match:
+            ano = int(match.group(1))
+            result = ano_inicio <= ano <= date.today().year
+            if not result: 
+                return False, f"Período inválido. Informe ao usuário que os períodos que ele pode acessar são {', '.join(periodos_validos)} e que o período mais recente é o de {periodos_validos[-1]}. O formato é sempre 'Ano.X', onde X é um número."
+    return True, ""
 
 
 def validar_curriculo(curriculo_usado: str, nome_do_campus: str, nome_do_curso: str) -> bool:
