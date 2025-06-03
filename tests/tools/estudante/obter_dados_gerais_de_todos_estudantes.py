@@ -16,7 +16,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    """
       _summary_
       Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
-      Como quantidade, nome, matrícula, idade, sexo, cor, naturalidade, nacionalidade e local de nascimento.
+      Como quantidade, nome, matrícula, idade, sexo, cor, cra, naturalidade, nacionalidade e local de nascimento.
       situação do estudante: 
          - Quando vocẽ usar situação do tipo "SUSPENSOS" use o motivo de evação como "SUSPENSOS";
          - Quando vocẽ usar situação do tipo "REINGRESSOS" use o motivo de evação como "CANCELADO NOVO INGRESSO MESMO CURSO";
@@ -78,8 +78,10 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
          "periodo-de-ingresso-de": periodo_de_ingresso_de,
          "periodo-de-ingresso-ate": periodo_de_ingresso_ate,
          "periodo-de-evasao-de": periodo_de_evasao_de,
-         "periodo-de-esavao-de": periodo_de_evasao_ate
+         "periodo-de-esavao-ate": periodo_de_evasao_ate
       }
+      
+      print(params)
    else:
       return ["Por favor informe a situação dos estudantes correta.\n Pode ser uma dessas: SUSPENSOS, REINGRESSOS, REATIVADOS, DESISTENTE, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS, ATIVOS"]
    

@@ -44,6 +44,11 @@
             "type": "TEXT",
             "description": "Cidade de local de nascimento do estudante. Só use esse atributo se na pergunta de fato especificar sobre o local de nascimento.",
             "mapper": "local_de_nascimento"
+        },
+        "cra": {
+            "type": "REAL",
+            "description": "CRA: Coeficiente de rendimento acadêmico.",
+            "mapper": "cra"
         }
     }
 }
