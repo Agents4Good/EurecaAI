@@ -5,6 +5,7 @@ from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Curso.prompt import PROMPT_SQL_CURSOS
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
@@ -40,70 +41,15 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
 
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
-    if response.status_code == 200:
-        cursos = json.loads(response.text)
+    
+    if response.status_code == 200:       
+        cursos = recuperar_dados()
+        print("Cursos:", cursos)
+        if not cursos: 
+            cursos = json.loads(response.text)
+            inserir_dados(cursos)
         gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite")
         gerenciador.save_data(cursos)
         return gerenciador.get_data(query, PROMPT_SQL_CURSOS, temperature=0)
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]
-    
-    {
-    "Curso": {
-        "codigo_do_curso": {
-            "type": "INTEGER",
-            "description": "Codigo do curso",
-            "mapper": "codigo_do_curso"
-        },
-        "nome_do_curso": {
-            "type": "TEXT",
-            "description": "Nome do curso",
-            "mapper": "descricao"
-        },
-        "codigo_do_setor": {
-            "type": "INTEGER",
-            "description": "Codigo do setor",
-            "mapper": "codigo_do_setor"
-        },
-        "nome_do_setor": {
-            "type": "TEXT",
-            "description": "Nome do setor",
-            "mapper": "nome_do_setor"
-        },
-        "nome_do_campus": {
-            "type": "TEXT",
-            "description": "Nome do campus",
-            "mapper": "nome_do_campus"
-        },
-        "turno": {
-            "type": "TEXT",
-            "description": "Turno do curso",
-            "mapper": "turno"
-        },
-        "periodo_de_inicio": {
-            "type": "TEXT",
-            "description": "Periodo de inicio do curso",
-            "mapper": "periodo_de_inicio"
-        },
-        "codigo_inep": {
-            "type": "INTEGER",
-            "description": "Codigo do INEP",
-            "mapper": "codigo_inep"
-        },
-        "modalidade_academica": {
-            "type": "TEXT",
-            "description": "Modalidade acadêmica do curso cuja opções são BACHARELADO, LICENCIATURA, TECNICO",
-            "mapper": "modalidade_academica"
-        },
-        "curriculo_atual": {
-            "type": "TEXT",
-            "description": "É o ano em que a grade do curso foi renovada",
-            "mapper": "curriculo_atual"
-        },
-        "ciclo_enade": {
-            "type": "INTEGER",
-            "description": "De quantos em quantos semestres ocorre a prova do enade",
-            "mapper": "ciclo_enade"
-        }
-    }
-}
