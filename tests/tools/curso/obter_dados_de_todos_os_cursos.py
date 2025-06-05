@@ -5,7 +5,7 @@ from ..campus.utils import get_campus_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Curso.prompt import PROMPT_SQL_CURSOS
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
-from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados
+from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados, criar_banco
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
@@ -42,10 +42,11 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     url_cursos = f'{URL_BASE}/cursos'
     response = requests.get(url_cursos, params=params)
     
-    if response.status_code == 200:       
+    if response.status_code == 200:
         cursos = recuperar_dados()
-        print("Cursos:", cursos)
-        if not cursos: 
+        if not cursos:
+            print("Nenhum curso encontrado no banco. Carregando a API...")
+            criar_banco()
             cursos = json.loads(response.text)
             inserir_dados(cursos)
         gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite")

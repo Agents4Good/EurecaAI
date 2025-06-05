@@ -1,0 +1,6 @@
+flask
+dotenv
+langchain
+langgraph==0.2.59
+langchain_core
+langchain_community
