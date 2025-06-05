@@ -1,7 +1,7 @@
 import json
 import requests
 from typing import Any
-from .utils import get_disciplina_grade_most_similar
+from .utils import get_disciplina_grade_most_similar, get_disciplina_grade_most_similar_por_codigo_do_curso
 from .turmas_por_cursos import get_turmas_por_cursos
 from ..utils.base_url import URL_BASE
 from ..utils.validacoes import valida_periodo_curriculo, validar_turma
@@ -36,10 +36,10 @@ def get_horarios_turmas_vagas_disciplina(nome_do_curso: Any, nome_do_campus: Any
     validou_turma, mensagem = validar_turma(turma_usada=turma)
     if not validou_turma: return mensagem
     
-    periodo, curriculo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo="")
+    dados_curso, curriculo, periodo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo=periodo, curriculo="")
     if mensagem != "": return mensagem
 
-    dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
+    dados_disciplina, _ = get_disciplina_grade_most_similar_por_codigo_do_curso(nome_da_disciplina=nome_da_disciplina, codigo_do_curso=dados_curso["curso"]["codigo"], curriculo=curriculo)
     
     print(dados_disciplina)
 
@@ -60,7 +60,7 @@ def get_horarios_turmas_vagas_disciplina(nome_do_curso: Any, nome_do_campus: Any
 
     if response.status_code == 200:
         horarios = json.loads(response.text)
-            
+        
         filtros_horarios = []
         turmas_map = {}
         dias = {"2": "Segunda-feira", "3": "Terça-feira", "4": "Quarta-feira", "5": "Quinta-feira", "6": "Sexta-feira", "7": "Sábado"}

@@ -18,18 +18,17 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    """
       _summary_
       Buscar informações gerais dos estudantes da UFCG com base no(s) curso(s).
-      Como quantidade, nome, matrícula, idade, sexo, cor, naturalidade, nacionalidade e local de nascimento.
+      Como quantidade, nome, matrícula, idade, sexo, cor, naturalidade, nacionalidade, local de nascimento, cra (média geral) e períodos cursados.
 
       Args:
-         query: Pergunta feita pelo usuário.
+         query: Pergunta feita pelo usuário, modifique para retirar toda menção de campus e curso da query pois não há necessidade, inclusive o próprio termo campus e curso.
          nome_do_curso: nome do curso (se quiser todos os estudantes da UFCG (de todas as universidades), use a string vazia '' para obter os estudantes de todos os cursos).
-         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser informações dos estudantes de todos os campus (toda a UFCG), passe a string vazia ''. 
+         nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal. 
          situacao_estudante: a situação do estudante, PRECISA ser um desses: 'SUSPENSOS', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTE', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS', 'ATIVOS'.
          gerar_grafico: Tipo do gráfico que o usuário quer gerar, PRECISA ser um desses: 'BARRA', 'PIZZA', 'ROSCA'. Caso o usuário não queira ou não tenha informado, use o padrão vazio ''.
 
       Returns:
          Informações dos estudantes que ajude a responder a pergunta feita pelo usuário.
-      
    """
 
    print(f"Tool `obter_dados_de_todos_estudantes` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, situacao_estudante={situacao_estudante} e gerar_grafico={gerar_grafico}.")
@@ -52,15 +51,15 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    elif (nome_do_curso == "" and nome_do_campus != ""):
       dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
       params["campus"] = dados_campus['campus']['codigo']
-   elif (nome_do_curso == "" and nome_do_campus == ""):
-      pass
+   # elif (nome_do_curso == "" and nome_do_campus == ""):
+   #    pass
    else:
-      return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
+      return [{"error_status": 500, "msg": "Para obter essas informações, peça para que o usuário informe qual o nome do curso E nome do campus"}]
 
    response = requests.get(f'{URL_BASE}/estudantes', params=params)
    if response.status_code == 200:
       estudantes = normalize_data_estudante(json.loads(response.text))
-      db_name = "db_estudantes.sqlite"
+      db_name = f"db_estudantes_{dados_curso["curso"]["codigo"]}.sqlite"
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
       gerenciador.save_data(estudantes)
       response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
@@ -74,4 +73,5 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:
+      print("ERRO DA TOOL DE ESTUDANTE: ", response.json())
       return [{"error_status": response.status_code, "msg": response.json()}]

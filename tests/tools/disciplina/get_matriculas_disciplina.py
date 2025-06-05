@@ -11,7 +11,7 @@ from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
 from ..utils.validacoes import validar_turma
 from langchain_core.tools import tool
 
-def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo: Any = "") -> list:
+def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo_de: Any = "", periodo_ate: Any = "") -> list:
     """_summary_
     Retorna informações das matrículos dos alunos em uma disciplina.
     
@@ -20,13 +20,17 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     - dispensa de disciplina;
     - nomes ou matrícula dos alunos;
     - quantidade de estudantes em uma disciplina de um curso.
+    - observação: se na pergunta houver apenas um único período, use este período tanto para 'periodo_de' quanto para 'periodo_ate'.
+
+    Ao usar essa ferramenta, inclua na resposta os parâmetros que foram utilizados junto com a resposta encontrada.
     
     Args:
         query (Any): Pergunta completa do usuário.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
         nome_do_curso (Any): Nome do curso. Defaults to "".
         nome_da_disciplina (Any): Nome da disciplina.
-        periodo (Any, optional): Período do curso. Defaults to "".
+        periodo_de (Any): Período mínimo de busca. Defaults to "".
+        periodo_ate (Any): Período máximo de busca. Defaults to "".
 
     Returns:
         list: Uma lista com informações relevantes a respeito das matrículas dos estudantes de uma disciplina.
@@ -36,24 +40,28 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
-    periodo=str(periodo)
+    periodo_de=str(periodo_de)
+    periodo_ate=str(periodo_ate)
     curriculo=""
-    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo={periodo} e curriculo={curriculo}")
+    print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo_de={periodo_de}, periodo_ate={periodo_ate} e curriculo={curriculo}")
     
-    periodo = periodo if periodo != "" else get_periodo_mais_recente()
+    if periodo_de == "" and periodo_ate == "":
+        periodo_de = periodo_ate = get_periodo_mais_recente()
 
     params = {
-        "periodo-de": periodo,
-        "periodo-ate": periodo
+        "periodo-de": periodo_de,
+        "periodo-ate": periodo_ate
     }
 
-    if nome_do_curso:
-        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
-        params["curso"] = dados_curso["curso"]["codigo"]
-
-    if nome_da_disciplina:
+    if nome_da_disciplina and nome_do_campus:
         dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
         params["disciplina"] = dados_disciplina["disciplina"]["codigo"]
+
+    elif nome_do_curso:
+        dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
+        params["curso"] = dados_curso["curso"]["codigo"]
+    
+    else: return "Erro: Informe que ele deve escolher o curso ou a disciplina junto do curso."
 
     print(params)
     response = requests.get(f'{URL_BASE}/matriculas', params=params)

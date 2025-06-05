@@ -42,8 +42,18 @@
         },
         "local_de_nascimento": {
             "type": "TEXT",
-            "description": "Cidade de local de nascimento do estudante. Só use esse atributo se na pergunta de fato especificar sobre o local de nascimento.",
+            "description": "Cidade de local de nascimento do estudante. Só use esse atributo se na pergunta de fato especificar sobre o local de nascimento;",
             "mapper": "local_de_nascimento"
+        },
+        "cra": {
+            "type": "REAL",
+            "description": "CRA do estudante, ou seja, a média do estudante que representa seu desempenho acadêmico;",
+            "mapper": "cra"
+        },
+        "periodos_completados": {
+            "type": "INTEGER",
+            "description": "Períodos que o estudante já completou até então, se quiser saber o período atual use o valor retornado mais um.",
+            "mapper": "periodos_completados"
         }
     }
 }

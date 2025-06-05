@@ -32,4 +32,3 @@ Responda com uma consulta SQL válida e mínima.
 
 {input}
 '''
-

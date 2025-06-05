@@ -54,7 +54,6 @@ DISCIPLINA_TOOLS = [
     get_plano_de_curso_disciplina,
     get_pre_requisitos_disciplina,
     #get_disciplinas,
-    #get_turmas_disciplina,
 ]
 
 ESTUDANTE_TOOLS = [
