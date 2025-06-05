@@ -9,7 +9,6 @@ from langchain_core.language_models import BaseChatModel, LanguageModelLike
 from langgraph.prebuilt.tool_executor import ToolExecutor
 from langchain_core.tools import BaseTool
 
-
 def reduce_messages(left: list[AnyMessage], right: list[AnyMessage]) -> list[AnyMessage]:
     for message in right:
         if not message.id:
