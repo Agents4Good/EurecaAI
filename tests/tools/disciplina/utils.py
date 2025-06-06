@@ -115,7 +115,7 @@ def get_disciplina_grade_most_similar_por_codigo_do_curso(codigo_do_curso: Any, 
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome_da_disciplina).
         """
     )
-    
+    print("AAAAAAAAAAAAAAAH: ", response.content)
     result = processar_json(response.content, "disciplina")
     print(f"Disciplina mais similar encontrada: {result} para o curriculo de {curriculo}.")
     return result, curriculo

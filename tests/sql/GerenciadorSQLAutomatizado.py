@@ -164,8 +164,8 @@ class GerenciadorSQLAutomatizado:
         sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
         result = sqlGenerateLLM.write_query(query=question, tabela=self.tabela)
-        print(f"Query gerada: {result['query']}")
+        sql = result['query']
         result = self.__execute_sql(result['query'])
         print("RESULTADO DO SQL: ", result)
-        return result
+        return f"SQL USADO NA CONSULTA DOS DADOS: {sql}; Resultado encontrado: {result}"
     

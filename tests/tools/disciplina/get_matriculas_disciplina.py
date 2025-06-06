@@ -44,6 +44,7 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     periodo_ate=str(periodo_ate)
     curriculo=""
     print(f"Tool `get_matriculas_disciplina` chamada com nome_da_disciplina={nome_da_disciplina}, nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, periodo_de={periodo_de}, periodo_ate={periodo_ate} e curriculo={curriculo}")
+    print(f"Query da pergunta: {query}")
     
     if periodo_de == "" and periodo_ate == "":
         periodo_de = periodo_ate = get_periodo_mais_recente()
@@ -57,18 +58,22 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
         dados_disciplina, _ = get_disciplina_grade_most_similar(nome_da_disciplina=nome_da_disciplina, nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus, curriculo=curriculo)
         params["disciplina"] = dados_disciplina["disciplina"]["codigo"]
 
-    elif nome_do_curso:
+    if nome_do_curso:
         dados_curso = get_curso_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso)
         params["curso"] = dados_curso["curso"]["codigo"]
     
-    else: return "Erro: Informe que ele deve escolher o curso ou a disciplina junto do curso."
+    else: return ["Erro: Informe que o usuário deve passar somente o curso para obter informação de todas as disciplinas ou então a disciplina desejada junto do curso dela."]
 
-    print(params)
+    print("PARAMS USADO NA REQUSIÇÃO: ", params)
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:
         prompt = ""
         estudantes_na_disciplina = json.loads(response.text)
+
+        for estudante in estudantes_na_disciplina:
+            if estudante.get("status") == "Reprovado":
+                estudante["status"] = "Reprovado por Nota"
 
         if nome_da_disciplina != "":
             gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
