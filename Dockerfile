@@ -5,7 +5,7 @@ WORKDIR /EurecaAI
 COPY . .
 
 RUN python -m venv venv && \
-    source venv/bin/activate && \
+    . venv/bin/activate && \
     pip install --upgrade pip && \
     pip install -r requirements.txt
 
