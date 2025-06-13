@@ -12,6 +12,7 @@ REGRAS PARA USO DAS TOOLS:
 
 3. Se a pergunta envolver MATRÍCULA, NOTAS, DESEMPENHO DE ESTUDANTES, quem DISPENSOU, quem tirou maior nota, ranking, etc., use:
 ➤ get_matriculas_disciplina
+    - OBSERVAÇÃO: NÃO USE ESSA TOOL SE A PERGUNTA ENVOLVER VAGAS!
 
 4. Se a pergunta for sobre o PLANO DE AULA de uma disciplina (conteúdo de uma data específica, temas futuros), use:
 ➤ get_plano_de_aulas
