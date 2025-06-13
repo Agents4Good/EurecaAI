@@ -6,6 +6,7 @@ from langchain_community.chat_models import ChatDeepInfra
 from langchain_core.messages import HumanMessage
 import asyncio, json
 
+from .langchain_models import supervisor_model, aggregator_model, agents_model
 from demo.agents.eureca_chat import EurecaChat
 from dotenv import load_dotenv
 
@@ -15,9 +16,9 @@ app = Flask(__name__, static_url_path="/static")
 
 # Inicializa o sistema de agentes ao iniciar a aplicação
 system = EurecaChat(
-    supervisor_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0),
-    aggregator_model=ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0, max_tokens=2048),
-    agents_model=ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
+    supervisor_model=supervisor_model,
+    aggregator_model=aggregator_model,
+    agents_model=agents_model
 ).build()
 
 
@@ -128,4 +129,4 @@ def voice_to_text():
         return jsonify({"error": f"Erro ao tentar usar o serviço de reconhecimento de fala: {e}"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

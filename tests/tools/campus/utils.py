@@ -1,13 +1,9 @@
+from .campi import campi
 from ..utils.most_similar import get_most_similar
 from .get_campi import get_campi
-from langchain_ollama import ChatOllama
-from langchain_community.chat_models import ChatDeepInfra
 from ..utils.processar_json import processar_json
 from flask_app.langchain_models import model
 
-
-#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
-#model = ChatOllama(model="llama3.1", temperature=0)
 format = """{'campus': {'codigo': '', 'nome': ''}}"""
 mapper_campus = {"nome": "descricao", "codigo": "campus"}
 
@@ -23,7 +19,7 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
     """
     print(f"get_campus_most_similar chamada com nome_do_campus={nome_do_campus}.")
     
-    campi = get_campi()
+    #campi = get_campi()
     campus_most_similar, _ = get_most_similar(lista_a_comparar=campi, dado_comparado=nome_do_campus, top_k=3, mapper=mapper_campus, limiar=0.65)
     
     if len(campus_most_similar) == 0:
@@ -42,5 +38,5 @@ def get_campus_most_similar(nome_do_campus: str) -> dict:
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome).
         """
     )
-    print(f'get_campus_most_similar respondeu com o campus: {response.content}')
+    print(f'`get_campus_most_similar` respondeu com o campus: {response.content}')
     return processar_json(response.content, "campus")

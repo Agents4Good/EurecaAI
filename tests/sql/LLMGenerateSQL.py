@@ -41,6 +41,7 @@ class LLMGenerateSQL:
         )
         
         sql_gerado = self.llm.invoke(self.prompt).content
+        print("SQL GERADOOOOOOOOO: ", sql_gerado)
         match = re.search(r'SELECT\b[\s\S]*?(?:;)?(?=\s*(?:```|\n?\}|"\s*\}|\s*$))', sql_gerado, re.IGNORECASE)
 
         if match:

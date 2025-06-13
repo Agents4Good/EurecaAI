@@ -15,6 +15,21 @@
     <script>
         let idChatLocal = null;
 
+        document.addEventListener("DOMContentLoaded", function () {
+            const textarea = document.getElementById('user_input');
+
+            function atualizarPlaceholder() {
+                if (window.innerWidth < 600) {
+                    textarea.placeholder = "Digite sua dúvida sobre a UFCG...";
+                } else {
+                    textarea.placeholder = "Pergunte informações sobre a UFCG...";
+                }
+            }
+
+            atualizarPlaceholder(); // Atualiza ao carregar
+            window.addEventListener('resize', atualizarPlaceholder); // Atualiza ao redimensionar
+        });
+
         $(document).ready(function () {
             $('#chat_form').on('keydown', function (event) {
                 if (event.keyCode == 13) {
@@ -142,16 +157,16 @@
         // Função que adiciona a mensagem do bot
         function addBotMessage() {
             var botMessageBlock = `
-                <div class="bot">
+                <div class="bot skeleton">
                     <div class="bot__container">
                         <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
                         <div class="bot__response">
                             <div class="bot__name">
                                 <p>Assistente:</p>
                             </div>
-                            <p class="bot__name__response">Raciocinando...</p>
+                            <p class="bot__name__response">Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  <img src="{{ url_for('static', filename='images/brilhos.gif') }}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;"></p>
                             <div class="bot_options">
-                                <button class="audio-button">
+                                <button class="audio-button" style="display: none;">
                                     <img src="{{ url_for('static', filename='images/audio.png') }}" />
                                 </button>
                             </div>  
@@ -265,6 +280,7 @@
         function sendMessage(message) {
             addBotMessage();
             disable_input();
+            const $lastBotResponse = $('.bot__name__response').last();
 
             $.ajax({
                 type: 'POST',
@@ -274,7 +290,9 @@
                 success: function (response) {
                     const markdownResponse = response.response;
                     const htmlResponse = marked.parse(markdownResponse);
-                    $('.bot__name__response').last().html(htmlResponse);
+                    $('.bot').last().find('.audio-button').show();
+                    $lastBotResponse.html(htmlResponse);
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
                     $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
         
@@ -288,7 +306,7 @@
                         
                         get_resumo(message).then((resumo) => {
                             newDiv.innerHTML = `
-                            <p>${resumo}</p>
+                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
                             <div class="fab-wrapper">
                                 <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
                                 <div class="fab-menu" id="${id}_menu">
@@ -311,7 +329,7 @@
                     } else {
                         $('.bot__name__response').last().text('Desculpe, algo deu errado.');
                     }
-
+                    $lastBotResponse.closest('.bot').removeClass('skeleton');
                     enable_input();
                 }
             });

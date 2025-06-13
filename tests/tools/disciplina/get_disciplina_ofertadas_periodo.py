@@ -1,5 +1,6 @@
 from typing import Any
 from ..utils.validacoes import valida_periodo_curriculo
+from ..setor.utils import get_setor_most_similar, get_setor_most_similar_por_codigo
 from ..curso.utils import get_curso_most_similar
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
@@ -34,36 +35,39 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
     nome_do_curso=str(nome_do_curso)    
     nome_do_campus=str(nome_do_campus)
     periodo=str(periodo)
-    print(f"Tool get_disciplinas_curso chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e periodo={periodo}.")
+    print(f"Tool `get_disciplina_ofertadas_periodo` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e periodo={periodo}.")
 
-    periodo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="", periodo=periodo)
+    dados_curso, _, periodo, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo="", periodo=periodo)
     if mensagem != "": return mensagem
     
-    dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-
     params = {
         'curso': dados_curso['curso']['codigo'],
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
-    response = requests.get(f'{URL_BASE}/turmas', params=params)
+    response = requests.get(f'{URL_BASE}/turmas-por-cursos', params=params)
     
     if response.status_code == 200:
         print("Turmas retornadas com sucesso")
         turmas = json.loads(response.text)
         codigo_disciplinas = list(set(turma["codigo_da_disciplina"] for turma in turmas))
+        print(dados_curso["curso"]["codigo"][0])
+        setor_mais_similar = get_setor_most_similar_por_codigo(codigo_do_campus=str(dados_curso["curso"]["codigo"][0]), nome_do_centro_setor=nome_do_curso, filtro="UNID")
 
-        disciplinas = []
-        for codigo_disciplina in codigo_disciplinas:
-            response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "disciplina": codigo_disciplina })
-            if response_disciplina.status_code == 200:
-                disciplinas.append(json.loads(response_disciplina.text)[0])
-
+        disciplinas_dentro = []
+        response_disciplina = requests.get(f'{URL_BASE}/disciplinas', params={ "setor": setor_mais_similar["setor"]["codigo"], "curso": dados_curso['curso']['codigo']})
+        if response_disciplina.status_code == 200:
+            disciplinas_curso = json.loads(response_disciplina.text)
+            for disciplina in disciplinas_curso:
+                if disciplina["codigo_da_disciplina"] in codigo_disciplinas:
+                    disciplinas_dentro.append(disciplina)
+        
         if query == "":
-            return disciplinas
+            return disciplinas_dentro
         gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite")
-        gerenciador.save_data(disciplinas)
+        gerenciador.save_data(disciplinas_dentro)
         return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
     
     else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
+        print(response.json())
+        return [{"error_status": response.status_code, "msg": response.json()}]

@@ -1,9 +1,9 @@
-import json
-import requests
+import json, requests, time
 from langchain_ollama import ChatOllama
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
 from ..campus.utils import get_campus_most_similar
+from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados
 from ..utils.base_url import URL_BASE
 from langchain_community.chat_models import ChatDeepInfra
 from flask_app.langchain_models import model
@@ -28,7 +28,7 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     
     nome_do_campus=str(nome_do_campus)
     nome_do_curso=str(nome_do_curso)
-    cursos = get_lista_cursos(nome_do_campus=nome_do_campus)
+    cursos = get_lista_cursos_nome_codigo(nome_do_campus=nome_do_campus)
     cursos_most_similar, top_k = get_most_similar(lista_a_comparar=cursos, dado_comparado=nome_do_curso, top_k=5, mapper=mapper_curso, limiar=0.5)
     
     if len(cursos_most_similar) == 0:
@@ -58,6 +58,20 @@ def get_curso_most_similar(nome_do_curso: str, nome_do_campus: str) -> dict:
     return resultado
 
 
+def get_lista_cursos_nome_codigo(nome_do_campus: str) -> list:
+    """
+    Função auxiliar que busca todos os cursos do campus informado filtrando por nome e código.
+
+    Args:
+        nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ...
+
+    Returns:
+        list: lista de cursos.
+    """
+    
+    cursos = get_lista_cursos(nome_do_campus)
+    return [{'descricao': curso['descricao'], 'codigo_do_curso': curso['codigo_do_curso']} for curso in cursos]
+
 def get_lista_cursos(nome_do_campus: str) -> list:
     """
     Função auxiliar que busca todos os cursos do campus informado.
@@ -68,24 +82,22 @@ def get_lista_cursos(nome_do_campus: str) -> list:
     Returns:
         list: lista de cursos.
     """
+    
+    cursos = recuperar_dados()
 
-    print("get_lista_cursos sendo usada.")
-    params = { 'status': 'ATIVOS', 'campus': "" }
-    url_cursos = f'{URL_BASE}/cursos'
-
+    if not cursos or (isinstance(cursos, str) and "no such table" in cursos):
+        params = { 'status': 'ATIVOS', 'campus': "" }
+        url_cursos = f'{URL_BASE}/cursos'
+        response = requests.get(url_cursos, params=params)
+        cursos = []
+        if response.status_code == 200:
+            cursos = json.loads(response.text)
+            inserir_dados(cursos)
+        else:
+            raise Exception(f"Status code: {response}, Message: {response.json()}")
     if (nome_do_campus != ""):
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-        params['campus'] = dados_campus["campus"]["codigo"]
-    
-    response = requests.get(url_cursos, params=params)
+        return [curso for curso in cursos if dados_campus["campus"]["nome"] == curso["nome_do_campus"]]
+    return cursos
 
-    cursos = []
-    if response.status_code == 200:
-        resposta_cursos = json.loads(response.text)
-        for curso in resposta_cursos:
-            nome_curso = curso["descricao"]
-            codigo_curso = curso["codigo_do_curso"]
-            cursos.append({"codigo_do_curso": codigo_curso, "descricao": nome_curso})
-        return cursos
-    else:
-        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
+#print(get_curso_most_similar("Ciencia da computacao", "campina grande"))
