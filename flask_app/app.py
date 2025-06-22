@@ -129,4 +129,4 @@ def voice_to_text():
         return jsonify({"error": f"Erro ao tentar usar o serviço de reconhecimento de fala: {e}"}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -55,23 +55,13 @@ Capacidades dos Agentes:
   - Especializado em informações específicas sobre as disciplinas ofertadas na UFCG.
   - Capacidades:
     * Buscar informações relevantes das disciplinas.
-    * Essas informações podem ser: horário e carga horária, plano de aula, matrículas em uma disciplina, notas, pré-requisitos da disciplina, etc.
+    * Essas informações podem ser: horário e carga horária, plano de aula, matrículas em uma disciplina, notas, pré-requisitos da disciplina, vagas de uma disciplina, etc.
 
 3. Agente_Estudante:
   - Especializado em informações gerais sobre os estudantes da UFCG.
   - Capacidades:
-    * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade e local de nascimento.
-<<<<<<< HEAD
-    
-4. Agente_Setor:
-  - Especializado em informações sobre setores e professores da UFCG.
-  - Capacidades:
-    * Buscar informações relevantes de todos os setores, como nome do campus, nome do setor ou centro.
-    * Buscar informações sobre professores de um setor ou centro específico.
-    * Buscar informações sobre estágios, como nome do estudante, nome do curso, nome do campus, nome do centro/unidade, ano de início e fim do estágio.
-=======
-    * Também é capaz de gerar gráficos com base nas informações recuperadas (em formato de link).
->>>>>>> origin/memory
+    * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade, local de nascimento, cra (média geral do estudante) e períodos cursados.
+    * Por último, também é capaz de lidar com estudantes que foram ingressantes em um curso.
 
 **Importante**
 - Quando a tarefa estiver completa, responda com: `{{"next": "FINISH"}}`
