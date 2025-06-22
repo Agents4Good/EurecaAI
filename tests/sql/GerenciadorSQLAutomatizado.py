@@ -6,6 +6,8 @@ from .SQLGeneratorVanna import SQLGeneratorVanna
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -181,12 +183,14 @@ class GerenciadorSQLAutomatizado:
       
     
     
-    def get_data(self, model_name:str, question: str, clean_question: bool = False):
+    def get_data(self, embbedings:str, question: str, clean_question: bool = False):
         if clean_question:
             question = self.__clean_question(question)
        
         #O qwen3 precisa de regex
-        sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=model_name, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+        #sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=embbedings, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+
+        sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
        
 
         sql = sqlgen.generate_sql(question=question)
