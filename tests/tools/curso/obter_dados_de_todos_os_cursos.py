@@ -43,7 +43,7 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
     response = requests.get(url_cursos, params=params)
     if response.status_code == 200:
         cursos = json.loads(response.text)
-        gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite", PROMPT_SQL_CURSOS, temperature=0.0)
+        gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite", PROMPT_SQL_CURSOS)
         gerenciador.save_data(cursos)
         return gerenciador.get_data("curso", query)
     else:
