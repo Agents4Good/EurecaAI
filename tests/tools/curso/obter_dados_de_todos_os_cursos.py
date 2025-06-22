@@ -6,6 +6,7 @@ from .utils import get_lista_cursos
 from ..utils.base_url import URL_BASE
 from ...sql.Curso.prompt import PROMPT_SQL_CURSOS
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ..utils.remover_parametros_query import remover_parametros_da_query
 
 def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list:
     """
@@ -28,16 +29,22 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
-    query=str(query)
-
-    
+    #query= remover_parametros_da_query(query, excluir=['self'])
+    query = str(query)
     nome_do_campus=str(nome_do_campus)
     print(f"Tool `obter_dados_de_todos_os_cursos` chamada com nome_do_campus={nome_do_campus}")  
 
-    try:
-        cursos = get_lista_cursos(nome_do_campus)
-        gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite")
+    params = {'status':'ATIVOS' }
+    if (nome_do_campus != ""):
+        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+        params['campus'] = dados_campus["campus"]["codigo"]
+
+    url_cursos = f'{URL_BASE}/cursos'
+    response = requests.get(url_cursos, params=params)
+    if response.status_code == 200:
+        cursos = json.loads(response.text)
+        gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite", PROMPT_SQL_CURSOS, temperature=0.0)
         gerenciador.save_data(cursos)
-        return gerenciador.get_data(query, PROMPT_SQL_CURSOS, temperature=0)
-    except Exception as e:
-        return [{"Error": str(e)}]
+        return gerenciador.get_data("curso", query)
+    else:
+        return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]

@@ -1,0 +1,42 @@
+{
+    "question_1": {
+        "question": "Quantos estudantes foram aprovados na disciplina?",
+        "sql": "SELECT COUNT(*) FROM Estudante_na_Disciplina WHERE status = 'Aprovado';"
+    },
+    "question_2": {
+        "question": "Qual é a média das notas dos estudantes que foram reprovados por nota?",
+        "sql": "SELECT AVG(media_final) FROM Estudante_na_Disciplina WHERE status = 'Reprovado por Nota';"
+    },
+    "question_3": {
+        "question": "Liste todos os estudantes que dispensaram a disciplina.",
+        "sql": "SELECT * FROM Estudante_na_Disciplina WHERE dispensas = 'S';"
+    },
+    "question_4": {
+        "question": "Quantos estudantes estão em cada status de aprovação?",
+        "sql": "SELECT status, COUNT(*) FROM Estudante_na_Disciplina GROUP BY status;"
+    },
+    "question_5": {
+        "question": "Qual a maior nota registrada na disciplina?",
+        "sql": "SELECT MAX(media_final) FROM Estudante_na_Disciplina;"
+    },
+    "question_6": {
+        "question": "Quais estudantes tiveram nota maior que 7 e não foram reprovados?",
+        "sql": "SELECT * FROM Estudante_na_Disciplina WHERE media_final > 7 AND status != 'Reprovado por Nota' AND status != 'Reprovado por Falta';"
+    },
+    "question_7": {
+        "question": "Qual a média de notas por turma?",
+        "sql": "SELECT turma, AVG(media_final) AS media_por_turma FROM Estudante_na_Disciplina GROUP BY turma;"
+    },
+    "question_8": {
+        "question": "Quantos estudantes estão em cada turma?",
+        "sql": "SELECT turma, COUNT(*) AS total_estudantes FROM Estudante_na_Disciplina GROUP BY turma;"
+    },
+    "question_9": {
+        "question": "Existe algum estudante com nota abaixo de 5?",
+        "sql": "SELECT * FROM Estudante_na_Disciplina WHERE media_final < 5;"
+    },
+    "question_10": {
+        "question": "Quantos estudantes reprovados por falta estão na turma 1?",
+        "sql": "SELECT COUNT(*) FROM Estudante_na_Disciplina WHERE turma = 1 AND status = 'Reprovado por Falta';"
+    }
+}

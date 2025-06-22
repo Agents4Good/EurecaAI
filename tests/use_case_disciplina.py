@@ -4,7 +4,7 @@ from langchain_community.chat_models import ChatDeepInfra
 from .agent.agent_disciplinas import AgenteDisciplinas
 from .tools.disciplina.get_plano_de_aulas import get_plano_de_aulas
 from .tools.disciplina.get_turmas_disciplina import get_turmas_disciplina
-from .tools.disciplina.get_horarios_disciplina import get_horarios_disciplina
+from .tools.disciplina.get_horarios_turmas_vagas_disciplina import get_horarios_turmas_vagas_disciplina
 from .tools.disciplina.get_matriculas_disciplina import get_matriculas_disciplina
 from .tools.disciplina.get_plano_de_curso_disciplina import get_plano_de_curso_disciplina
 from .tools.disciplina.get_pre_requisitos_disciplina import get_pre_requisitos_disciplina
@@ -14,7 +14,6 @@ from .tools.disciplina.get_disciplina_ofertadas_periodo import get_disciplina_of
 
 tools = [
     get_disciplina_ofertadas_periodo,
-    get_horarios_disciplina,
     get_matriculas_disciplina,
     get_plano_de_aulas, 
     get_plano_de_curso_disciplina, 
@@ -89,9 +88,13 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 #question = "Quais alunos dispensaram a disciplina Teoria da Computação no curso de Ciência da Computação do campus de Campina Grande?"
 #question = "Me mostre quem não dispensou Teoria da Computação na Ciência da Computação de Campina Grande."
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
-#question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
+question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
 
-question = "Quais são os códigos e nomes das disciplinas no curso de computação"
+
+#question = "Traga o código de todas as disciplinas do curso de ciência da computação do campus de campina grande"
+#question = "Quais os pré-requistos da disciplina de programação para web 1 do curso de ciência da computação?"
+#question = "Quais são os códigos e nomes das disciplinas no curso de computação"
+#question = "Qual o plano de aula da disciplina de compiladores do curso de ciência da computação?"
 
 
 agent.run(question=question)

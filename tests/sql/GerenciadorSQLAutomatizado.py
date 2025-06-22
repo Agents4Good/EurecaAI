@@ -1,14 +1,23 @@
 import sqlite3
 import json
 import os
+from typing import TypedDict
+from .SQLGeneratorVanna import SQLGeneratorVanna
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
+class CleanQuestion(TypedDict):
+    question: str
+
 class GerenciadorSQLAutomatizado:
-    def __init__ (self, table_name, db_name):
+    def __init__ (self, table_name, db_name, prompt, temperature: float = 0):
         self.table_name = table_name
+        self.temperature = temperature
         self.db_name = db_name
         self.path = os.path.join(BASE_DIR, "", self.table_name, "tabela.json")
         print(f"Path do arquivo JSON: {self.path}")   
@@ -16,7 +25,8 @@ class GerenciadorSQLAutomatizado:
         if not os.path.exists(self.path):
             raise ValueError("Arquivo JSON não encontrado. Verifique o caminho do arquivo.")
         
-        self.tabela = self.__create_table()
+        self.table_info = self.__create_table()
+        self.prompt = prompt
 
     def __create_table(self):
         """
@@ -51,31 +61,6 @@ class GerenciadorSQLAutomatizado:
         sql = f"{self.table_name}(\n" + "\n".join(linhas) + "\n);"
         return sql
        
-
-    def _extract_campus_types_description(self):
-        """
-            Extrai os nomes dos campos, os tipos e a descrição no arquivo JSON.
-            ex: nome_do_curso é mapeado para descricao
-
-            Returns:
-                list: Uma lista de campos mapeados da tabela.
-        """
-
-        with open(self.path, 'r') as file:
-            try:
-                data = json.load(file)
-            except json.JSONDecodeError as e:
-                raise ValueError(f"Erro ao carregar o arquivo JSON: {e}")
-        
-        # Verifica se a tabela existe no JSON
-        if self.table_name not in data:
-            raise ValueError(f"A tabela '{self.table_name}' não foi encontrada no arquivo JSON.")
-        
-        campus_tabela = []
-        for column, column_type in data[self.table_name].items():
-            campus_tabela.append(f"{column} {column_type['type']} -- {column_type['description']}")
-
-        return campus_tabela     
 
     def _extract_campus(self):
         """
@@ -115,7 +100,7 @@ class GerenciadorSQLAutomatizado:
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
 
-        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.tabela}")
+        cursor.execute(f"CREATE TABLE IF NOT EXISTS {self.table_info}")
         cursor.execute(f"DELETE FROM {self.table_name}")
 
         dados = self._extract_campus()
@@ -158,14 +143,65 @@ class GerenciadorSQLAutomatizado:
         except sqlite3.Error as e:
             conn.close()
             return [{"error": str(e)}]
+        
+    
+    def __clean_question(self, question: str):
+        """
+            Limpa a pergunta removendo os resíduos.
+
+            Args:
+                question (str): A pergunta a ser limpa.
+            Returns:
+                str: A pergunta limpa.
+        """
+
+        #model = ChatOllama(model="qwen3:8b", temperature=0.0)
+        model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
+        prompt = f"""
+        Você é um assistente de IA especializado em limpar perguntas de usuários.
+        Sua tarefa é **reformular** a pergunta original, removendo apenas os trechos que forem desconexos, redundantes ou que não agreguem sentido (ex: "no ano", "do campus", "do curso") **somente se estiverem mal encaixados ou sem sentido na frase**.
+
+        👉 Regras:
+        1. Preserve trechos que façam sentido dentro do contexto da pergunta.
+        2. Remova apenas termos ou fragmentos que quebram o significado ou deixem a pergunta confusa.
+        3. Não reescreva com outras palavras — mantenha a estrutura original, apenas removendo partes inúteis.
+        4. Não adicione comentários ou explicações.
+        5. Responda com **apenas a pergunta limpa**.
+
+        **Pergunta original:**
+        {question}
+        """
+
+        structured_output = model.with_structured_output(CleanQuestion)
+        response = structured_output.invoke(prompt)
+
+        if response['question']:
+            print("Pergunta limpa: ", response['question'])
+            return response['question']
+        else:
+            raise ValueError("Erro ao limpar a pergunta.")
+      
     
     
-    def get_data(self, question: str, prompt, temperature: float = 0):
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
-        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
-        result = sqlGenerateLLM.write_query(query=question, tabela=self.tabela)
-        sql = result['query']
-        result = self.__execute_sql(result['query'])
-        print("RESULTADO DO SQL: ", result)
-        return f"SQL USADO NA CONSULTA DOS DADOS: {sql}; Resultado encontrado: {result}"
+    def get_data(self, embbedings:str, question: str, clean_question: bool = False):
+        if clean_question:
+            question = self.__clean_question(question)
+       
+        #O qwen3 precisa de regex
+        #sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=embbedings, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+
+        sqlgen = SQLGeneratorVanna(LLM=ChatDeepInfra, model_name=embbedings, db_path=self.db_name, config={'model': 'meta-llama/Llama-3.3-70B-Instruct', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+
+        #sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+       
+
+        sql = sqlgen.generate_sql(question=question)
+    
+        print("\n=============================================\n")
+        print(f"Query gerada: {sql}")
+        print("\n=============================================\n")
+
+        result = self.__execute_sql(sql)
+        return  result
+
     

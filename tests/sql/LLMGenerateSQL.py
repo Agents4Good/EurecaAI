@@ -31,6 +31,8 @@ class LLMGenerateSQL:
         structured_llm = self.llm.with_structured_output(StateSQL,  method="function_calling")
         result = structured_llm.invoke(self.prompt)
 
+        print("RESULTADO: ", result)
+
         return {"query": result["query"], "question": result["question"]}
   
     def write_query(self, query, tabela)-> StateSQL:

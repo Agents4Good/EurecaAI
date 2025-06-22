@@ -1,0 +1,42 @@
+{
+    "question_1": {
+        "question": "Quantos estudantes estão com a situação ativa?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE situacao = 'ATIVOS';"
+    },
+    "question_2": {
+        "question": "Qual é a média de idade dos estudantes do curso?",
+        "sql": "SELECT AVG(idade) FROM Estudante_Info_Gerais;"
+    },
+    "question_3": {
+        "question": "Quantos estudantes são do sexo feminino?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE sexo = 'FEMININO';"
+    },
+    "question_4": {
+        "question": "Quantos estudantes possuem CRA maior que 8?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE cra > 8;"
+    },
+    "question_5": {
+        "question": "Quais são os nomes dos estudantes com CRA abaixo de 6?",
+        "sql": "SELECT nome FROM Estudante_Info_Gerais WHERE cra < 6;"
+    },
+    "question_6": {
+        "question": "Quantos estudantes são da cor parda?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE cor = 'Parda';"
+    },
+    "question_7": {
+        "question": "Qual o número de estudantes por situação no curso?",
+        "sql": "SELECT situacao, COUNT(*) FROM Estudante_Info_Gerais GROUP BY situacao;"
+    },
+    "question_8": {
+        "question": "Quais são os estudantes que têm mais de 30 anos?",
+        "sql": "SELECT nome FROM Estudante_Info_Gerais WHERE idade > 30;"
+    },
+    "question_9": {
+        "question": "Quantos estudantes são brasileiros?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE nacionalidade = 'Brasileira';"
+    },
+    "question_10": {
+        "question": "Quantos estudantes nasceram no estado de SP?",
+        "sql": "SELECT COUNT(*) FROM Estudante_Info_Gerais WHERE naturalidade = 'SP';"
+    }
+}

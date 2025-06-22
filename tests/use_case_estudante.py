@@ -12,8 +12,8 @@ tools = [
     obter_dados_gerais_de_todos_estudantes
 ]   
 
-agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
-#agent = AgenteEstudante(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
+#agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
+agent = AgenteEstudante(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 
 question = "Qual é o CRA de Matheus Hensley?"
@@ -53,7 +53,7 @@ question = "quantos estudantes sao pardos ou pretos no curso de ciencia da compu
 #question = "Qual é a proporção de meninas com relação aos meninos no curso de ciência da cumptação cmapus campina grande"
 #question = "Qual a quantidade de estudantes do sexo feminino no curso de ciência da computação do campus Campina Grande?"
 #question = "QUero saber quantas meninas existem no curso de ciência da computação campus campina grande"
-question = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
+question = "Quantos estudantes de ciência da computação do campus de campina grande tem por estado "
 #question = "Traga o nome dos estudantes do curso de ciência da computação do campus Campina Grande que tema deficiência B10"
 #question = "Quantos estudantes internacionais existem no curso de ciência da computação do campus Campina Grande?"
 agent.run(question=question)

@@ -1,11 +1,5 @@
 PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA = '''
-Dada uma pergunta de entrada, crie uma consulta ({dialect}) sintaticamente correta para executar e ajudar a encontrar a resposta.
-
-Use apenas a seguinte tabela a seguir:
-
-{table_info}
-
-Siga **rigorosamente** as instruções abaixo:
+Dada uma pergunta de entrada, crie uma consulta (sqlite) sintaticamente correta para executar e ajudar a encontrar a resposta.
 
 <RESTRIÇÕES>
 - Nunca use "SELECT *" — selecione somente as colunas relevantes.
@@ -15,9 +9,8 @@ Siga **rigorosamente** as instruções abaixo:
 - Ignore referências a "turma" pois não há nenhuma coluna representando isso.
 - Ignore referências a qualquer tipo de *nome* de disciplina pois não há nenhuma coluna representando isso.
 - Se uma parte da pergunta não se relaciona com o esquema, ignore.
+- Ignore também qualquer trecho da pergunta que pareça incompleto, sem sentido, ambíguo ou não relacionado ao esquema disponível.
 </RESTRIÇÕES>
 
-Responda com uma consulta SQL válida e mínima.
-
-{input}
+Responda com **somente** uma consulta SQL válida e mínima. **Não inclua explicações, comentários ou raciocínio.**
 '''

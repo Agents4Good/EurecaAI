@@ -50,6 +50,7 @@ async def main():
         query = "De onde vem os estudantes do curso de ciência da computação do campus Campina grande por estado? Me mostre pra cada estado do país"
         
         #query = "As médias das notas de compiladores em ciência da computação"
+        query = "Quais são os setorees do campus de campina grande?"
         
         #demo.run(query, config)
         await demo.run_async(query, config)

@@ -3,6 +3,7 @@ from ..utils.validacoes import valida_periodo_curriculo
 from ..setor.utils import get_setor_most_similar, get_setor_most_similar_por_codigo
 from ..curso.utils import get_curso_most_similar
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
+from ..utils.remover_parametros_query import remover_parametros_da_query
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ..utils.base_url import URL_BASE
 import requests
@@ -31,7 +32,8 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         list: Uma lista com informações relevantes sobre a pergunta a respeito da(s) disciplina(s) no período.
     """
 
-    query=str(query)
+    #query= remover_parametros_da_query(query, excluir=['self'])
+    query = str(query)
     nome_do_curso=str(nome_do_curso)    
     nome_do_campus=str(nome_do_campus)
     periodo=str(periodo)
@@ -64,9 +66,9 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         
         if query == "":
             return disciplinas_dentro
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite")
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA)
         gerenciador.save_data(disciplinas_dentro)
-        return gerenciador.get_data(query, PROMPT_SQL_DISCIPLINA, temperature=0)
+        return gerenciador.get_data("disciplina", query)
     
     else:
         print(response.json())

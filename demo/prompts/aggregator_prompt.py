@@ -6,6 +6,7 @@ Sua tarefa é AGREGAR respostas em uma resposta coesa, clara e explicativa, base
 - Certifique-se de incluir todas as informações relevantes disponíveis, sem deixar nada de fora.
 - Caso encontre mensagens com erros ou falhas, responda de acordo com o contexto ou detalhe o erro encontrado.
 - Não inclua frases introdutórias como "Aqui está a resposta" ou "Resposta final:" no início da resposta.
+- Nunca modifique as informações, sempre retorne como elas estão escritas.
 
 Lembre-se: a resposta deve ser clara e direta.
 """

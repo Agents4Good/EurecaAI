@@ -22,7 +22,7 @@
         },
         "situacao_do_estudante": {
             "type": "TEXT",
-            "description": "ENUM da situação do estudante no curso. Os ENUM pode ser 'ATIVO' ou 'INATIVO'.",
+            "description": "ENUM da situação do estudante no curso. Os ENUM pode ser 'SUSPENSO', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTES', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS' E 'ATIVOS'.",
             "mapper": "situacao"
         },
         "naturalidade": {

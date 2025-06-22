@@ -2,12 +2,12 @@
     "Estagio": {
         "matricula_do_estudante": {
             "type": "TEXT",
-            "description": "Matrícula do estudante",
+            "description": "Matrícula do estudante no formato '000000000'",
             "mapper": "matricula_do_estudante"
         },
         "id_empresa": {
             "type": "INTEGER",
-            "description": "Identificador da empresa",
+            "description": "Identificador da empresa. Use apenas quando tiver explicito na pergunta.",
             "mapper": "id_concedente"
         },
         "uf_concedente": {
@@ -20,19 +20,9 @@
             "description": "Matrícula do professor orientador",
             "mapper": "matricula_do_docente"
         },
-        "departamento_da_empresa": {
-            "type": "TEXT",
-            "description": "Departamento da empresa onde o estágio é realizado",
-            "mapper": "departamento"
-        },
-        "nome_do_professor": {
-            "type": "TEXT",
-            "description": "Nome do professor orientador",
-            "mapper": "nome_docente"
-        },
         "obrigatorio": {
             "type": "BOOLEAN",
-            "description": "Indica se o estágio é obrigatório ou não",
+            "description": "Indica se o estágio é obrigatório ou não, pode ser 0 ou 1",
             "mapper": "obrigatorio"
         },
         "data_inicio": {
@@ -52,12 +42,12 @@
         },
         "status": {
             "type": "TEXT",
-            "description": "Status do estágio, exemplo: 'Termo celebrado', 'Termo rescindido', 'Termo', 'Plano aprovado CPE/Centro'",
+            "description": "Status do estágio, exemplo: 'Termo celebrado', 'Termo rescindido', 'Termo', 'Plano aprovado CPE/Centro'. Use apenas quando tiver explicito na pergunta. ",
             "mapper": "status"
         },
         "codigo_da_disciplina": {
             "type": "TEXT",
-            "description": "Código da disciplina relacionada ao estágio",
+            "description": "Código da disciplina relacionada ao estágio. Use apenas quando tiver explicito na pergunta.",
             "mapper": "codigo_da_disciplina"
         },
         "bolsa_mensal": {

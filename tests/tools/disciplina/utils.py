@@ -10,7 +10,7 @@ from langchain_community.chat_models import ChatDeepInfra
 from flask_app.langchain_models import model
 
 
-#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
+model = ChatOllama(model="llama3.1", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 

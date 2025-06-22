@@ -12,7 +12,8 @@ from collections import defaultdict
 MEMBERS = [
     "Agente_Curso",
     "Agente_Disciplina",
-    "Agente_Estudante"
+    "Agente_Estudante",
+    "Agente_Setor"
 ]
 
 # FORMATO DE RETORNO PARA A RESPOSTA DO SUPERVISOR
@@ -21,6 +22,7 @@ class RouteResponse(BaseModel):
         "Agente_Curso",
         "Agente_Disciplina",
         "Agente_Estudante",
+        "Agente_Setor",
         "FINISH"
     ]
 

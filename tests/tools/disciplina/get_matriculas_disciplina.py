@@ -1,15 +1,18 @@
 import json
 import requests
 from typing import Any
+
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from .utils import get_disciplina_grade_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Estudante_na_Disciplina.prompt import PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
 from ...sql.Estudante_Disciplinas_Gerais.prompt import PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
+from ...sql.Estudante_na_Disciplina.normalize_data import normalize_data
 from ...sql.GerenciadorSQLAutomatizado  import GerenciadorSQLAutomatizado
+from ..utils.remover_parametros_query import remover_parametros_da_query
 from ..utils.validacoes import validar_turma
-from langchain_core.tools import tool
+
 
 def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: Any, nome_da_disciplina: Any = "", periodo_de: Any = "", periodo_ate: Any = "") -> list:
     """_summary_
@@ -36,7 +39,8 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
         list: Uma lista com informações relevantes a respeito das matrículas dos estudantes de uma disciplina.
     """
 
-    query=str(query)    
+    #query= remover_parametros_da_query(query, excluir=['self'])   
+    query = str(query)
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
@@ -64,33 +68,26 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
     
     else: return ["Erro: Informe que o usuário deve passar somente o curso para obter informação de todas as disciplinas ou então a disciplina desejada junto do curso dela."]
 
-    print("PARAMS USADO NA REQUSIÇÃO: ", params)
+
     response = requests.get(f'{URL_BASE}/matriculas', params=params)
 
     if response.status_code == 200:
-        prompt = ""
-        estudantes_na_disciplina = json.loads(response.text)
-
-        for estudante in estudantes_na_disciplina:
-            if estudante.get("status") == "Reprovado":
-                estudante["status"] = "Reprovado por Nota"
+        estudantes_na_disciplina = normalize_data(json.loads(response.text))
 
         if nome_da_disciplina != "":
-            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite")
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_na_Disciplina", db_name="db_estudante_disciplina.sqlite", prompt=PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA)
             gerenciador.save_data(estudantes_na_disciplina)
-            prompt = PROMPT_SQL_ESTUDANTE_NA_DISCIPLINA
         else:
-            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_Disciplinas_Gerais", db_name="db_estudante_disciplinas_gerais.sqlite")
+            gerenciador = GerenciadorSQLAutomatizado(table_name="Estudante_Disciplinas_Gerais", db_name="db_estudante_disciplinas_gerais.sqlite", prompt=PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS)
             gerenciador.save_data(estudantes_na_disciplina)
-            prompt = PROMPT_SQL_ESTUDANTE_DISCIPLINAS_GERAIS
 
         try:
-            dados = gerenciador.get_data(query, prompt, temperature=0)
+            dados = gerenciador.get_data("estudante_na_disciplina",query)
             if len(dados) == 0:
                 return ["Não foi encontrado nada"]
         except TypeError as e:
             return [{"Error": "Ocorreu um erro para gerar a consulta SQL."}]
-        print(dados)
+       
         return dados
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]

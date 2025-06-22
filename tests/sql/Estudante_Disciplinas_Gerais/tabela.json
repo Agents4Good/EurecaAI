@@ -17,7 +17,7 @@
         },
         "dispensas": {
             "type": "TEXT",
-            "description": "ENUM pode ser 'Sim' ou 'Não'. Indica se o estudante dispensou a disciplina",
+            "description": "ENUM pode ser 'S' ou 'N'. Indica se o estudante dispensou a disciplina",
             "mapper": "dispensas"
         },
         "nome_da_disciplina": {

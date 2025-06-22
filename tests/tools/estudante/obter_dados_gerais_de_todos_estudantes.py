@@ -1,9 +1,12 @@
+import inspect
 import json
 from typing import Any
 import requests
 from ..campus.utils import get_campus_most_similar
 from ..curso.utils import get_curso_most_similar
 from ..utils.base_url import URL_BASE
+from ..utils.remover_parametros_query import remover_parametros_da_query
+
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ...sql.Estudante_Info_Gerais.prompt import PROMPT_SQL_ESTUDANTES_INFO_GERAIS
 from ...sql.Estudante_Info_Gerais.normalize_data import normalize_data_estudante
@@ -101,9 +104,9 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       estudantes = normalize_data_estudante(json.loads(response.text))
       estudantes = [estudante for estudante in estudantes if motivo_de_evasao in estudante["motivo_de_evasao"]]
       db_name = "db_estudantes.sqlite"
-      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
+      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
       gerenciador.save_data(estudantes)
-      response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)   
+      response = gerenciador.get_data("estudante_info_gerais", query)   
       print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:
