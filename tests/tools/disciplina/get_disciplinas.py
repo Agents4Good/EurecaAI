@@ -62,7 +62,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
             return disciplinas
         gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA)
         gerenciador.save_data(disciplinas)
-        return gerenciador.get_data("disciplina", query, True)
+        return gerenciador.get_data("disciplina", query)
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]
 
