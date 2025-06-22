@@ -190,7 +190,9 @@ class GerenciadorSQLAutomatizado:
         #O qwen3 precisa de regex
         #sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=embbedings, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
 
-        sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+        sqlgen = SQLGeneratorVanna(LLM=ChatDeepInfra, model_name=embbedings, db_path=self.db_name, config={'model': 'meta-llama/Llama-3.3-70B-Instruct', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+
+        #sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
        
 
         sql = sqlgen.generate_sql(question=question)
@@ -199,7 +201,7 @@ class GerenciadorSQLAutomatizado:
         print(f"Query gerada: {sql}")
         print("\n=============================================\n")
 
-        # result = self.__execute_sql(sql)
-        return  
+        result = self.__execute_sql(sql)
+        return  result
 
     

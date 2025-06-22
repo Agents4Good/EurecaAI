@@ -12,8 +12,8 @@ tools = [
     obter_dados_gerais_de_todos_estudantes
 ]   
 
-agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
-#agent = AgenteEstudante(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
+#agent = AgenteEstudante(LLM=ChatOllama, model="qwen3:8b", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
+agent = AgenteEstudante(LLM=ChatDeepInfra, model="meta-llama/Meta-Llama-3.1-8B-Instruct", tools=tools, temperatura=0, prompt=ZERO_SHOT_PROMPT_ESTUDANTE_SQL)
 #question = "Quantos estudantes homens tem cra acima de 8 no curso de ciencia da computacao no campus de campina grande?"
 
 question = "Qual é o CRA de Matheus Hensley?"

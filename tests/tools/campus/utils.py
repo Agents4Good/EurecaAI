@@ -1,3 +1,4 @@
+from langchain_ollama import ChatOllama
 from .campi import campi
 from ..utils.most_similar import get_most_similar
 from .get_campi import get_campi

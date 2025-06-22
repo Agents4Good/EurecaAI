@@ -104,9 +104,9 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       estudantes = normalize_data_estudante(json.loads(response.text))
       estudantes = [estudante for estudante in estudantes if motivo_de_evasao in estudante["motivo_de_evasao"]]
       db_name = "db_estudantes.sqlite"
-      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
+      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
       gerenciador.save_data(estudantes)
-      response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)   
+      response = gerenciador.get_data("estudante_info_gerais", query)   
       print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:

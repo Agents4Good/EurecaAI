@@ -32,7 +32,8 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         list: Uma lista com informações relevantes sobre a pergunta a respeito da(s) disciplina(s) no período.
     """
 
-    query= remover_parametros_da_query(query, excluir=['self'])
+    #query= remover_parametros_da_query(query, excluir=['self'])
+    query = str(query)
     nome_do_curso=str(nome_do_curso)    
     nome_do_campus=str(nome_do_campus)
     periodo=str(periodo)
@@ -65,9 +66,9 @@ def get_disciplina_ofertadas_periodo(query: Any, nome_do_curso: Any, nome_do_cam
         
         if query == "":
             return disciplinas_dentro
-        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA, temperature=0)
+        gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA)
         gerenciador.save_data(disciplinas_dentro)
-        return gerenciador.get_data("disciplina", query, True)
+        return gerenciador.get_data("disciplina", query)
     
     else:
         print(response.json())

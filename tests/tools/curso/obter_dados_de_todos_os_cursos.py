@@ -29,7 +29,8 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         Informações que ajude a responder a pergunta feita pelo usuário.
     """
 
-    query= remover_parametros_da_query(query, excluir=['self'])
+    #query= remover_parametros_da_query(query, excluir=['self'])
+    query = str(query)
     nome_do_campus=str(nome_do_campus)
     print(f"Tool `obter_dados_de_todos_os_cursos` chamada com nome_do_campus={nome_do_campus}")  
 
@@ -44,6 +45,6 @@ def obter_dados_de_todos_os_cursos(query: Any, nome_do_campus: Any = "") -> list
         cursos = json.loads(response.text)
         gerenciador = GerenciadorSQLAutomatizado("Curso", "db_cursos.sqlite", PROMPT_SQL_CURSOS, temperature=0.0)
         gerenciador.save_data(cursos)
-        return gerenciador.get_data("curso", query, True)
+        return gerenciador.get_data("curso", query)
     else:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação dos cursos da UFCG."}]
