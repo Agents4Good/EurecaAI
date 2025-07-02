@@ -1,11 +1,12 @@
 import json
 import requests
 from typing import Any
-from collections import defaultdict
 from ..utils.base_url import URL_BASE
 from ..curso.utils import get_curso_most_similar
 from ..campus.utils import get_campus_most_similar
 from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
+from ..curso.utils import get_lista_cursos
+
 
 def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", periodo: Any = "") -> list:
     """
@@ -69,20 +70,18 @@ def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", per
         if len(dados) == 1:
             return dados
         
-        somas = defaultdict(int)
-        campos_ignorados = {"periodo", "codigo_do_curso"}
+        cursos = get_lista_cursos("")
 
-        for item in dados:
-            for chave, valor in item.items():
-                if chave not in campos_ignorados:
-                    if isinstance(valor, (int, float)) and valor is not None:
-                        somas[chave] += valor
-
-        resultado_final = dict(somas)
-        return [json.dumps(resultado_final, indent=2, ensure_ascii=False)]
+        dicionario_cursos = {}
+        for dado in dados:
+            dicionario_cursos[dado["codigo_do_curso"]] = dado
+        
+        for curso in cursos:
+            codigo = curso.get("codigo_do_curso")
+            if codigo in dicionario_cursos:
+                dicionario_cursos[codigo]["nome_do_curso"] = curso.get("descricao", "")
+        
+        return list(dicionario_cursos.values())
     
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]
-    
-
-#print(get_ingressantes_sisu(nome_do_campus="campina grande", nome_do_curso="ciência da computação", periodo="2024.1"))

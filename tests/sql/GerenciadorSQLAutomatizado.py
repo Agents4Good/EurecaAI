@@ -4,6 +4,7 @@ import os
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
 from langchain_community.chat_models import ChatDeepInfra
+from langchain_openai import ChatOpenAI
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class GerenciadorSQLAutomatizado:
@@ -161,8 +162,9 @@ class GerenciadorSQLAutomatizado:
     
     
     def get_data(self, question: str, prompt, temperature: float = 0):
-        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
+        #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatDeepInfra, model="meta-llama/Llama-3.3-70B-Instruct", prompt=prompt, temperature=temperature)
         #sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOllama, model="qwen3:8b", prompt=prompt, temperature=temperature)
+        sqlGenerateLLM = LLMGenerateSQL(LLM=ChatOpenAI, model="gpt-4o-mini-2024-07-18", prompt=prompt, temperature=temperature)
         result = sqlGenerateLLM.write_query(query=question, tabela=self.tabela)
         sql = result['query']
         result = self.__execute_sql(result['query'])
