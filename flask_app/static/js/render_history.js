@@ -22,7 +22,7 @@ function render_human_message(message) {
 }
 
 
-function render_ai_message() {
+function render_ai_message() { 
     const container = document.getElementsByClassName('chat__container')[0]; 
     const audioImgUrl   = container.getAttribute('data-audio-img');
     const botImgUrl     = container.getAttribute('data-bot-img');
