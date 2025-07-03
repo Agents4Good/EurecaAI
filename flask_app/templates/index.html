@@ -8,462 +8,69 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!--<link rel="stylesheet" href="../static/css/index.css">-->
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="css/index.css"></script>
+    <script src="{{url_for('static', filename='js/account.js')}}"></script>
+    <script src="{{url_for('static', filename='js/audio.js')}}"></script>
+    <script src="{{url_for('static', filename='js/cookies.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dom_events_io.js')}}"></script>
+    <script src="{{url_for('static', filename='js/render_history.js')}}"></script>
+    <script src="{{url_for('static', filename='js/send_human_message.js')}}"></script>
     <script>
         let idChatLocal = null;
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const textarea = document.getElementById('user_input');
-
-            function atualizarPlaceholder() {
-                if (window.innerWidth < 600) {
-                    textarea.placeholder = "Digite sua dúvida sobre a UFCG...";
-                } else {
-                    textarea.placeholder = "Pergunte informações sobre a UFCG...";
-                }
-            }
-
-            atualizarPlaceholder(); // Atualiza ao carregar
-            window.addEventListener('resize', atualizarPlaceholder); // Atualiza ao redimensionar
-        });
-
-        $(document).ready(function () {
-            $('#chat_form').on('keydown', function (event) {
-                if (event.keyCode == 13) {
-                    console.log('Enter key pressed');
-                    event.preventDefault();
-                    var userMessage = $('#user_input').val();
-                    $('#user_input').val(''); // Limpa o campo de input após o envio
-                    if (userMessage.trim() !== '') {
-                        addUserMessage(userMessage);
-                        sendMessage(userMessage);
-                    }
-                }
-            });
-        });
-
-        $(document).ready(function () {
-            $('#chat_form').on('submit', function (event) {
-                event.preventDefault();
-                var userMessage = $('#user_input').val();
-                $('#user_input').val(''); // Limpa o campo de input após o envio
-                if (userMessage.trim() !== '') {
-                    addUserMessage(userMessage);
-                    sendMessage(userMessage);
-                }
-            });
-        });
-
-        let synth = window.speechSynthesis;
         let isSpeaking = false;
-
-        
-        // Função para ler texto
-        function speak(msg) {
-            if (isSpeaking) {
-                synth.cancel();
-                isSpeaking = false;
-            } else {
-                const utterance = new SpeechSynthesisUtterance(msg);
-                utterance.lang = 'pt-BR';
-                utterance.pitch = 1;
-                utterance.rate = 1;
-                
-                const voices = synth.getVoices();
-                utterance.voice = voices.find(voice => voice.lang === 'pt-BR') || voices[0];
-
-                synth.speak(utterance);
-                isSpeaking = true;
-            }
-        }
-
-        // Função que adiciona a mensagem do usuário
-        function addUserMessage(message) {
-            var userMessageBlock = `
-                <div class="user">
-                    <div class="user__name">
-                        <p>Você:</p>
-                    </div>
-                    <p class="user__response">${message}</p>
-                </div>`;
-            $('.chat__container').append(userMessageBlock);
-            scrollToBottom();
-        }
-
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
-            return null;
-        }
-
-        async function deleteCookie(name) {
-            document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-            return;
-        }
-        
-
-        function formatCamelCase(str) {
-            const exceptions = ['de', 'da', 'do', 'das', 'dos', 'e'];
-            return str.toLowerCase().split(' ').map((word, index) => {
-                if (exceptions.includes(word) && index !== 0) {
-                    return word;
-                }
-                return word.charAt(0).toUpperCase() + word.slice(1);
-            }).join(' ');
-        }
-
-        function getProfile() {
-            const profileStr = getCookie("profile");
-            const res = profileStr ? JSON.parse(profileStr) : null;
-            if (res) {
-                const username_ = formatCamelCase(res.name);
-                const buttonText = document.querySelector(".login__button span");
-                const buttonTextMobile = document.querySelector(".login_button_mobile span");
-
-                if (buttonTextMobile || buttonText) {
-                    buttonTextMobile.textContent = "Sair";
-                    buttonText.textContent = "Sair";
-                }
-                var botMessageBlock = `
-                    <div class="bot">
-                        <div class="bot__container">
-                            <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
-                            <div class="bot__response">
-                                <div class="bot__name">
-                                    <p>Assistente:</p>
-                                </div>
-                                <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
-                                <div class="bot_options">
-                                    <button class="audio-button">
-                                        <img src="{{ url_for('static', filename='images/audio.png') }}" />
-                                    </button>
-                                </div>  
-                            </div>
-                        </div>
-                    </div>`;
-                $('.chat__container').append(botMessageBlock);
-            }
-        }
-
-
-        window.onload = function() {
-            getProfile();
-        }
-    
-        // Função que adiciona a mensagem do bot
-        function addBotMessage() {
-            var botMessageBlock = `
-                <div class="bot skeleton">
-                    <div class="bot__container">
-                        <img src="{{ url_for('static', filename='images/file.png') }}" alt="" class="bot__img">
-                        <div class="bot__response">
-                            <div class="bot__name">
-                                <p>Assistente:</p>
-                            </div>
-                            <p class="bot__name__response">Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  <img src="{{ url_for('static', filename='images/brilhos.gif') }}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;"></p>
-                            <div class="bot_options">
-                                <button class="audio-button" style="display: none;">
-                                    <img src="{{ url_for('static', filename='images/audio.png') }}" />
-                                </button>
-                            </div>  
-                        </div>
-                    </div>
-                </div>`;
-            $('.chat__container').append(botMessageBlock);
-            scrollToBottom();
-        }
-
-        function login_account() {
-            const botaologin = document.querySelector(".login__button");
-            const botaologinMobile = document.querySelector(".login_button_mobile");
-            const word = botaologin.querySelector("span");
-            const wordMobile = botaologinMobile.querySelector("span");
-        
-            if (word.textContent === "Login" || wordMobile.textContent === "Login") {
-                window.location.href = '/login';
-            } else if (word.textContent === "Sair" || wordMobile.textContent === "Sair" ) {
-                deleteCookie("profile").then(() => {
-                    word.textContent = "Login";
-                    wordMobile.textContent = "Login";
-                    window.location.href = "/";
-                });
-            }
-        }
-
-        function openMenu(id) {
-            const menu = document.getElementById(id);
-            const icon = menu.querySelector("i");
-            const history = document.querySelector(".history");
-
-            if (menu.classList.contains("open")) {
-                menu.classList.remove("open");
-                icon.classList.remove("fa-times");
-                icon.classList.add("fa-ellipsis-h");
-            } else {
-                menu.classList.add("open");
-                icon.classList.remove("fa-ellipsis-h");
-                icon.classList.add("fa-times");
-            }
-        }
-
-        function apagar_chat(id) {
-
-            function apagar_chat_pelo_id(id) {
-                document.querySelector('.chat__container').innerHTML = '';
-                const historyItem = document.getElementById(id);
-                if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
-                    try {
-                        historyItem.remove();
-                    } catch {
-                        // console.log("Não há histórico a remover.")
-                    }
-                    getProfile();
-                    if (id == idChatLocal || id == '') {
-                        idChatLocal = null;
-                    }
-                }
-            }
-
-            if (id == '') {
-                apagar_chat_pelo_id('')
-            } else {
-                $.ajax({
-                    type: 'POST',
-                    url: '/delete_chat',
-                    timeout: 400000,
-                    success: function (response) {
-                        apagar_chat_pelo_id(id);
-                    }
-                });
-            }
-        }
-        
-        async function get_resumo(texto) {
-            try {
-                const response = await fetch('/resumir', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ texto: texto })
-                });
-
-                if (!response.ok) {
-                    throw new Error('Erro na requisição: ' + response.status);
-                }
-
-                const data = await response.json();
-                return data.resumo;
-            } catch (erro) {
-                console.error('Erro ao obter resumo:', erro);
-                return null;
-            }
-        }
-
-        function enable_input() {
-            const textarea = document.getElementById('user_input');
-            textarea.disabled = false;
-            document.querySelector('.record').disabled = true;
-        }
-
-        function disable_input() {
-            const textarea = document.getElementById('user_input');
-            textarea.disabled = true;
-            document.querySelector('.record').disabled = true;
-        }
-
-        // Função que envia a mensagem e manipula a resposta do bot
-        function sendMessage(message) {
-            addBotMessage();
-            disable_input();
-            const $lastBotResponse = $('.bot__name__response').last();
-
-            $.ajax({
-                type: 'POST',
-                url: '/chat',
-                timeout: 120000,
-                data: { user_input: message },
-                success: function (response) {
-                    const markdownResponse = response.response;
-                    const htmlResponse = marked.parse(markdownResponse);
-                    $('.bot').last().find('.audio-button').show();
-                    $lastBotResponse.html(htmlResponse);
-                    $lastBotResponse.closest('.bot').removeClass('skeleton');
-                    const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
-                    $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
-        
-                    // Criar o item de histórico
-
-                    if (!idChatLocal) {
-                        const newDiv = document.createElement("div");
-                        const id = `item_${Date.now()}`;
-                        newDiv.className = "history_item";
-                        newDiv.id = id;
-                        
-                        get_resumo(message).then((resumo) => {
-                            newDiv.innerHTML = `
-                            <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
-                            <div class="fab-wrapper">
-                                <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
-                                <div class="fab-menu" id="${id}_menu">
-                                    <i class='fas fa-trash' onclick="apagar_chat('${id}')"></i>
-                                </div>
-                            </div>
-                            `;
-
-                            idChatLocal = id;
-                            document.getElementsByClassName("history")[0].appendChild(newDiv);
-                        });
-                    }
-
-                    scrollToBottom();
-                    enable_input();
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    if (textStatus === 'timeout') {
-                        $('.bot__name__response').last().text('Desculpe, o tempo de espera foi excedido.');
-                    } else {
-                        $('.bot__name__response').last().text('Desculpe, algo deu errado.');
-                    }
-                    $lastBotResponse.closest('.bot').removeClass('skeleton');
-                    enable_input();
-                }
-            });
-        }
-
-        function toggleMenu(id) {
-            console.log('entrei no toggleMenu');
-            const menu = document.getElementById(`${id}_menu`);
-        
-            // Fecha outros menus
-            document.querySelectorAll('.fab-menu').forEach(m => {
-                if (m !== menu) m.style.display = 'none';
-            });
-        
-            // Alterna o menu clicado
-            if (menu) {
-                menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-            }
-        }
-        
-        // Função para manter o scroll no fim do chat
-        function scrollToBottom() {
-            $('.chat').animate({ scrollTop: $('.chat')[0].scrollHeight }, 200);
-        }
-
         let isRecording = false;
         let mediaRecorder;
         let audioChunks = [];
-
-        // Função para iniciar a gravação de áudio
-        function startRecording() {
-            navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.start();
-
-                mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
-                };
-
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    const audio = new Audio(audioUrl);
-                    audio.play(); 
-                    audioChunks = []; 
-                };
-            });
+        let arquivosSelecionados = [];
+    </script>
+    <script>
+        function trocar_chat_pelo_id(id, exists) {
+            document.querySelector('.chat__container').innerHTML = '';
+            const historyItem = document.getElementById(id);
+            if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
+                try {
+                    historyItem.remove();
+                } catch {}
+                
+                if (!exists) {
+                    getProfile();
+                }
+                if (id == idChatLocal || id == '') {
+                    idChatLocal = null;
+                }
+            }
         }
 
-        // Função para parar a gravação de áudio
-        function stopRecording() {
-            if (mediaRecorder) {
-                mediaRecorder.stop();
-        
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    audioChunks = []; // Limpa o array para a próxima gravação
-        
-                    // Enviar o áudio para o servidor Flask
-                    const formData = new FormData();
-                    formData.append('file', audioBlob, 'recording.wav'); // Nome do arquivo
 
+        function trocar_chat(id, exists) {
+            if (exists) {
+                trocar_chat_pelo_id("", true);
+
+                .ajax({
+                    type: 'POST',
+                    url: '/get_chat',
+                    timeout: 400000,
+                    success: function (response) {
+                        render_histoty(id);
+                    }
+                });
+            } else {
+                if (id == '') {
+                    trocar_chat_pelo_id('');
+                } else {
                     $.ajax({
                         type: 'POST',
-                        url: '/voice-to-text',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            const transcription = data.transcription;
-                            if (transcription) {
-                                addUserMessage(transcription);
-                                sendMessage(transcription);
-                            }
-                        },
-                        error: function () {
-                            console.error("Erro ao enviar o áudio:", error);
+                        url: '/delete_chat',
+                        timeout: 400000,
+                        success: function (response) {
+                            trocar_chat_pelo_id(id);
                         }
                     });
-                };
+                }
             }
         }
-        
-        function changeImage(button) {
-            const img = button.querySelector('img');
-            const inputQuery = document.getElementsByClassName('query')[0]; 
-
-            if (img.src.includes('microphone.png')) {
-                img.src = "{{ url_for('static', filename='images/audio.png') }}";
-                img.style.backgroundColor = "#30ABED";
-                inputQuery.disabled = true;
-                
-                inputQuery.style.backgroundColor = "white";
-                startRecording();
-            } else {
-                img.src = "{{ url_for('static', filename='images/microphone.png') }}"; 
-                img.style.backgroundColor = "#a6d1e9";
-                inputQuery.disabled = false; 
-                stopRecording();
-            }
-        }
-
-        function openAsideBarMobile() {
-            const aside = document.querySelector(".aside-chat");
-            const buttonIcon = document.querySelector(".aside__mobile__button i");
-
-            if (aside.classList.contains("open")) {
-                aside.classList.remove("open");
-                buttonIcon.classList.remove("fa-times");
-                buttonIcon.classList.add("fa-bars");
-            } else {
-                aside.classList.add("open");
-                buttonIcon.classList.remove("fa-bars");
-                buttonIcon.classList.add("fa-times");
-            }
-        }
-
-
-        //const textarea = document.querySelector('.query');
-        const form = document.getElementById('chat_form'); // <-- agora correto
-
-        form.addEventListener('keypress', function(event) {
-            if (event.keyCode === 13 && !event.shiftKey) {
-                event.preventDefault();  // Impede quebra de linha
-                form.submit();           // Envia formulário
-            }
-        });
-
-        form.addEventListener('submit', function(event) {
-            if (!textarea.value.trim()) {
-                event.preventDefault(); // Se vazio, não envia
-            }
-        });
     </script>
 </head>
 <body>
@@ -479,30 +86,45 @@
     <main>
         <section>
             <article class="chat">
-                <div class="chat__container">
+                <div 
+                class="chat__container"
+                data-audio-img="{{ url_for('static', filename='images/audio.png') }}"
+                data-bot-img="{{ url_for('static', filename='images/bot.png') }}"
+                data-brilhos-gif="{{ url_for('static', filename='images/brilhos.gif') }}"
+                >
 
                 </div>
             </article>
 
             <form id="chat_form" class="query__container" method="post">
                 <div class="input_container">
-                    <textarea id="user_input" class="query" autocomplete="off" placeholder="Pergunte informações sobre a UFCG..."></textarea>
-                    <button class="send" type="submit">
-                        <img src="{{ url_for('static', filename='images/arrow_icon.png') }}"/>
-                    </button>
+                    <textarea id="user_input" class="query" autocomplete="off" oninput="autoGrow(this)" placeholder="Pergunte alguma coisa"></textarea>
                 </div>
-                <button class="record" onClick="changeImage(this)">
-                    <img src="{{ url_for('static', filename='images/microphone.png') }}" id="recordImage"/>
-                </button>
+                <div class="chat_aux">
+                    <div class="chat_aux_container">
+                        <div class="chat_aux_container_left">
+                            <input id="fileInput" class="button_add_file" type="file" style="display: none;"/>
+                            <i onclick="abrirSeletorArquivo()" class="fa fa-file" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                        </div>
+                        <div class="chat_aux_container_medium">
+
+                        </div>
+                        <div class="chat_aux_container_right">
+                            <button class="button_record">
+                            <i onClick="recording(this)" class="fa fa-microphone" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
+                            <button class="button_send">
+                                <i onClick="recording(this)" class="fa fa-arrow-up" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </form>
         </section>
         <aside class="aside-chat">
             <div class="aside-title-container">
                 <div>
-                    <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}"/>
-                    <button class="login_button_mobile" onClick="login_account()">
-                        <span>Login</span>
-                    </button>
+                    <img src="{{ url_for('static', filename='images/logo_ufcg.png') }}"/>
                 </div>
                 <p class="aside-title-content">Histórico</p>
             </div>
@@ -521,7 +143,10 @@
             </div>
             <div class="about">
                 <p>© 2025 UFCG</p>
-                <p onClick="window.location.href='/politica_termos'">Política e Termos</p>
+                <p 
+                onClick="window.location.href='/politica_termos'" 
+                style="text-decoration: underline; cursor: pointer;"
+                >Política e Termos</p>
             </div>
         </aside>
     </main>
