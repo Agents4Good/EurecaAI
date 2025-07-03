@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="css/index.css"></script>
     <script src="{{url_for('static', filename='js/account.js')}}"></script>
     <script src="{{url_for('static', filename='js/audio.js')}}"></script>
@@ -105,8 +106,16 @@
                             <input id="fileInput" class="button_add_file" type="file" style="display: none;"/>
                             <i onclick="abrirSeletorArquivo()" class="fa fa-file" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
                         </div>
-                        <div class="chat_aux_container_right">
+                        <div class="chat_aux_container_medium">
 
+                        </div>
+                        <div class="chat_aux_container_right">
+                            <button class="button_record">
+                            <i onClick="recording(this)" class="fa fa-microphone" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
+                            <button class="button_send">
+                                <i onClick="recording(this)" class="fa fa-arrow-up" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -133,8 +142,11 @@
                 
             </div>
             <div class="about">
-                <p>© Kunumi</p>
-                <p>Agents4Good - UFCG</p>
+                <p>© 2025 UFCG</p>
+                <p 
+                onClick="window.location.href='/politica_termos'" 
+                style="text-decoration: underline; cursor: pointer;"
+                >Política e Termos</p>
             </div>
         </aside>
     </main>

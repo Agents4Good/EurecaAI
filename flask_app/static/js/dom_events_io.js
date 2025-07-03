@@ -18,17 +18,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 $(document).ready(function () {
     $('#chat_form').on('keydown', function (event) {
-        if (event.keyCode == 13) {
-            event.preventDefault();
-            var userMessage = $('#user_input').val();
-            $('#user_input').val('');
-            if (userMessage.trim() !== '') {
-                render_human_message(userMessage);
-                sendMessage(userMessage);
+        if (event.key === 'Enter') {
+            if (event.shiftKey) {
+                return;
+            } else {
+                event.preventDefault();
+                var userMessage = $('#user_input').val();
+                $('#user_input').val('');
+                if (userMessage.trim() !== '') {
+                    render_human_message(userMessage);
+                    sendMessage(userMessage);
+                }
             }
         }
     });
 });
+
 
 
 $(document).ready(function () {
@@ -130,7 +135,7 @@ function abrirSeletorArquivo() {
             };
 
             fileBox.appendChild(removeBtn);
-            const container = document.querySelector('.chat_aux_container_right');
+            const container = document.querySelector('.chat_aux_container_medium');
             container.appendChild(fileBox);
 
             input.value = '';
@@ -141,7 +146,7 @@ function abrirSeletorArquivo() {
 
 function reseta_arquivos(id) {
     arquivosSelecionados = [];
-    document.querySelector('.chat_aux_container_right').innerHTML = '';
+    document.querySelector('.chat_aux_container_medium').innerHTML = '';
     document.getElementById('user_input').value = '';
 }
 

@@ -1,15 +1,20 @@
 function login_account() {
     const botaologin = document.querySelector(".login__button");
     const botaologinMobile = document.querySelector(".login_button_mobile");
-    const word = botaologin.querySelector("span");
-    const wordMobile = botaologinMobile.querySelector("span");
 
-    if (word.textContent === "Login" || wordMobile.textContent === "Login") {
+    const word = botaologin ? botaologin.querySelector("span") : null;
+    const wordMobile = botaologinMobile ? botaologinMobile.querySelector("span") : null;
+
+    const textoDesktop = word?.textContent;
+    const textoMobile = wordMobile?.textContent;
+
+    if (textoDesktop === "Login" || textoMobile === "Login") {
         window.location.href = '/login';
-    } else if (word.textContent === "Sair" || wordMobile.textContent === "Sair" ) {
+    } 
+    else if (textoDesktop === "Sair" || textoMobile === "Sair") {
         deleteCookie("profile").then(() => {
-            word.textContent = "Login";
-            wordMobile.textContent = "Login";
+            if (word) word.textContent = "Login";
+            if (wordMobile) wordMobile.textContent = "Login";
             window.location.href = "/";
         });
     }
@@ -20,21 +25,23 @@ function getProfile() {
     const profileStr = getCookie("profile");
     const res = profileStr ? JSON.parse(profileStr) : null;
     
-    if (res) {
+    if (res && res.name) {
         const username_ = formatCamelCase(res.name);
+
         const buttonText = document.querySelector(".login__button span");
         const buttonTextMobile = document.querySelector(".login_button_mobile span");
 
-        if (buttonTextMobile || buttonText) {
-            buttonTextMobile.textContent = "Sair";
-            buttonText.textContent = "Sair";
-        }
+        if (buttonText) buttonText.textContent = "Sair";
+        if (buttonTextMobile) buttonTextMobile.textContent = "Sair";
 
-        const container = document.getElementsByClassName('chat__container')[0]; 
-        const audioImgUrl   = container.getAttribute('data-audio-img');
-        const botImgUrl   = container.getAttribute('data-bot-img');
+        const container = document.querySelector('.chat__container'); 
+        if (!container) return;
 
-        var botMessageBlock = `
+        const audioImgUrl = container.getAttribute('data-audio-img') || 'default-audio.png';
+        const botImgUrl   = container.getAttribute('data-bot-img') || 'default-bot.png';
+        const firstName = username_.split(" ")[0];
+
+        const botMessageBlock = `
             <div class="bot">
                 <div class="bot__container">
                     <img src="${botImgUrl}" alt="" class="bot__img">
@@ -42,7 +49,8 @@ function getProfile() {
                         <div class="bot__name">
                             <p>Assistente:</p>
                         </div>
-                        <p class="bot__name__response">Bem vindo de volta, ${username_}!\nA partir de agora, irei te chamar de ${username_.split(" ")[0]}.</p>
+                        <p class="bot__name__response">Bem-vindo de volta, ${username_}!<br>A partir de agora, irei te chamar de <strong>${firstName}</strong>.
+                        </p>
                         <div class="bot_options">
                             <button class="audio-button">
                                 <img src="${audioImgUrl}" />
@@ -51,6 +59,7 @@ function getProfile() {
                     </div>
                 </div>
             </div>`;
-        $('.chat__container').append(botMessageBlock);
+
+        container.insertAdjacentHTML("beforeend", botMessageBlock);
     }
 }

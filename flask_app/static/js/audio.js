@@ -71,23 +71,25 @@ function stopRecording() {
 }
 
 
-function changeImage(button) {
-    const img = button.querySelector('img');
+function recording(button) {
+    if (!button.classList.contains('fa-microphone') && !button.classList.contains('fa-volume-up')) {
+        return;
+    }
+
+    const isMic = button.classList.contains('fa-microphone');
     const inputQuery = document.getElementsByClassName('query')[0]; 
 
-    const micImg = button.getAttribute('data-mic-img');
-    const audioImg = button.getAttribute('data-audio-img');
-
-    if (img.src.includes('microphone.png')) {
-        img.src = audioImg;
-        img.style.backgroundColor = "#30ABED";
+    if (isMic) {
+        button.classList.remove('fa-microphone');
+        button.classList.add('fa-volume-up');
+        button.style.backgroundColor = "#30ABED";
         inputQuery.disabled = true;
-        inputQuery.style.backgroundColor = "white";
         startRecording();
     } else {
-        img.src = micImg;
-        img.style.backgroundColor = "#a6d1e9";
-        inputQuery.disabled = false; 
+        button.classList.remove('fa-volume-up');
+        button.classList.add('fa-microphone');
+        button.style.backgroundColor = "#00205B";
+        inputQuery.disabled = false;
         stopRecording();
     }
 }

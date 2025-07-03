@@ -88,10 +88,9 @@ def resumir():
 
 @app.route('/chat', methods=['POST'])
 def chat():
-    # Recebe a mensagem do usuário
-    user_message = request.form['user_input']
+    user_message = request.form.get('input_data')
+    arquivos = request.files.getlist('archives[]')
     
-    # Gera a resposta usando o sistema de agentes
     try:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -100,6 +99,7 @@ def chat():
         print(f"Erro ao processar a mensagem: {e}")
         bot_message = "Desculpe, ocorreu um erro ao processar sua solicitação."
     return {'response': bot_message}
+
 
 @app.route("/voice-to-text", methods=["POST"])
 def voice_to_text():
