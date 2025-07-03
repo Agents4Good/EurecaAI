@@ -63,7 +63,7 @@ function stopRecording() {
                     }
                 },
                 error: function () {
-                    console.error("Erro ao enviar o áudio:", error);
+                    console.error("Erro ao enviar o áudio:", error); 
                 }
             });
         };
