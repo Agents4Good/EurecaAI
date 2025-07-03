@@ -73,6 +73,11 @@ function sendMessage(message) {
         formData.append('archives[]', file);
     });
 
+    const profileStr = getCookie("profile");
+    if (profileStr) {
+        formData.append('profile', profileStr)
+    }
+
     $.ajax({
         type: 'POST',
         url: '/chat',

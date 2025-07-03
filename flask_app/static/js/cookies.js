@@ -10,3 +10,9 @@ async function deleteCookie(name) {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     return;
 }
+
+async function store_token(name, value) {
+    const date = new Date();
+    date.setTime(date.getTime() + hoursExpiredIn * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+}

@@ -81,7 +81,7 @@
                     })
                     .then(res => res.json())
                     .then(profileData => {
-                        store_token("token", data.token);
+                        profileData.token = data.token;
                         store_token("profile", JSON.stringify(profileData));
                         window.location.href = "/";
                     });                    

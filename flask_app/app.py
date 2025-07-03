@@ -89,7 +89,20 @@ def resumir():
 @app.route('/chat', methods=['POST'])
 def chat():
     user_message = request.form.get('input_data')
-    arquivos = request.files.getlist('archives[]')
+    arquivos = request.files.getlist('archives[]')    
+    profile_raw = request.form.get("profile")
+    
+    if profile_raw:
+        print(profile_raw)
+        profile = json.loads(profile_raw)
+        user_message = f"""
+        Dados de quem está perguntando:
+        - Nome: {profile["name"]};
+        - tipo: {profile["attributes"]["type"]};
+        - matrícula: {profile["id"]};
+        
+        Pergunta: {user_message}
+        """
     
     try:
         loop = asyncio.new_event_loop()
