@@ -36,12 +36,13 @@ function render_ai_message() {
                     <div class="bot__name">
                         <p>Assistente:</p>
                     </div>
+                    <p class="bot__name__response_status"></p>
                     <p class="bot__name__response">Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  <img src="${brilhosImgUrl}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;"></p>
                     <div class="bot_options">
                         <button class="audio-button" style="display: none;">
                             <img src="${audioImgUrl}" />
                         </button>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>`;

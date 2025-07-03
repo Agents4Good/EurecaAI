@@ -274,6 +274,7 @@ section {
     flex-wrap: wrap;
     margin-top: 20px;
     word-break: break-word;
+    white-space: pre-wrap;
 }
 
 .user__name {
@@ -825,4 +826,40 @@ aside {
 .button_send {
     border: 0;
     background-color: transparent;
+}
+
+.bot__name__response_status {
+    font-weight: bold;
+    color: #222;
+    background: linear-gradient(
+        90deg, 
+        #222 20%,
+        #fff 25%,
+        #fff 35%,
+        #222 40%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shine 5s infinite;
+}
+
+@keyframes shine {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media(max-width: 1200px) {
+    .query__container {
+        bottom: -12px;
+    }
+
+    .chat {
+        height: calc(100% - 70px);
+    }
 }
