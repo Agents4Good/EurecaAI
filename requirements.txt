@@ -24,3 +24,6 @@ IPython
 langchain_google_genai
 vanna
 langgraph-checkpoint-postgres
+flask-socketio
+eventlet
+psycopg

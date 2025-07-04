@@ -1,12 +1,8 @@
-import json, re
-
 from langchain.schema import AIMessage, HumanMessage, BaseMessage
 from langchain.output_parsers import PydanticOutputParser
 
 from typing import Literal
 from pydantic import BaseModel
-from collections import defaultdict
-
 
 # AGENTES ESPECIALIZADOS DO SISTEMA
 MEMBERS = [
@@ -52,7 +48,8 @@ def format_agent_responses(messages: list) -> tuple[str, str]:
     A ordem original das mensagens é preservada.
     """
 
-    query = next((msg.content for msg in messages if isinstance(msg, HumanMessage)), "").strip()
+    print(messages)
+    query = next((msg.content for msg in reversed(messages) if isinstance(msg, HumanMessage)), "").strip()
 
     response_blocks = []
     for msg in messages:

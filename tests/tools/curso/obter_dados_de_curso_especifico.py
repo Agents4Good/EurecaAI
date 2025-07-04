@@ -33,8 +33,10 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     try:
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
     except ValueError as e:
+        print(e)
         return [{"Error": str(e)}]
 
+    print(dados_curso)
     if 'AskHuman' in dados_curso:
         return dados_curso
 
@@ -45,6 +47,8 @@ def obter_dados_de_curso_especifico(nome_do_curso: Any, nome_do_campus: Any) -> 
     response = requests.get(f'{URL_BASE}/cursos', params=params)
 
     if response.status_code == 200:
+        print(json.loads(response.text))
         return json.loads(response.text)
     else:
+        print(response.json())
         return [{"error_status": response.status_code, "msg": response.json()}]

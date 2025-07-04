@@ -10,7 +10,7 @@ from flask_app.utils.langchain_models import model
 
 
 #model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
-model = ChatOllama(model="llama3.1", temperature=0)
+#model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 

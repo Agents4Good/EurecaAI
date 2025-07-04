@@ -1,4 +1,4 @@
-import asyncio, json, sys
+import asyncio, json, sys, socketio
 import speech_recognition as sr
 
 # ASYNCIO Event Loop para windows
@@ -10,18 +10,22 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from demo.agents.eureca_chat import EurecaChat
 from .utils.langchain_models import supervisor_model, aggregator_model, agents_model
 from langchain_core.messages import HumanMessage
+from langchain_core.callbacks.base import BaseCallbackHandler
 
 from io import BytesIO
 from pydub import AudioSegment
 from langchain_community.chat_models import ChatDeepInfra
 
 from .utils.db_path import *
+from .utils.file_handler.handler import realizar_tratamento_dos_arquivos
 
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
 app = Quart(__name__, static_url_path="/static", template_folder="templates")
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+sio_app = socketio.ASGIApp(sio, app)  # app final para rodar com Hypercorn
 
 system = None # EurecaChat
 checkpointer = None # PostgresSaver Checkpointer
@@ -29,19 +33,19 @@ checkpointer = None # PostgresSaver Checkpointer
 @app.before_serving
 async def setup():
     global system, checkpointer
-    checkpointer_cm = AsyncPostgresSaver.from_conn_string(DB_URI)
-    app.checkpointer_cm = checkpointer_cm
-    checkpointer = await checkpointer_cm.__aenter__()
+    #checkpointer_cm = AsyncPostgresSaver.from_conn_string(DB_URI)
+    #app.checkpointer_cm = checkpointer_cm
+    #checkpointer = await checkpointer_cm.__aenter__()
 
-    await checkpointer.setup()
-    await checkpointer.adelete_thread("1")
+    #await checkpointer.setup()
+    #await checkpointer.adelete_thread("1")
 
     # Inicializando instância do EurecaChat
     system = EurecaChat(
         supervisor_model=supervisor_model,
         aggregator_model=aggregator_model,
         agents_model=agents_model,
-        checkpointer=checkpointer
+        #checkpointer=checkpointer
     ).build()
 
 @app.after_serving
@@ -100,7 +104,15 @@ async def resumir():
 async def chat():
     # Recebe a mensagem do usuário
     form = await request.form
-    user_message = form.get("user_input")
+    files = await request.files
+    user_message = form.get("input_data")
+    profile_raw = form.get("profile")
+    arquivos = files.getlist('archives[]')
+
+    print(profile_raw)
+
+    if len(arquivos) > 0:
+        user_message = f"{user_message}\n\n{realizar_tratamento_dos_arquivos(arquivos)}"
 
     config = {"configurable": {"thread_id": "1"}}
     inputs = {"messages": [HumanMessage(content=user_message)]}
@@ -120,7 +132,8 @@ async def voice_to_text():
     if 'file' not in form:
         return jsonify({"error": "No file part"}), 400
     
-    audio_file = request.files['file']
+    print(form)
+    audio_file = form['file']
 
     if audio_file.filename == '':
         return jsonify({"error": "No selected file"}), 400
@@ -142,6 +155,59 @@ async def voice_to_text():
     except sr.RequestError as e:
         return jsonify({"error": f"Erro ao tentar usar o serviço de reconhecimento de fala: {e}"}), 500
 
-if __name__ == "__main__":
-    #app.run(debug=True, host='0.0.0.0', port=5000)
-    app.run(debug=True)
+# Handler de streaming para tokens
+class SocketIOStreamingHandler(BaseCallbackHandler):
+    def __init__(self, sid):
+        self.sid = sid
+
+    async def emit(self, event, data):
+        await sio.emit(event, data, room=self.sid)
+
+    async def on_llm_new_token(self, token: str, **kwargs):
+        await sio.emit("token", {"resposta": token}, room=self.sid)
+
+# Conexão inicial
+@sio.on('connect')
+async def connect(sid, environ):
+    print(f"Cliente conectado: {sid}")
+
+# Função principal que roda o processamento
+async def executar_tool(sid, user_message, arquivos):
+    print(f"message: {user_message}")
+    
+    config = {
+        "configurable": {"thread_id": sid},
+        "callbacks": [SocketIOStreamingHandler(sid)],
+        "streaming": True
+    }
+
+    inputs = {
+        "messages": [HumanMessage(content=user_message)],
+        "config": config
+    }
+    final_resposta = ""
+
+    try:
+        if arquivos:
+            await sio.emit("analise", {"resposta": "\n\nLendo arquivos...\n\n"}, room=sid)
+
+        async for chunk in system.astream(inputs, config, stream_mode="values"):
+            msg = chunk["messages"][-1]
+            print("Chunk recebido:", msg.content)
+            final_resposta = msg.content
+
+        resposta_final = final_resposta or "Desculpe, não consegui processar sua solicitação."
+        await sio.emit("resposta_final", {"resposta": resposta_final}, room=sid)
+
+    except Exception as e:
+        await sio.emit("resposta_final", {"resposta": f"Erro: {str(e)}"}, room=sid)
+
+# Escuta de mensagens do front-end
+@sio.on('input_text')
+async def handle_input(sid, data):
+    user_message = data.get('input_data', '')
+    arquivos = data.get('arquivos', [])
+    asyncio.create_task(executar_tool(sid, user_message, arquivos))
+
+# if __name__ == "__main__":
+#     app.run(debug=True)

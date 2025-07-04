@@ -23,8 +23,6 @@ from tests.tools.setor import *
 from tests.tools.setor import *
 
 from ..utils.supervisor_utils import *
-from tests.tools.curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
-from tests.tools.estudante.obter_ingressantes_sisu import get_ingressantes_sisu
 
 from tests.tools.campus.get_calendarios import get_calendarios
 from tests.tools.campus.get_campi import get_campi
@@ -46,7 +44,7 @@ SETOR_TOOLS = [
 CURSO_TOOLS = [
     obter_dados_de_curso_especifico, 
     obter_dados_de_todos_os_cursos,
-    get_todos_curriculos_do_curso,
+    get_todos_curriculos_do_curso
 ]
 
 DISCIPLINA_TOOLS = [
@@ -61,7 +59,7 @@ DISCIPLINA_TOOLS = [
 
 ESTUDANTE_TOOLS = [
     obter_dados_gerais_de_todos_estudantes,
-    get_ingressantes_sisu
+    obter_ingressantes_sisu
 ]
 
 SETOR_TOOLS = [
@@ -125,6 +123,8 @@ class EurecaChat:
             "query": query,
             "responses": formatted_responses
         })
+        print(query)
+        print(formatted_responses)
         print(result)
         next_agent = extract_next_agent(result)
         print("PRÓXIMO AGENTE: ", next_agent)
@@ -144,7 +144,7 @@ class EurecaChat:
         #     repetition_count = 0
 
         return {
-            "messages": state["messages"],
+            #"messages": state["messages"],
             "next": next_agent
             # "last_agent": last_agent,
             # "agent_repetition_count": repetition_count
@@ -156,7 +156,7 @@ class EurecaChat:
         """
 
         user_query = next(
-            (msg.content for msg in state["messages"] if isinstance(msg, HumanMessage)), 
+            (msg.content for msg in reversed(state["messages"]) if isinstance(msg, HumanMessage)), 
             "No questions found."
         )
         

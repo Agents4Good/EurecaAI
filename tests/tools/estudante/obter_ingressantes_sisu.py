@@ -8,7 +8,7 @@ from ..campus.get_periodo_mais_recente import get_periodo_mais_recente
 from ..curso.utils import get_lista_cursos
 
 
-def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", periodo: Any = "") -> list:
+def obter_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", periodo: Any = "") -> list:
     """
     _summary_
     Busca a quantidade de ingressantes através do Sisu.
@@ -87,4 +87,4 @@ def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", per
         return [{"error_status": response.status_code, "msg": response.json()}]
     
 
-#print(get_ingressantes_sisu(nome_do_campus="campina grande", nome_do_curso="ciência da computação", periodo="2024.1"))
+#print(obter_ingressantes_sisu(nome_do_campus="campina grande", nome_do_curso="ciência da computação", periodo="2024.1"))
