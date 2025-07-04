@@ -1,62 +1,75 @@
-from flask import Flask, request, render_template, jsonify
+import asyncio, json, sys
 import speech_recognition as sr
-from pydub import AudioSegment
-from io import BytesIO
-from langchain_community.chat_models import ChatDeepInfra
-from langchain_core.messages import HumanMessage
-import asyncio, json
 
-from .langchain_models import supervisor_model, aggregator_model, agents_model
+# ASYNCIO Event Loop para windows
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+from quart import Quart, request, jsonify, render_template
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from demo.agents.eureca_chat import EurecaChat
+from .utils.langchain_models import supervisor_model, aggregator_model, agents_model
+from langchain_core.messages import HumanMessage
+
+from io import BytesIO
+from pydub import AudioSegment
+from langchain_community.chat_models import ChatDeepInfra
+
+from .utils.db_path import *
+
 from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-app = Flask(__name__, static_url_path="/static")
+app = Quart(__name__, static_url_path="/static", template_folder="templates")
 
-# Inicializa o sistema de agentes ao iniciar a aplicação
-system = EurecaChat(
-    supervisor_model=supervisor_model,
-    aggregator_model=aggregator_model,
-    agents_model=agents_model
-).build()
+system = None # EurecaChat
+checkpointer = None # PostgresSaver Checkpointer
 
+@app.before_serving
+async def setup():
+    global system, checkpointer
+    checkpointer_cm = AsyncPostgresSaver.from_conn_string(DB_URI)
+    app.checkpointer_cm = checkpointer_cm
+    checkpointer = await checkpointer_cm.__aenter__()
 
-async def process_query(query):
-    """
-    Processa a consulta do usuário usando o sistema de agentes.
-    """
-    config = {"configurable": {"thread_id": "1"}}
-    inputs = {"messages": [HumanMessage(content=query)]}
-    response = []
+    await checkpointer.setup()
+    await checkpointer.adelete_thread("1")
 
-    async for chunk in system.astream(inputs, config, stream_mode="values"):
-        chunk["messages"][-1].pretty_print()
-        response.append(chunk["messages"][-1].content)
-    return response[-1] if response else "Desculpe, não consegui processar sua solicitação."
+    # Inicializando instância do EurecaChat
+    system = EurecaChat(
+        supervisor_model=supervisor_model,
+        aggregator_model=aggregator_model,
+        agents_model=agents_model,
+        checkpointer=checkpointer
+    ).build()
+
+@app.after_serving
+async def shutdown():
+    await app.checkpointer_cm.__aexit__(None, None, None)
 
 @app.route('/')
-def home():
+async def home():
     # Renderiza a página HTML onde o chatbot será exibido
-    return render_template('index.html')
+    return await render_template('index.html')
 
 @app.route('/login')
-def login():
+async def login():
     # Renderiza a página HTML onde o login será exibido
-    return render_template('login.html')
+    return await render_template('login.html')
 
 @app.route('/politica_termos')
-def politica_termos():
+async def politica_termos():
     # Renderiza a página HTML onde o login será exibido
-    return render_template('politica_termos.html')
+    return await render_template('politica_termos.html')
 
 @app.route('/delete_chat', methods=["POST"])
-def delete_chat():
+async def delete_chat():
     return jsonify({"msg": "apagado"}), 200
 
 @app.route('/resumir', methods=["POST"])
-def resumir():
-    data = request.get_json()
+async def resumir():
+    data = await request.get_json()
 
     if not data or 'texto' not in data:
         return jsonify({"erro": "Campo 'texto' é obrigatório"}), 400
@@ -77,33 +90,34 @@ def resumir():
         )
         print("RESUMO PARA O TÍTULO: ", resposta)
         resumo = resposta.content if hasattr(resposta, "content") else str(resposta)
-
         resumo = resumo.replace("'", '"')
         resumo = json.loads(resumo)
-
         return jsonify({"resumo": resumo['titulo']}), 200
-
     except Exception as e:
         return jsonify({"erro": f"Erro ao gerar resumo: {str(e)}"}), 500
 
 @app.route('/chat', methods=['POST'])
-def chat():
+async def chat():
     # Recebe a mensagem do usuário
-    user_message = request.form['user_input']
-    
-    # Gera a resposta usando o sistema de agentes
+    form = await request.form
+    user_message = form.get("user_input")
+
+    config = {"configurable": {"thread_id": "1"}}
+    inputs = {"messages": [HumanMessage(content=user_message)]}
+    response = []
+
     try:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        bot_message = loop.run_until_complete(process_query(user_message))
+        async for chunk in system.astream(inputs, config=config, stream_mode="values"):
+            chunk["messages"][-1].pretty_print()
+            response.append(chunk["messages"][-1].content)
+        return jsonify({"response": response[-1] if response else "Desculpe, erro interno."})
     except Exception as e:
-        print(f"Erro ao processar a mensagem: {e}")
-        bot_message = "Desculpe, ocorreu um erro ao processar sua solicitação."
-    return {'response': bot_message}
+        return jsonify({"response": f"Erro: {str(e)}"}), 500
 
 @app.route("/voice-to-text", methods=["POST"])
-def voice_to_text():
-    if 'file' not in request.files:
+async def voice_to_text():
+    form = await request.files
+    if 'file' not in form:
         return jsonify({"error": "No file part"}), 400
     
     audio_file = request.files['file']
@@ -128,5 +142,6 @@ def voice_to_text():
     except sr.RequestError as e:
         return jsonify({"error": f"Erro ao tentar usar o serviço de reconhecimento de fala: {e}"}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    #app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)

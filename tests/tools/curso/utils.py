@@ -6,7 +6,7 @@ from ..campus.utils import get_campus_most_similar
 from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados
 from ..utils.base_url import URL_BASE
 from langchain_community.chat_models import ChatDeepInfra
-from flask_app.langchain_models import model
+from flask_app.utils.langchain_models import model
 
 
 #model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)

@@ -22,3 +22,5 @@ langchain_huggingface
 faker
 IPython
 langchain_google_genai
+vanna
+langgraph-checkpoint-postgres

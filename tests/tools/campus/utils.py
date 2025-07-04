@@ -3,7 +3,7 @@ from .campi import campi
 from ..utils.most_similar import get_most_similar
 from .get_campi import get_campi
 from ..utils.processar_json import processar_json
-from flask_app.langchain_models import model
+from flask_app.utils.langchain_models import model
 
 
 #model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)

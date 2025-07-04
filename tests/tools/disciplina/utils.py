@@ -7,7 +7,7 @@ from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 from langchain_community.chat_models import ChatDeepInfra
-from flask_app.langchain_models import model
+from flask_app.utils.langchain_models import model
 
 
 model = ChatOllama(model="llama3.1", temperature=0)
