@@ -69,7 +69,6 @@ async function sendMessage(message) {
     scrollInUp = false;
 
     const $lastBotResponse = $('.bot__name__response').last();
-    $lastBotResponse.text('');
 
     const pergunta_feita = document.getElementsByClassName("query");
     if (pergunta_feita.length > 0) {
@@ -95,9 +94,18 @@ async function sendMessage(message) {
     socket.off("status");
 
     socket.on("status", (data) => {
-        console.log(data.resposta)
-        const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
-        $status.text(data.resposta);
+        console.log("Mensagem status recebida:", data.resposta);
+        const $lastBot = $('.chat__container .bot').last();
+        $lastBot.find('.bot__name__response_status').text(data.resposta);
+    });
+
+    socket.on("analise", (data) => {
+        const statusElements = document.querySelectorAll('.bot__name__response_status');
+        const statusElement = statusElements[statusElements.length - 1];
+
+        if (statusElement) {
+            statusElement.textContent = data.resposta;
+        }
     });
 
     socket.on("token", (data) => {
@@ -108,16 +116,6 @@ async function sendMessage(message) {
         $lastBotResponse[0].appendChild(span);
         $lastBotResponse.closest('.bot').removeClass('skeleton');
         //if (!scrollInUp) scrollToBottom();
-    });
-
-    socket.on("analise", (data) => {
-        console.log("Mensagem analise recebida:", data.resposta);
-    
-        // Exemplo: mostrar a mensagem em um elemento da página
-        const statusElement = document.querySelector('.bot__name__response_status');
-        if (statusElement) {
-            statusElement.textContent = data.resposta;
-        }
     });
 
     socket.on("resposta_final", (data) => {

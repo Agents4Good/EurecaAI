@@ -174,12 +174,12 @@ class EurecaChat:
         ]
         print("PROMPT DO AGREGADOR: ", prompt)
 
-        callbacks = state.get("config", {}).get("callbacks", []) or []
+        config = state.get("config", {})
+        callbacks = config.get("callbacks", [])
         for cb in callbacks:
             if hasattr(cb, 'emit'):
                 await cb.emit("status", {"resposta": "Agente agregador está pensando..."})
         
-        callbacks = state.get("config", {}).get("callbacks", []) or []
         response = self.aggregator_model.invoke(prompt, config={"callbacks": callbacks})
         print("RESPOSTA DO AGREGADOR: ", response)
         return {

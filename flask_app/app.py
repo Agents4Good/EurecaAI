@@ -157,50 +157,46 @@ async def voice_to_text():
 
 # Handler de streaming para tokens
 class SocketIOStreamingHandler(BaseCallbackHandler):
-    def __init__(self, sid):
+    def __init__(self, sid, socketio):
         self.sid = sid
+        self.sio = socketio
 
     async def emit(self, event, data):
-        await sio.emit(event, data, room=self.sid)
+        await self.sio.emit(event, data, room=self.sid)
 
     async def on_llm_new_token(self, token: str, **kwargs):
-        await sio.emit("token", {"resposta": token}, room=self.sid)
+        await self.sio.emit("token", {"resposta": token}, room=self.sid)
 
-# Conexão inicial
+
 @sio.on('connect')
 async def connect(sid, environ):
     print(f"Cliente conectado: {sid}")
 
-# Função principal que roda o processamento
-async def executar_tool(sid, user_message, arquivos):
-    print(f"message: {user_message}")
-    print(f"arquivos: {str(arquivos)}")
+
+async def executar_tool(sid, user_message, arquivos):    
     config = {
         "configurable": {"thread_id": sid},
-        "callbacks": [SocketIOStreamingHandler(sid=sid)],
+        "callbacks": [SocketIOStreamingHandler(sid=sid, socketio=sio)],
         "streaming": True
     }
-
-    inputs = {
-        "messages": [HumanMessage(content=user_message)],
-        "config": config
-    }
-    final_resposta = ""
-    
-    await sio.emit("status", {"resposta": "Iniciando..."}, room=sid)
     
     state = {"config": config}
-    callbacks = state.get("config", {}).get("callbacks", []) or []
+    config = state.get("config", {})
+    callbacks = config.get("callbacks", [])
     for cb in callbacks:
         if hasattr(cb, 'emit'):
-            await cb.emit("status", {"resposta": "Agente supervisor está pensando..."})
-            break
-
+            await cb.emit("status", {"resposta": "Iniciando os agentes..."})
+    
     try:
-        if arquivos and isinstance(arquivos, list):
-            await sio.emit("analise", {"resposta": "\n\nLendo arquivos...\n\n"}, room=sid)
+        if arquivos and isinstance(arquivos, list) and len(arquivos) > 0:
+            await sio.emit("status", {"resposta": "Lendo arquivos pdf..."}, room=sid)
+            user_message = f"Texto contido nos arquivos lidos: {realizar_tratamento_dos_arquivos(arquivos)}. \n\n Pergunta: {user_message}."
+            print(user_message)
+        
+        inputs = {"messages": [HumanMessage(content=user_message)]}
+        final_resposta = ""
 
-        async for chunk in system.astream(inputs, config=config, stream_mode="values"):
+        async for chunk in system.astream(inputs, config, stream_mode="values"):
             msg = chunk["messages"][-1]
             print("Chunk recebido:", msg.content)
             final_resposta = msg.content
@@ -211,7 +207,7 @@ async def executar_tool(sid, user_message, arquivos):
     except Exception as e:
         await sio.emit("resposta_final", {"resposta": f"Erro: {str(e)}"}, room=sid)
 
-# Escuta de mensagens do front-end
+
 @sio.on('input_text')
 async def handle_input(sid, data):
     print(data)
