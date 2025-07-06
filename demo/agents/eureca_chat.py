@@ -151,7 +151,7 @@ class EurecaChat:
         }
     
     
-    def aggregator_node(self, state: StateGraph):
+    async def aggregator_node(self, state: StateGraph):
         """
         """
 
@@ -173,7 +173,14 @@ class EurecaChat:
             )),
         ]
         print("PROMPT DO AGREGADOR: ", prompt)
-        response = self.aggregator_model.invoke(prompt)
+
+        callbacks = state.get("config", {}).get("callbacks", []) or []
+        for cb in callbacks:
+            if hasattr(cb, 'emit'):
+                await cb.emit("status", {"resposta": "Agente agregador está pensando..."})
+        
+        callbacks = state.get("config", {}).get("callbacks", []) or []
+        response = self.aggregator_model.invoke(prompt, config={"callbacks": callbacks})
         print("RESPOSTA DO AGREGADOR: ", response)
         return {
             "messages": [

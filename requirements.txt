@@ -27,3 +27,6 @@ langgraph-checkpoint-postgres
 flask-socketio
 eventlet
 psycopg
+quart
+PyMuPDF
+hypercorn

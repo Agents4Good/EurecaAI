@@ -25,6 +25,10 @@
         let mediaRecorder;
         let audioChunks = [];
         let arquivosSelecionados = [];
+
+        let socket = io("http://localhost:8000", {
+            transports: ['websocket']
+        });
     </script>
     <script>
         function trocar_chat_pelo_id(id, exists) {

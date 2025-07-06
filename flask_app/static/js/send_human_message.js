@@ -53,10 +53,24 @@ function toggleMenu(id) {
 }
 
 
-function sendMessage(message) {
+async function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+async function sendMessage(message) {
     render_ai_message();
     disable_input();
+    scrollToBottom();
+    scrollInUp = false;
+
     const $lastBotResponse = $('.bot__name__response').last();
+    $lastBotResponse.text('');
+
     const pergunta_feita = document.getElementsByClassName("query");
     if (pergunta_feita.length > 0) {
         pergunta_feita[0].value = "";
@@ -66,43 +80,66 @@ function sendMessage(message) {
     const arquivosParaEnviar = [...arquivosSelecionados];
     reseta_arquivos('');
 
-    const formData = new FormData();
-    formData.append('input_data', message);
+    const arquivosBase64 = await Promise.all(arquivosParaEnviar.map(async (file) => ({
+        filename: file.name,
+        content: await fileToBase64(file)
+    })));
 
-    arquivosParaEnviar.forEach((file, i) => {
-        formData.append('archives[]', file);
+    socket.emit("input_text", {
+        input_data: message,
+        arquivos: arquivosBase64
     });
 
-    const profileStr = getCookie("profile");
-    if (profileStr) {
-        formData.append('profile', profileStr)
-    }
+    socket.off("token");
+    socket.off("resposta_final");
+    socket.off("status");
 
-    $.ajax({
-        type: 'POST',
-        url: '/chat',
-        timeout: 120000,
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            const markdownResponse = response.response;
-            const htmlResponse = marked.parse(markdownResponse);
-            $('.bot').last().find('.audio-button').show();
-            $lastBotResponse.html(htmlResponse);
-            $lastBotResponse.closest('.bot').removeClass('skeleton');
-            const cleanedResponse = (markdownResponse.trim()).replace(/['"]/g, '');
-            $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+    socket.on("status", (data) => {
+        console.log(data.resposta)
+        const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+        $status.text(data.resposta);
+    });
 
-            if (!idChatLocal) {
-                const newDiv = document.createElement("div");
-                const id = `item_${Date.now()}`;
-                newDiv.className = "history_item";
-                newDiv.id = id;
-                let bot_response = `Pergunta feita: ${message}\n Resposta encontrada: ${markdownResponse}`;
-                
-                get_resumo(bot_response).then((resumo) => {
-                    newDiv.innerHTML = `
+    socket.on("token", (data) => {
+        console.log(data)
+        const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+        $status.text("");
+        const span = document.createTextNode(data.resposta);
+        $lastBotResponse[0].appendChild(span);
+        $lastBotResponse.closest('.bot').removeClass('skeleton');
+        //if (!scrollInUp) scrollToBottom();
+    });
+
+    socket.on("analise", (data) => {
+        console.log("Mensagem analise recebida:", data.resposta);
+    
+        // Exemplo: mostrar a mensagem em um elemento da página
+        const statusElement = document.querySelector('.bot__name__response_status');
+        if (statusElement) {
+            statusElement.textContent = data.resposta;
+        }
+    });
+
+    socket.on("resposta_final", (data) => {
+        $('.bot').last().find('.audio-button').show();
+        const textoFinal = data.resposta;
+        const htmlResponse = marked.parse(textoFinal);
+        $lastBotResponse.html(htmlResponse);
+        const cleanedResponse = textoFinal.trim().replace(/['"]/g, '');
+        $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+        $lastBotResponse.closest('.bot').removeClass('skeleton');
+
+        const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+        $status.text("");
+
+        if (!idChatLocal) {
+            const newDiv = document.createElement("div");
+            const id = `item_${Date.now()}`;
+            newDiv.className = "history_item";
+            newDiv.id = id;
+
+            get_resumo(message).then((resumo) => {
+                newDiv.innerHTML = `
                     <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
                     <div class="fab-wrapper">
                         <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
@@ -110,23 +147,13 @@ function sendMessage(message) {
                             <i class='fas fa-trash' onclick="apagar_chat('${id}')"></i>
                         </div>
                     </div>
-                    `;
-                    idChatLocal = id;
-                    document.getElementsByClassName("history")[0].appendChild(newDiv);
-                });
-            }
-
-            scrollToBottom();
-            enable_input();
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            if (textStatus === 'timeout') {
-                $('.bot__name__response').last().text('Desculpe, o tempo de espera foi excedido.');
-            } else {
-                $('.bot__name__response').last().text('Desculpe, algo deu errado.');
-            }
-            $lastBotResponse.closest('.bot').removeClass('skeleton');
-            enable_input();
+                `;
+                idChatLocal = id;
+                document.getElementsByClassName("history")[0].appendChild(newDiv);
+            });
         }
+
+        scrollToBottom();
+        enable_input();
     });
 }

@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 app = Quart(__name__, static_url_path="/static", template_folder="templates")
-sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*")
+sio = socketio.AsyncServer(async_mode="asgi", cors_allowed_origins="*", max_http_buffer_size=100_000_000)
 sio_app = socketio.ASGIApp(sio, app)  # app final para rodar com Hypercorn
 
 system = None # EurecaChat
@@ -174,10 +174,10 @@ async def connect(sid, environ):
 # Função principal que roda o processamento
 async def executar_tool(sid, user_message, arquivos):
     print(f"message: {user_message}")
-    
+    print(f"arquivos: {str(arquivos)}")
     config = {
         "configurable": {"thread_id": sid},
-        "callbacks": [SocketIOStreamingHandler(sid)],
+        "callbacks": [SocketIOStreamingHandler(sid=sid)],
         "streaming": True
     }
 
@@ -186,12 +186,21 @@ async def executar_tool(sid, user_message, arquivos):
         "config": config
     }
     final_resposta = ""
+    
+    await sio.emit("status", {"resposta": "Iniciando..."}, room=sid)
+    
+    state = {"config": config}
+    callbacks = state.get("config", {}).get("callbacks", []) or []
+    for cb in callbacks:
+        if hasattr(cb, 'emit'):
+            await cb.emit("status", {"resposta": "Agente supervisor está pensando..."})
+            break
 
     try:
-        if arquivos:
+        if arquivos and isinstance(arquivos, list):
             await sio.emit("analise", {"resposta": "\n\nLendo arquivos...\n\n"}, room=sid)
 
-        async for chunk in system.astream(inputs, config, stream_mode="values"):
+        async for chunk in system.astream(inputs, config=config, stream_mode="values"):
             msg = chunk["messages"][-1]
             print("Chunk recebido:", msg.content)
             final_resposta = msg.content
@@ -205,7 +214,8 @@ async def executar_tool(sid, user_message, arquivos):
 # Escuta de mensagens do front-end
 @sio.on('input_text')
 async def handle_input(sid, data):
-    user_message = data.get('input_data', '')
+    print(data)
+    user_message = data.get('input_data')
     arquivos = data.get('arquivos', [])
     asyncio.create_task(executar_tool(sid, user_message, arquivos))
 
