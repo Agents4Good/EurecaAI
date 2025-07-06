@@ -1,23 +1,21 @@
-import base64
 from langchain_core.messages import HumanMessage
 
 def ler_imagens(arquivos):
-    """
-    Lê imagens do caminho especificado e retorna seu conteúdo codificado em base64.
-    
-    Args:
-        image_path (str): Caminho para o arquivo da imagem.
-        
-    Returns:
-        str: String base64 da imagem.
-    """
     mensagens = [{"type": "text", "text": "Temos as seguintes imagens"}]
 
-    for arquivo in arquivos:
-        image_bytes = arquivo.read()
-        image_b64 = base64.b64encode(image_bytes).decode("utf-8")
+    for img in arquivos:
+        try:
+            filename = img.get("filename", "desconhecido.png")
+            b64_data = img.get("content", "")
 
-        mensagens.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_b64}"}})
+            if not b64_data.strip():
+                continue
 
-    
-    return HumanMessage(content=mensagens) if len(mensagens) > 0 else None
+            mensagens.append({
+                "type": "image_url",
+                "image_url": {"url": f"data:image/png;base64,{b64_data}"}
+            })
+        except Exception as e:
+            print(f"Erro ao processar imagem {filename}: {e}")
+
+    return HumanMessage(content=mensagens) if len(mensagens) > 1 else None
