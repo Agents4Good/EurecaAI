@@ -92,12 +92,18 @@ async function sendMessage(message) {
     socket.off("token");
     socket.off("resposta_final");
     socket.off("status");
+    socket.off("agregando");
 
     socket.on("status", (data) => {
         console.log("Mensagem status recebida:", data.resposta);
         const $lastBot = $('.chat__container .bot').last();
         $lastBot.find('.bot__name__response_status').text(data.resposta);
     });
+
+    socket.on("agregando", (data) => {
+        const htmlResponse = marked.parse("");
+        $lastBotResponse.html(htmlResponse);
+    })
 
     socket.on("analise", (data) => {
         const statusElements = document.querySelectorAll('.bot__name__response_status');
@@ -108,15 +114,20 @@ async function sendMessage(message) {
         }
     });
 
+
+    let streamingMarkdown = "";
     socket.on("token", (data) => {
-        console.log(data)
+        const token = data.resposta;
+        streamingMarkdown += token;
+
+        const html = marked.parse(streamingMarkdown);
         const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
         $status.text("");
-        const span = document.createTextNode(data.resposta);
-        $lastBotResponse[0].appendChild(span);
+
+        $lastBotResponse.html(html); // substitui com HTML convertido de Markdown
         $lastBotResponse.closest('.bot').removeClass('skeleton');
-        //if (!scrollInUp) scrollToBottom();
     });
+    
 
     socket.on("resposta_final", (data) => {
         $('.bot').last().find('.audio-button').show();

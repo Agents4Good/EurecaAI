@@ -180,20 +180,14 @@ async def executar_tool(sid, user_message, arquivos):
         "streaming": True
     }
     
-    state = {"config": config}
-    config = state.get("config", {})
-    callbacks = config.get("callbacks", [])
-    for cb in callbacks:
-        if hasattr(cb, 'emit'):
-            await cb.emit("status", {"resposta": "Iniciando os agentes..."})
+    await sio.emit("status", {"resposta": "Iniciando os agentes..."})
     
     try:
         if arquivos and isinstance(arquivos, list) and len(arquivos) > 0:
             await sio.emit("status", {"resposta": "Lendo arquivos pdf..."}, room=sid)
             user_message = f"Texto contido nos arquivos lidos: {realizar_tratamento_dos_arquivos(arquivos)}. \n\n Pergunta: {user_message}."
-            print(user_message)
         
-        inputs = {"messages": [HumanMessage(content=user_message)]}
+        inputs = {"messages": [HumanMessage(content=user_message)], "config": config}
         final_resposta = ""
 
         async for chunk in system.astream(inputs, config, stream_mode="values"):

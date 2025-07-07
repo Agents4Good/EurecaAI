@@ -1,4 +1,4 @@
-import operator, functools
+import operator, functools, asyncio
 from typing import TypedDict, Annotated, Sequence, Optional
 
 from langgraph.graph import StateGraph, END
@@ -6,7 +6,7 @@ from langgraph.types import Checkpointer
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.prompts import PromptTemplate
-
+from langchain_ollama import ChatOllama
 from .create_agent import CreateAgent
 
 from ..prompts.supervisor_prompt import SUPERVISOR_PROMPT
@@ -72,6 +72,7 @@ SETOR_TOOLS = [
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
     next: str
+    config: dict
     # last_agent: Optional[str]
     # agent_repetition_count: int
 
@@ -154,7 +155,13 @@ class EurecaChat:
     async def aggregator_node(self, state: StateGraph):
         """
         """
-
+        config = state.get("config", {})
+        callbacks = config.get("callbacks", [])
+        for cb in callbacks:
+            if hasattr(cb, 'emit'):
+                await cb.emit("agregando", {})
+                await cb.emit("status", {"resposta": "Agregando as informações, aguarde!"})
+        
         user_query = next(
             (msg.content for msg in reversed(state["messages"]) if isinstance(msg, HumanMessage)), 
             "No questions found."
@@ -173,14 +180,13 @@ class EurecaChat:
             )),
         ]
         print("PROMPT DO AGREGADOR: ", prompt)
-
-        config = state.get("config", {})
-        callbacks = config.get("callbacks", [])
-        for cb in callbacks:
-            if hasattr(cb, 'emit'):
-                await cb.emit("status", {"resposta": "Agente agregador está pensando..."})
         
+        """
         response = self.aggregator_model.invoke(prompt, config={"callbacks": callbacks})
+        """
+        llm_google = ChatOllama(model="llama3.2:1b", streaming=True, callbacks=callbacks)
+        response = await llm_google.ainvoke(prompt)
+        
         print("RESPOSTA DO AGREGADOR: ", response)
         return {
             "messages": [
