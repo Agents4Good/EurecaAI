@@ -204,5 +204,3 @@ class GerenciadorSQLAutomatizado:
 
         result = self.__execute_sql(sql)
         return  result
-
-    
