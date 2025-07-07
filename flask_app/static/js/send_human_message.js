@@ -93,6 +93,40 @@ async function sendMessage(message) {
     socket.off("resposta_final");
     socket.off("status");
     socket.off("agregando");
+    socket.off("logos_sites");
+
+    socket.on("logos_sites", (urls) => {
+        const $bot = $lastBotResponse.closest('.bot');
+        const $p = $bot.find('.bot__name p').first();
+    
+        const maxLogos = 3;
+        const mostrar = urls.slice(0, maxLogos);
+    
+        const $logosContainer = $('<span class="logos-container"></span>');
+    
+        mostrar.forEach((url, i) => {
+            const $img = $(`<img src="${url}" alt="Logo" class="bot__logo-img" style="opacity: 0; transition: opacity 0.3s ease;" />`);
+            $logosContainer.append($img);
+    
+            setTimeout(() => {
+                $img.css('opacity', 1);
+            }, i * 400);
+        });
+    
+        if (urls.length > maxLogos) {
+            const $plus = $(`<span class="plus-icon" style="opacity: 0; transition: opacity 0.3s ease;">+</span>`);
+            $logosContainer.append($plus);
+    
+            setTimeout(() => {
+                $plus.css('opacity', 1);
+            }, mostrar.length * 400);
+        }
+    
+        $p.html('');
+        $p.append($logosContainer);
+        $p.append('<span class="assistente-text">Assistente:</span>');
+    });            
+
 
     socket.on("status", (data) => {
         console.log("Mensagem status recebida:", data.resposta);

@@ -161,6 +161,13 @@ class EurecaChat:
             if hasattr(cb, 'emit'):
                 await cb.emit("agregando", {})
                 await cb.emit("status", {"resposta": "Agregando as informações, aguarde!"})
+                await cb.emit("logos_sites", [
+                    "https://www.google.com/s2/favicons?sz=64&domain=g1.globo.com",
+                    "https://www.google.com/s2/favicons?sz=64&domain=cnn.com",
+                    "https://www.google.com/s2/favicons?sz=64&domain=exame.com",
+                    "https://www.google.com/s2/favicons?sz=64&domain=uol.com"
+                ])
+            break
         
         user_query = next(
             (msg.content for msg in reversed(state["messages"]) if isinstance(msg, HumanMessage)), 
