@@ -1,5 +1,7 @@
 import asyncio, json, sys, socketio
 import speech_recognition as sr
+import aiohttp
+
 
 # ASYNCIO Event Loop para windows
 if sys.platform == "win32":
@@ -70,6 +72,78 @@ async def politica_termos():
 @app.route('/delete_chat', methods=["POST"])
 async def delete_chat():
     return jsonify({"msg": "apagado"}), 200
+
+
+chats = {
+    "121210472": {
+        "item_1752161212183": {"title": "Exemplo 1", "messages": [{"human_message": "Oi11", "timestamp": "2025-07-10T15:58:25Z"}, {"ai_message": "olá12", "timestamp": "2025-07-10T15:58:29Z"}]},
+        "item_1752161370393": {"title": "Exemplo 2", "messages": [{"human_message": "Oi21", "timestamp": "2025-07-10T15:59:21Z"}, {"ai_message": "olá22", "timestamp": "2025-07-10T15:59:59Z"}]}
+    }
+}
+
+
+async def get_info(token):
+    url = "https://eureca.sti.ufcg.edu.br/as/profile"
+    headers = {
+        "accept": "application/json",
+        "token-de-autenticacao": token
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.request("GET", url, headers=headers) as response:
+            if response.status == 200:
+                data = await response.json()
+                return data
+            else:
+                print("Erro na requisição:", response.status)
+                return None
+
+
+@app.route("/get_chat", methods=["POST"])
+async def get_chat():
+    data = await request.json
+    chat_id = data.get("chat_id", None)
+    token = data.get("token", None)
+    print(data)
+
+    matricula = None
+    response = await get_info(token)
+
+    if response is not None:
+         matricula = str(response.get("id"))
+    
+    if not matricula or matricula is None:
+        return jsonify({"data": []})
+        
+    if chat_id and (matricula in chats) and (chat_id in chats[matricula]):
+        return jsonify({"data": chats[matricula][chat_id]["messages"]})
+    else:
+        return jsonify({"data": []})
+
+
+@app.route("/get_historico", methods=["POST"])
+async def get_historico():
+    data = await request.get_json()
+    token = data.get("token")
+
+    if not token:
+        return jsonify({"error": "Token não fornecido!"}), 400
+
+    matricula = None
+    user_info = await get_info(token)
+    matricula = user_info.get("id", None)
+
+    if matricula is None or not matricula:
+        return jsonify({"error": "Token inválido ou erro na requisição"}), 403
+
+    if matricula in chats:
+        return [{ "chat_id": chat_id, "title": chat_data["title"] } for chat_id, chat_data in chats[matricula].items()]
+    
+    if matricula not in chats:
+        return jsonify({"error": "Chat sem matrícula"}), 401
+
+    return jsonify({"error": "Erro desconhecido"}), 400
+
 
 @app.route('/resumir', methods=["POST"])
 async def resumir():

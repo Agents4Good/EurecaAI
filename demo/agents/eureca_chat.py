@@ -191,7 +191,7 @@ class EurecaChat:
         """
         response = self.aggregator_model.invoke(prompt, config={"callbacks": callbacks})
         """
-        llm_google = ChatOllama(model="llama3.2:1b", streaming=True, callbacks=callbacks)
+        llm_google = ChatOllama(model="llama3.2:3b", streaming=True, callbacks=callbacks)
         response = await llm_google.ainvoke(prompt)
         
         print("RESPOSTA DO AGREGADOR: ", response)

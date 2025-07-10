@@ -22,7 +22,7 @@ function render_human_message(message) {
 }
 
 
-function render_ai_message() { 
+function render_ai_message(message, showStars) { 
     const container = document.getElementsByClassName('chat__container')[0]; 
     const audioImgUrl   = container.getAttribute('data-audio-img');
     const botImgUrl     = container.getAttribute('data-bot-img');
@@ -37,7 +37,10 @@ function render_ai_message() {
                         <p>Assistente:</p>
                         <p class="bot__name__response_status"></p>
                     </div>
-                    <p class="bot__name__response">Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  <img src="${brilhosImgUrl}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;"></p>
+                    <p class="bot__name__response">
+                        ${message}
+                        ${showStars ? `<img src="${brilhosImgUrl}" alt="✨" style="width: 20px; height: 20px; vertical-align: middle; margin-left: 4px;">` : ""}
+                    </p>                    
                     <div class="bot_options">
                         <button class="audio-button" style="display: none;">
                             <img src="${audioImgUrl}" />
@@ -48,31 +51,3 @@ function render_ai_message() {
         </div>`;
     $('.chat__container').append(botMessageBlock);
 }
-
-
-function render_history(chat_id, token) {
-    const formData = {
-        "chat_id": chat_id,
-        "token": token
-    }
-
-    $.ajax({
-        type: 'GET',
-        url: '/get_chat',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (data) {
-            const chats = data.chats;
-            if (chats) {
-                chats.array.forEach(chat => {
-                    if (chat["type"] == "HumanMessage") render_human_message(chat["content"]);
-                    else render_ai_message(chat["content"]);
-                });
-            }
-        },
-        error: function () {
-            console.error("Erro ao enviar o áudio:", error);
-        }
-    });
-} 

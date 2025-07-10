@@ -7,9 +7,9 @@ window.onload = function() {
     
     socket.on("connect", () => {
       console.log("✅ Conectado ao servidor via Socket.IO!");
-      console.log("ID do socket:", socket.id);
     });
 }
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const textarea = document.getElementById('user_input');
@@ -23,7 +23,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
     atualizarPlaceholder();
     window.addEventListener('resize', atualizarPlaceholder);
+
+    const profileStr = getCookie("profile");
+    const res = profileStr ? JSON.parse(profileStr) : null;
+    const perfil_response = res || {token: ""};
+    const token_response = perfil_response && perfil_response["token"]
+    
+    if (perfil_response && token_response) {
+        carregarHistorico(token_response);
+    }
 });
+
+
+async function carregarHistorico(token) {
+    try {
+        const response = await fetch("/get_historico", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ token: token })
+        });
+
+        if (response.status === 200) {
+            const data = await response.json();
+
+            data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+            .forEach(item => {
+                render_botao_historico(item);
+            });
+        } else {
+            console.error("Erro na resposta:", response.status);
+        }
+    } catch (error) {
+        console.error("Erro ao buscar histórico:", error);
+    }
+}
 
 
 $(document).ready(function () {
@@ -37,7 +72,7 @@ $(document).ready(function () {
                 $('#user_input').val('');
                 if (userMessage.trim() !== '') {
                     render_human_message(userMessage);
-                    sendMessage(userMessage);
+                    sendMessage(userMessage, true);
                 }
             }
         }
@@ -53,7 +88,7 @@ $(document).ready(function () {
         $('#user_input').val('');
         if (userMessage.trim() !== '') {
             render_human_message(userMessage);
-            sendMessage(userMessage);
+            sendMessage(userMessage, true);
         }
     });
 });
@@ -187,6 +222,9 @@ function addUserMessage(message) {
 
 // Ver
 function apagar_chat(id) {
+    idChatLocal = null;
+    console.log("apagado", id)
+
     function apagar_chat_pelo_id(id) {
         document.querySelector('.chat__container').innerHTML = '';
         const historyItem = document.getElementById(id);
@@ -212,6 +250,53 @@ function apagar_chat(id) {
             timeout: 400000,
             success: function (response) {
                 apagar_chat_pelo_id(id);
+            }
+        });
+    }
+}
+
+
+// Trocar matricula por id
+function get_chat(id) {
+    if (idChatLocal != id) {
+        apagar_chat();
+        
+        const profileStr = getCookie("profile");
+        const res = profileStr ? JSON.parse(profileStr) : null;
+        const perfil_response = res || {token: ""};
+        const token_response = perfil_response && perfil_response["token"]
+
+        $.ajax({
+            type: 'POST',
+            url: '/get_chat',
+            contentType: 'application/json',
+            data: JSON.stringify({ chat_id: id, token: token_response }),
+            success: function (response) {
+                document.querySelector('.chat__container').innerHTML = '';
+                const data = response.data;
+                idChatLocal = id;
+                
+                data.forEach(message => {
+                    if (message.human_message) {
+                        render_human_message(message.human_message);
+                    } else if (message.ai_message) {
+                        render_ai_message(message.ai_message, false);
+                        $('.bot').last().find('.audio-button').show();
+                        const textoFinal = message.ai_message;
+                        const htmlResponse = marked.parse(textoFinal);
+                        const $lastBotResponse = $('.bot__name__response').last();
+                        $lastBotResponse.html(htmlResponse);
+                        const cleanedResponse = textoFinal.trim().replace(/['"]/g, '');
+                        $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+                        $lastBotResponse.closest('.bot').removeClass('skeleton');
+
+                        const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+                        $status.text("");
+                    }
+                });
+            },
+            error: function(error) {
+                console.log('Erro ao obter o chat:', error);
             }
         });
     }

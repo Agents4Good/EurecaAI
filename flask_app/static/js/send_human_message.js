@@ -62,8 +62,33 @@ async function fileToBase64(file) {
     });
 }
 
-async function sendMessage(message) {
-    render_ai_message();
+
+function render_botao_historico(item) {
+    const newDiv = document.createElement("div");
+    newDiv.className = "history_item";
+    newDiv.id = item.chat_id;
+    
+    newDiv.onclick = function () {
+        get_chat(item.chat_id);
+    };
+    
+    newDiv.innerHTML = `
+        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</p>
+            <div class="fab-wrapper">
+                <div class="fab" onclick="toggleMenu('${item.chat_id}')"><i class='fas fa-ellipsis-h'></i></div>
+                <div class="fab-menu" id="${item.chat_id}_menu">
+                    <i class='fas fa-trash' onclick="apagar_chat(${item.chat_id})"></i>
+                </div>
+            </div>
+        `;
+    
+    document.getElementsByClassName("history")[0].appendChild(newDiv);
+}
+
+
+async function sendMessage(message, showStars) {
+    const default_msg = "Os agentes podem levar até alguns minutos para pesquisar, analisar e responder. Exibiremos os resultados assim que os agentes tiverem processado os dados...  ";
+    render_ai_message(default_msg, showStars);
     disable_input();
     scrollToBottom();
     scrollInUp = false;
@@ -129,7 +154,6 @@ async function sendMessage(message) {
 
 
     socket.on("status", (data) => {
-        console.log("Mensagem status recebida:", data.resposta);
         const $lastBot = $('.chat__container .bot').last();
         $lastBot.find('.bot__name__response_status').text(data.resposta);
     });
@@ -180,20 +204,9 @@ async function sendMessage(message) {
             const id = `item_${Date.now()}`;
             newDiv.className = "history_item";
             newDiv.id = id;
-
-            get_resumo(message).then((resumo) => {
-                newDiv.innerHTML = `
-                    <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${resumo}</p>
-                    <div class="fab-wrapper">
-                        <div class="fab" onclick="toggleMenu('${id}')"><i class='fas fa-ellipsis-h'></i></div>
-                        <div class="fab-menu" id="${id}_menu">
-                            <i class='fas fa-trash' onclick="apagar_chat('${id}')"></i>
-                        </div>
-                    </div>
-                `;
-                idChatLocal = id;
-                document.getElementsByClassName("history")[0].appendChild(newDiv);
-            });
+            idChatLocal = id;
+            
+            get_resumo(message).then((resumo) => { render_botao_historico({title: resumo, chat_id: id}) });
         }
 
         scrollToBottom();

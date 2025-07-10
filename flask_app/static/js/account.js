@@ -61,5 +61,9 @@ function getProfile() {
             </div>`;
 
         container.insertAdjacentHTML("beforeend", botMessageBlock);
+
+        return res;
     }
+
+    return null;
 }

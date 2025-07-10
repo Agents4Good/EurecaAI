@@ -59,7 +59,7 @@ function stopRecording() {
                     const transcription = data.transcription;
                     if (transcription) {
                         render_human_message(transcription);
-                        sendMessage(transcription);
+                        sendMessage(transcription, true);
                     }
                 },
                 error: function () {
