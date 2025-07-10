@@ -455,6 +455,10 @@ aside {
     cursor: pointer;
 }
 
+.history_item:hover {
+    background-color: #1A4E8A;
+}
+
 .history_item p {
     font-weight: bold;
 }

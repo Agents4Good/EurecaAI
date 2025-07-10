@@ -275,7 +275,7 @@ function get_chat(id) {
                 document.querySelector('.chat__container').innerHTML = '';
                 const data = response.data;
                 idChatLocal = id;
-                
+
                 data.forEach(message => {
                     if (message.human_message) {
                         render_human_message(message.human_message);

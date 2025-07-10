@@ -104,7 +104,6 @@ async def get_chat():
     data = await request.json
     chat_id = data.get("chat_id", None)
     token = data.get("token", None)
-    print(data)
 
     matricula = None
     response = await get_info(token)
