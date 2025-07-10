@@ -47,10 +47,10 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
          nome_do_campus: O parâmetro nome do campus é nome da cidade onde reside o campus e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé, Pombal, ... E se quiser informações dos estudantes de todos os campus (toda a UFCG), passe a string vazia ''. 
          situacao_estudante: a situação do estudante, PRECISA ser um desses: 'SUSPENSOS', 'REINGRESSOS', 'REATIVADOS', 'DESISTENTE', 'EVADIDOS', 'JUBILADOS', 'ABANDONOS', 'TRANSFERIDOS', 'FINALIZADOS', 'INATIVOS', 'EGRESSOS', 'ATIVOS'.
          motivo_de_evasao (Any, optional): Motivo de evasão. Se não foi informado, use "". Defaults to "".
-         periodo_de_ingresso_de (Any, optional): Período de ingresso dos estudantes.
-         periodo_de_ingresso_ate (Any, optional): Período de ingresso dos estudantes.
-         periodo_de_evasao_de (Any, optional): Período de ingresso dos estudantes.
-         periodo_de_evasao_ate (Any, optional): Período de ingresso dos estudantes.
+         periodo_de_ingresso_de (Any, optional): Limite inferior do período de ingresso dos estudantes.
+         periodo_de_ingresso_ate (Any, optional): Limite superior do período de ingresso dos estudantes.
+         periodo_de_evasao_de (Any, optional): Limite inferior do período de egresso dos estudantes.
+         periodo_de_evasao_ate (Any, optional): Limite superior do período de egresso dos estudantes.
 
       Returns:
          Informações dos estudantes que ajude a responder a pergunta feita pelo usuário.
@@ -59,7 +59,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    print(f"Tool `obter_dados_de_todos_estudantes` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, situacao_estudante={situacao_estudante}, motivo_de_evasao={motivo_de_evasao}, periodo_de_ingresso_de={periodo_de_ingresso_de}, periodo_de_ingresso_ate={periodo_de_ingresso_ate}, periodo_de_evasao_de={periodo_de_evasao_ate}, periodo_de_evasao_ate={periodo_de_evasao_ate}")
    print(f"A query da pergunta foi: {query}")
    
-   query = str(query)
+   query = remover_parametros_da_query(query)
+   #query = str(query)
    nome_do_campus = str(nome_do_campus)
    nome_do_curso = str(nome_do_curso)
    periodo_de_ingresso_de = str(periodo_de_ingresso_de)
@@ -107,7 +108,7 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       db_name = "db_estudantes.sqlite"
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
       gerenciador.save_data(estudantes)
-      response = gerenciador.get_data("estudante_info_gerais", query)   
+      response = gerenciador.get_data("estudante_info_gerais", query, True)   
       print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:

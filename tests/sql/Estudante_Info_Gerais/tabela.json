@@ -5,6 +5,69 @@
             "description": "Código da matrícula do estudante;",
             "mapper": "matricula_do_estudante"
         },
+
+        "codigo_do_curso": {
+            "type": "TEXT",
+            "description": "Código do curso do estudante;",
+            "mapper": "codigo_do_curso"
+        },
+        "nome_do_curso": {
+            "type": "TEXT",
+            "description": "Nome do curso do estudante;",
+            "mapper": "nome_do_curso"
+        },
+        "codigo_do_curriculo": {
+            "type": "INTEGER",
+            "description": "Código do currículo do estudante;",
+            "mapper": "codigo_do_curriculo"
+        },
+        "campus": {
+            "type": "INTEGER",
+            "description": "Campus onde o estudante está matriculado;",
+            "mapper": "campus"
+        },
+        "deficiencias": {
+            "type": "TEXT",
+            "description": "Deficiência do estudante, valores múltiplos separados por vírgula ex: B22, B23, ....",
+            "mapper": "deficiencia"
+        },
+        "tipo_ensino_medio": {
+            "type": "TEXT",
+            "description": "Tipo de ensino médio do estudante, ENUM 'Somente escola pública', 'Somente escola privada'",
+            "mapper": "tipo_ensino_medio"
+        },
+        "politica_afirmativa": {
+            "type": "TEXT",
+            "description": "Política afirmativa do estudante",
+            "mapper": "politica_afirmativa"
+        },
+        "renda_per_capita_ate": {
+            "type": "REAL",
+            "description": "Renda per capita do estudante em salários mínimos",
+            "mapper": "renda_per_capita"
+        },
+        "media_conclusa_de_curso": {
+            "type": "REAL",
+            "description": "Média de conclusão do curso do estudante.",
+            "mapper": "mc"
+        },
+        "quilombola": {
+            "type": "TEXT",
+            "description": "Indica se o estudante é ou não é de uma comunidade quilombola, ENUM 'Sim' ou 'Não';",
+            "mapper": "prac_quilombola"
+        },
+        "indigena_aldeado": {
+            "type": "TEXT",
+            "description": "Indica se o estudante é ou não é indígena aldeado, ENUM 'Sim' ou 'Não';",
+            "mapper": "prac_indigena_aldeado"
+        },
+
+
+        "nome_do_campus": {
+            "type": "TEXT",
+            "description": "Nome do campus onde o estudante está matriculado;",
+            "mapper": "nome_do_campus"
+        },
         "nome_do_estudante": {
             "type": "TEXT",
             "description": "Nome do estudante;",
@@ -32,7 +95,7 @@
         },
         "cor": {
             "type": "TEXT",
-            "description": "ENUM da Cor do estudante, pode ser 'Parda', 'Branca', 'Preta', 'Amarela';",
+            "description": "ENUM da Cor do estudante, pode ser APENAS 'Parda', 'Branca', 'Preta', 'Amarela';",
             "mapper": "cor"
         },
         "nacionalidade": {

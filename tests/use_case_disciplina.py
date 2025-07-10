@@ -89,12 +89,12 @@ question = "Liste o nome das disciplinas do curso de Ciência da Computação em
 #question = "Me mostre quem não dispensou Teoria da Computação na Ciência da Computação de Campina Grande."
 #question = "Quantos estudantes conseguiram dispensa na disciplina Teoria da Computação, no curso de Ciência da Computação do campus de Campina Grande?"
 question = "Liste os alunos que cursaram Teoria da Computação e não tiveram dispensa, no curso de Ciência da Computação em Campina Grande."
-
+question = "Qual a ementa da disciplina de cálculo 1 do curso de ciência da computação do campus de campina grande no período 2024.1?"
 
 #question = "Traga o código de todas as disciplinas do curso de ciência da computação do campus de campina grande"
 #question = "Quais os pré-requistos da disciplina de programação para web 1 do curso de ciência da computação?"
 #question = "Quais são os códigos e nomes das disciplinas no curso de computação"
 #question = "Qual o plano de aula da disciplina de compiladores do curso de ciência da computação?"
-
+question = "Qual o código da disciplina TC do curso de ciência da computação?"
 
 agent.run(question=question)

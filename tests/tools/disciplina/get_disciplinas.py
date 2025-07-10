@@ -2,13 +2,14 @@ import json
 import requests
 from typing import Any
 from ..curso.utils import get_curso_most_similar
+from .utils import get_disciplina_grade_most_similar
 from ..utils.base_url import URL_BASE
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ..utils.remover_parametros_query import remover_parametros_da_query
 from ..utils.validacoes import valida_periodo_curriculo
 
-def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
+def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, nome_disciplina: Any = "",curriculo: Any = "") -> list:
     """_summary_
     Informações de todas as disciplinas da grade de um curso.
     
@@ -25,18 +26,18 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         query (Any): reformule a pergunta removendo qualquer referência ao nome do curso, nome do campus e ao currículo (ano).
         nome_do_curso (Any): Nome do curso.
         nome_do_campus (Any): Cidade do campus, e ela pode ser uma dessas a seguir: Campina Grande, Cajazeiras, Sousa, Patos, Cuité, Sumé e Pombal.
+        nome_disciplina (Any, optional): (Opcional) Nome da disciplina. Defaults to "". Utilize esta opção quando a pergunta envolver o nome da disciplina. Se não for especificado, a função retornará todas as disciplinas do curso.
         curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
 
     Returns:
         list: Uma lista com informações relevantes sobre a pergunta a respeito da(s) disciplina(s).
     """
     
-    #query = remover_parametros_da_query(query, excluir=['self'])
-    query = str(query)
+    query = remover_parametros_da_query(query, excluir=['self'])
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
-    print(f"Tool `get_disciplinas` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
+    print(f"Tool `get_disciplinas` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo} e query={query}.")
     
     if curriculo == "":
         dados_curso, curriculo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo="", curriculo=curriculo)
@@ -44,12 +45,19 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     else:
         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
 
+    
     params = {
         'curso': dados_curso['curso']['codigo'],
         'curriculo': curriculo
     }
 
-    print("CURRICULO USADO ", curriculo)
+
+    if nome_disciplina != "":
+        dados_disciplina = get_disciplina_grade_most_similar(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, nome_da_disciplina=nome_disciplina, curriculo=curriculo)
+        print(f"Dados da disciplina recuperados: {dados_disciplina[0]}")
+        params['disciplina'] = dados_disciplina[0]['disciplina']['codigo']
+
+
     print(f"Recuperando as disciplinas do curso de {dados_curso['curso']['nome']} e código {dados_curso['curso']['codigo']} e currículo {curriculo}")
     print(params)
 
@@ -62,7 +70,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
             return disciplinas
         gerenciador = GerenciadorSQLAutomatizado(table_name="Disciplina", db_name="db_disciplina.sqlite", prompt=PROMPT_SQL_DISCIPLINA)
         gerenciador.save_data(disciplinas)
-        return gerenciador.get_data("disciplina", query)
+        return gerenciador.get_data("disciplina", query, True)
     else:
         return [{"error_status": response.status_code, "msg": response.json()}]
 

@@ -20,6 +20,7 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
         curriculo (Any, optional): Ano do currículo. Defaults to "".
         periodo (Any, optional): Período do curso. Defaults to "".
 
+
     Returns:
         list: Informações a respeito de ementa, objetivos, conteúdos, metodologia, avaliação ou bibliografia.
     """
@@ -43,11 +44,12 @@ def get_plano_de_curso_disciplina(nome_do_curso: Any, nome_do_campus: Any, nome_
         'periodo-de': periodo,
         'periodo-ate': periodo
     }
+
+    print("PARAMETROS DA REQUISIÇÃO:", params )
     response = requests.get(f'{URL_BASE}/planos-de-curso', params=params)
 
     if response.status_code == 200:
         resultado = json.loads(response.text)
-        print(resultado)
         return resultado
     else:
         return [{

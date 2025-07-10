@@ -2,6 +2,8 @@ import sqlite3
 import json
 import os
 from typing import TypedDict
+
+from langchain_openai import ChatOpenAI
 from .SQLGeneratorVanna import SQLGeneratorVanna
 from .LLMGenerateSQL import LLMGenerateSQL
 from langchain_ollama import ChatOllama
@@ -155,7 +157,8 @@ class GerenciadorSQLAutomatizado:
                 str: A pergunta limpa.
         """
 
-        model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
+        #model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0.0)
+        model = ChatOpenAI(model="gpt-4o-mini-2024-07-18", temperature=self.temperature, max_tokens=512)
 
         prompt = f"""
         Você é um assistente de IA especializado em limpar perguntas de usuários.
@@ -187,19 +190,17 @@ class GerenciadorSQLAutomatizado:
         if clean_question:
             question = self.__clean_question(question)
        
-        #O qwen3 precisa de regex
-        #sqlgen = SQLGeneratorVanna(LLM=ChatOllama, model_name=embbedings, db_path=self.db_name, config={'model': 'llama3.1', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+        
+        sqlgen = SQLGeneratorVanna(LLM=ChatOpenAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gpt-4o-mini-2024-07-18', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
 
-        sqlgen = SQLGeneratorVanna(LLM=ChatDeepInfra, model_name=embbedings, db_path=self.db_name, config={'model': 'meta-llama/Llama-3.3-70B-Instruct', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
+        #sqlgen = LLMGenerateSQL(LLM=ChatOpenAI, model="gpt-4o-mini-2024-07-18", prompt=self.prompt, temperature=self.temperature)
 
-        #sqlgen = SQLGeneratorVanna(LLM=ChatGoogleGenerativeAI, model_name=embbedings, db_path=self.db_name, config={'model': 'gemini-2.0-flash', 'temperature': self.temperature, "max_tokens": 512, "initial_prompt": self.prompt})
-       
-
-        #sql = sqlgen.write_query(question=question)["query"]
-        sql = sqlgen.generate_sql(question=question)
+        
+        sql = sqlgen.generate_sql(question=question, allow_llm_to_see_data=True)
+        #sql = sqlgen.write_query_state(query=question, tabela=self.table_info)
     
         print("\n=============================================\n")
-        print(f"Query gerada: {sql}")
+        print(f"Query gerada: {sql} para a pergunta: {question}")
         print("\n=============================================\n")
 
         result = self.__execute_sql(sql)

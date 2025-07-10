@@ -1,11 +1,17 @@
 from typing import Any
+
+import json
+import requests
 from ..utils.preprocess_text import get_most_similar_acronym
 from ..utils.most_similar import get_most_similar
-from .get_disciplinas import get_disciplinas, get_disciplinas_por_codigo
 from ..utils.processar_json import processar_json
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
-from flask_app.utils.langchain_models import model
+from langchain_community.chat_models import ChatDeepInfra
+from ..utils.validacoes import valida_periodo_curriculo
+from ..utils.base_url import URL_BASE
+from ..curso.utils import get_curso_most_similar
+from ....flask_app.utils.langchain_models import model
 
 
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
@@ -26,7 +32,6 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
     """
 
     print(f"get_disciplina_grade_most_similar chamada com campus={nome_do_campus}, nome_do_curso={nome_do_curso}, nome_da_disciplina={nome_da_disciplina} e curriculo={curriculo} chamada.")
-    nome_da_disciplina = get_most_similar_acronym(str(nome_da_disciplina), "disciplina")
     nome_do_curso = str(nome_do_curso)
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
@@ -51,9 +56,9 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         if not existe_curriculo:
             return [{ "error_status": "500", "msg": f"Informe ao usuário que este curriculo é inválido e que os disponíveis são: {todos_curriculos_disponiveis} e que o curriculo mais recente é o de {todos_curriculos_disponiveis[-1]}." }], "ocorreu um erro"
 
-    todas_disciplinas_curso = get_disciplinas("", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
+    todas_disciplinas_curso = get_todas_disciplinas(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=curriculo)
     print("todas as disciplinas do curso foram recuperadas")
-    disciplinas_most_similar, top_k = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.65)
+    disciplinas_most_similar, top_k = get_most_similar(lista_a_comparar=todas_disciplinas_curso, dado_comparado=nome_da_disciplina, top_k=5, mapper=mapper, limiar=0.5) # disciplina mais similar
     print("\n\n\n\n\n", disciplinas_most_similar, top_k, "\n\n\n\n")
 
     response = model.invoke(
@@ -112,7 +117,74 @@ def get_disciplina_grade_most_similar_por_codigo_do_curso(codigo_do_curso: Any, 
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome_da_disciplina).
         """
     )
-    print("AAAAAAAAAAAAAAAH: ", response.content)
+
     result = processar_json(response.content, "disciplina")
     print(f"Disciplina mais similar encontrada: {result} para o curriculo de {curriculo}.")
     return result, curriculo
+
+def get_todas_disciplinas(nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
+    nome_do_curso = str(nome_do_curso)    
+    nome_do_campus = str(nome_do_campus)
+    curriculo = str(curriculo)
+    print(f"Tool `get_disciplinas` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
+    
+    if curriculo == "":
+        dados_curso, curriculo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo="", curriculo=curriculo)
+        if mensagem != "": return mensagem
+    else:
+        dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+
+    
+    params = {
+        'curso': dados_curso['curso']['codigo'],
+        'curriculo': curriculo
+    }
+
+    response = requests.get(f'{URL_BASE}/disciplinas', params=params)
+
+    if response.status_code == 200:
+        print("Disciplinas recuperadas com sucesso")
+        disciplinas = json.loads(response.text)
+        return disciplinas
+    else:
+        return [{"error_status": response.status_code, "msg": response.json()}]
+    
+
+def get_disciplinas_por_codigo(codigo_do_curso: Any, curriculo: Any = "") -> list:
+    """_summary_
+    Informações de todas as disciplinas de um curso.
+    
+    Use esta função quando a pergunta envolver:
+    - código, nome, créditos ou carga horária da disciplina;
+    - carga teórica/prática semanal ou total;
+    - número de semanas de aula;
+    - nome do setor responsável e campus;
+    - carga de extensão ou contabilização de créditos.
+    
+    Chame esta função se a pergunta for sobre as disciplinas que o curso oferece.
+    
+    Args:
+        codigo_do_curso (Any): codigo do curso.
+        curriculo (Any, optional): (Opcional) Ano do currículo ("" usa o mais recente). Defaults to "".
+
+    Returns:
+        list: Uma lista com informações relevantes sobre a pergunta a respeito da(s) disciplina(s).
+    """
+    
+    codigo_do_curso = str(codigo_do_curso)    
+    curriculo = str(curriculo)
+    print(f"Tool `get_disciplinas` chamada com codigo_do_curso={codigo_do_curso} e codigo_curriculo={curriculo}.")
+
+    params = {
+        'curso': codigo_do_curso,
+        'curriculo': curriculo
+    }
+
+    print(f"Recuperando as disciplinas do curso do curso de codigo {codigo_do_curso} com o curriculo de {curriculo}")
+    
+    response = requests.get(f'{URL_BASE}/disciplinas', params=params)
+
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        return [{"error_status": response.status_code, "msg": response.json()}]

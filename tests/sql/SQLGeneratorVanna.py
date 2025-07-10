@@ -31,7 +31,7 @@ class MyVanna(VannaDB_VectorStore, MyCustomLLmVanna):
 
         # Adiciona DDL ao prompt
         initial_prompt = self.add_ddl_to_prompt(
-            initial_prompt, ddl_list, max_tokens=self.max_tokens
+            initial_prompt, ddl_list, max_tokens=32000
         )
 
         # Adiciona documentação estática, se houver
@@ -40,7 +40,7 @@ class MyVanna(VannaDB_VectorStore, MyCustomLLmVanna):
 
         # Adiciona documentação ao prompt
         initial_prompt = self.add_documentation_to_prompt(
-            initial_prompt, doc_list, max_tokens=self.max_tokens
+            initial_prompt, doc_list, max_tokens=32000
         )
 
         # >>>> Removido: trecho que adicionava os "Response Guidelines"
@@ -66,9 +66,23 @@ class SQLGeneratorVanna:
         if db_path:
             self.vanna.connect_to_sqlite(db_path)
         
-        #training_data = self.vanna.get_training_data()
+        self.exclude_ddl()
         #if training_data.empty:
         self._train_ddl()
+
+    def exclude_ddl(self):
+        """
+        Exclui o DDL do treinamento.
+        :return: None
+        """
+
+        training_data = self.vanna.get_training_data()
+        # Lista com todos os ids que contêm "ddl"
+        ids_ddl = training_data[training_data['id'].str.contains('ddl')]['id'].tolist()
+
+        for id in ids_ddl:
+            self.vanna.remove_training_data(id=id)
+       
 
     def generate_sql(self, question: str, visualize: bool = False, print_results: bool = False, allow_llm_to_see_data: bool = False):
         """
@@ -87,7 +101,7 @@ class SQLGeneratorVanna:
     def _train_ddl(self):
         """
         Treina o modelo com o DDL do banco de dados.
-        Só precisa ser executado uma vez para cada agente.
+        Só precisa ser executado uma vez.
         :return: None
         """
         df_ddl = self.vanna.run_sql("SELECT type, sql FROM sqlite_master WHERE sql is not null")
@@ -101,7 +115,6 @@ class SQLGeneratorVanna:
     
 
 
-# O MODELO PRECISA ESTAR DISPONIVEL  NO OLLAMA e BAIXADO NO SEU COMPUTADOR
 # vn = MyVanna(model_name="curso", config={'model': 'llama3.1', 'temperature': 0.0})
 # vn.connect_to_sqlite('db_cursos.sqlite')
 

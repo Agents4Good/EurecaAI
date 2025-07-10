@@ -22,7 +22,7 @@ agent = AgenteSetores(LLM=ChatDeepInfra, model="Qwen/Qwen3-14B", tools=tools, te
 question = "Quais são os professores de ciencia da computacao do campus de campina grande?"# DEVIDO TER PASADO O CURSO ELE PEGOU UNID. ACAD. DE SISTEMAS E COMPUTAÇÃO POR CONTA DO RAG!
 
 #question = "Quais os códigos de todos os setores?" #RESPOSTA MUITO GRANDE, TEM QUE ESPECFICAR O CAMPOUS
-#question = "Traga os professores dos estágios do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS do campus de campina grande no ano de 2024" #NOT OK
+question = "Traga os professores dos estágios do setor UNID. ACAD. DE CIÊNCIAS MÉDICAS do campus de campina grande no ano de 2024" #NOT OK
 #question = "Traga o nome dos professores que foram orientadores de estágio do centro de engenharia elétrica e informática no ano de 2024 do campus Campina Grande" #CHAMOU A TOOL CERTA DE PRIMEIRA, MAS CHAMOU OUTRA TOOL EM SEGUIDA
 #question = "Traga informações sobre o valor da bolsa dos estágios do campus Campina Grande no ano 2024." #OK
 #question = "Quantos estagiarios tiveram no curso de engenharia civil do campus de campina grande em 2024?" #OK
