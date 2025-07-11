@@ -67,9 +67,18 @@ function render_botao_historico(item) {
     const newDiv = document.createElement("div");
     newDiv.className = "history_item";
     newDiv.id = item.chat_id;
+    newDiv.dataset.timestamp = item.timestamp;
     
     newDiv.onclick = function () {
         get_chat(item.chat_id);
+        
+        const todos = document.querySelectorAll('.history_item');
+        todos.forEach(el => el.classList.remove('selecionado'));
+    
+        const elemento = document.querySelector(`.history_item#${item.chat_id}`);
+        if (elemento) {
+            elemento.classList.add('selecionado');
+        }
     };
     
     newDiv.innerHTML = `
@@ -206,9 +215,16 @@ async function sendMessage(message, showStars) {
             newDiv.id = id;
             idChatLocal = id;
             
-            get_resumo(message).then((resumo) => { render_botao_historico({title: resumo, chat_id: id}) });
+            get_resumo(message).then((resumo) => { render_botao_historico({title: resumo, chat_id: id, timestamp: new Date().toISOString()}) }).then(() => {
+                ordenar_historico_por_data();
+            });
         }
 
+        const elemento = document.querySelector(`.history_item#${idChatLocal}`);
+        if (elemento) {
+            elemento.dataset.timestamp = new Date().toISOString();
+            ordenar_historico_por_data();
+        }
         scrollToBottom();
         enable_input();
     });

@@ -482,7 +482,21 @@ aside {
     cursor: pointer;
 }
 
-
+.history_item {
+    background-color: rgba(61, 135, 203, 0.3);
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+  
+.history_item:hover {
+    background-color: rgba(61, 135, 203, 0.5);
+}
+  
+.history_item.selecionado {
+    background-color: #1A4E8A;
+    color: white;
+}
+  
 .aside__mobile__button {
     display: none;
 }

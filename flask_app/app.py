@@ -136,7 +136,21 @@ async def get_historico():
         return jsonify({"error": "Token inválido ou erro na requisição"}), 403
 
     if matricula in chats:
-        return [{ "chat_id": chat_id, "title": chat_data["title"] } for chat_id, chat_data in chats[matricula].items()]
+        historico_usuario = []
+        for chat_id, chat_data in chats[matricula].items():
+            mensagens = chat_data.get("messages", [])
+            if not mensagens:
+                continue
+            
+            ultimo_timestamp = max(msg["timestamp"] for msg in mensagens if "timestamp" in msg)
+
+            historico_usuario.append({
+                "chat_id": chat_id,
+                "title": chat_data["title"],
+                "timestamp": ultimo_timestamp
+            })
+
+        return historico_usuario
     
     if matricula not in chats:
         return jsonify({"error": "Chat sem matrícula"}), 401

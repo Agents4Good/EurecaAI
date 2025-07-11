@@ -23,41 +23,63 @@ document.addEventListener("DOMContentLoaded", function () {
 
     atualizarPlaceholder();
     window.addEventListener('resize', atualizarPlaceholder);
-
-    const profileStr = getCookie("profile");
-    const res = profileStr ? JSON.parse(profileStr) : null;
-    const perfil_response = res || {token: ""};
-    const token_response = perfil_response && perfil_response["token"]
-    
-    if (perfil_response && token_response) {
-        carregarHistorico(token_response);
-    }
+    carregarHistorico();
 });
 
 
-async function carregarHistorico(token) {
-    try {
-        const response = await fetch("/get_historico", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token: token })
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-
-            data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-            .forEach(item => {
-                render_botao_historico(item);
+async function carregarHistorico() {
+    const profileStr = getCookie("profile");
+    const res = profileStr ? JSON.parse(profileStr) : null;
+    const perfil_response = res || {token: ""};
+    const token = perfil_response && perfil_response["token"]
+    
+    if (perfil_response && token) {
+        try {
+            const response = await fetch("/get_historico", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token: token })
             });
-        } else {
-            console.error("Erro na resposta:", response.status);
+
+            if (response.status === 200) {
+                const data = await response.json();
+
+                data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                .forEach(item => {
+                    render_botao_historico(item);
+                });
+            } else {
+                console.error("Erro na resposta:", response.status);
+            }
+        } catch (error) {
+            console.error("Erro ao buscar histórico:", error);
         }
-    } catch (error) {
-        console.error("Erro ao buscar histórico:", error);
     }
+}
+
+
+function ordenar_historico_por_data() {
+    const container = document.querySelector('.history');
+    const botaoNovoChat = container.querySelector('.history_item.novo_chat');
+    let itens = Array.from(container.querySelectorAll('.history_item:not(.novo_chat)'));
+
+    itens.sort((a, b) => {
+        const dataA = new Date(a.dataset.timestamp);
+        const dataB = new Date(b.dataset.timestamp);
+        return dataB - dataA;
+    });
+
+    container.innerHTML = '';
+
+    if (botaoNovoChat) {
+        container.appendChild(botaoNovoChat);
+    }
+
+    itens.forEach(item => {
+        container.appendChild(item);
+    });
 }
 
 
@@ -223,7 +245,6 @@ function addUserMessage(message) {
 // Ver
 function apagar_chat(id) {
     idChatLocal = null;
-    console.log("apagado", id)
 
     function apagar_chat_pelo_id(id) {
         document.querySelector('.chat__container').innerHTML = '';
@@ -234,6 +255,8 @@ function apagar_chat(id) {
             } catch {}
             if (id == idChatLocal || id == '') {
                 idChatLocal = null;
+                const todos = document.querySelectorAll('.history_item');
+                todos.forEach(el => el.classList.remove('selecionado'));
             }
         }
 
