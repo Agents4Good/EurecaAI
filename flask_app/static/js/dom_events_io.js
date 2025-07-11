@@ -242,7 +242,6 @@ function addUserMessage(message) {
 }
 
 
-// Ver
 function apagar_chat(id) {
     idChatLocal = null;
 
