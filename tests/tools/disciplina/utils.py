@@ -11,7 +11,7 @@ from langchain_community.chat_models import ChatDeepInfra
 from ..utils.validacoes import valida_periodo_curriculo
 from ..utils.base_url import URL_BASE
 from ..curso.utils import get_curso_most_similar
-from ....flask_app.utils.langchain_models import model
+from flask_app.utils.langchain_models import model
 
 
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}

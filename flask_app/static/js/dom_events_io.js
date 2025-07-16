@@ -1,7 +1,9 @@
 window.onload = function() { 
     getProfile();
 
-    const socket = io("http://127.0.0.1:8000", {
+    //http://127.0.0.1:8000 (IP  padrão que Levi e Matheus usam)
+    // http://100.66.116.115:5000 (IP que Bia usa)
+    const socket = io("http://100.66.116.115:5000", {
     transports: ['websocket']
     });
     

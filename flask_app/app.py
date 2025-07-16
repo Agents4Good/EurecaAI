@@ -20,6 +20,7 @@ from langchain_community.chat_models import ChatDeepInfra
 
 from .utils.db_path import *
 from .utils.file_handler.handler import realizar_tratamento_dos_arquivos
+from opik.integrations.langchain import OpikTracer
 
 from dotenv import load_dotenv
 
@@ -34,7 +35,7 @@ checkpointer = None # PostgresSaver Checkpointer
 
 @app.before_serving
 async def setup():
-    global system, checkpointer
+    global system, checkpointer, tracer
     #checkpointer_cm = AsyncPostgresSaver.from_conn_string(DB_URI)
     #app.checkpointer_cm = checkpointer_cm
     #checkpointer = await checkpointer_cm.__aenter__()
@@ -49,6 +50,11 @@ async def setup():
         agents_model=agents_model,
         #checkpointer=checkpointer
     ).build()
+
+    
+    # Cria o tracer a partir do grafo da aplicação
+    tracer = OpikTracer(graph=system.get_graph(xray=True), project_name="EurecaChatDev")
+
 
 @app.after_serving
 async def shutdown():
@@ -201,7 +207,12 @@ async def chat():
     if len(arquivos) > 0:
         user_message = f"{user_message}\n\n{realizar_tratamento_dos_arquivos(arquivos)}"
 
-    config = {"configurable": {"thread_id": "1"}}
+    # Configuração com callbacks para usar o tracer
+    config = {
+        "configurable": {"thread_id": "1"},
+        "callbacks": [tracer]
+    }
+
     inputs = {"messages": [HumanMessage(content=user_message)]}
     response = []
 
@@ -260,10 +271,11 @@ async def connect(sid, environ):
     print(f"Cliente conectado: {sid}")
 
 
-async def executar_tool(sid, user_message, arquivos):    
+async def executar_tool(sid, user_message, arquivos):   
+    #Configuração de config com o tracer 
     config = {
         "configurable": {"thread_id": sid},
-        "callbacks": [SocketIOStreamingHandler(sid=sid, socketio=sio)],
+        "callbacks": [SocketIOStreamingHandler(sid=sid, socketio=sio), tracer] if tracer else [],
         "streaming": True
     }
     
@@ -296,5 +308,5 @@ async def handle_input(sid, data):
     arquivos = data.get('arquivos', [])
     asyncio.create_task(executar_tool(sid, user_message, arquivos))
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)

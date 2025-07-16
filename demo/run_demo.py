@@ -15,6 +15,7 @@ class RunDemo():
             inputs = {"messages": [HumanMessage(content=query)]}
             for message_chunk in self.system.stream(inputs, config, stream_mode=stream_mode):
                 message_chunk["messages"][-1].pretty_print()
+                
         elif stream_mode == "messages":
             inputs = {"messages": [HumanMessage(content=query)]}
             for message_chunk, _ in self.system.stream(inputs, config, stream_mode=stream_mode):

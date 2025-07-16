@@ -30,6 +30,8 @@ from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
 
 from tests.tools.setor.get_estagios import get_estagios
 
+
+
 # TOOLS USADAS
 CAMPUS_TOOLS = [
     get_campi,
@@ -219,6 +221,8 @@ class EurecaChat:
         """
 
         workflow = StateGraph(AgentState)
+
+        
         workflow.add_node("Agente_Supervisor", self.supervisor_node)
         workflow.add_node("Agente_Agregador", self.aggregator_node)
         workflow.add_node("Agente_Curso", self.curso_node)

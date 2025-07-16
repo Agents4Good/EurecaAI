@@ -30,3 +30,4 @@ psycopg
 quart
 PyMuPDF
 hypercorn
+opik

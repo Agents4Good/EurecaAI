@@ -23,6 +23,8 @@ agents = ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
 #agents = ChatOpenAI(model="meta-llama/Llama-3.3-70B-Instruct", base_url="https://api.deepinfra.com/v1/openai", temperature=0)
 
 
+from opik.integrations.langchain import OpikTracer
+
 async def main():
     """
     Executa a aplicação.
@@ -32,11 +34,19 @@ async def main():
         aggregator_model=supervisor,
         agents_model=agents
     ).build()
+
+
+    # Cria o tracer a partir do grafo da aplicação
+    tracer = OpikTracer(graph=app.get_graph(xray=True))
+
     demo = RunDemo(app)
 
     #demo.save_graph_image("eureca_graph.png")
-
-    config = {"configurable": {"thread_id": "1"}}
+    # Configuração com callbacks para usar o tracer
+    config = {
+        "configurable": {"thread_id": "1"},
+        "callbacks": [tracer]
+    }
 
     if len(sys.argv) < 2:
         query = "qual o código de ciência da computação?"
@@ -58,5 +68,7 @@ async def main():
         query = " ".join(sys.argv[1:])
 
 if __name__ == '__main__':
-    #main()
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nAplicação encerrada pelo usuário com Ctrl+C.")

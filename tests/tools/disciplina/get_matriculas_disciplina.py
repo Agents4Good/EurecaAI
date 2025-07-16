@@ -39,8 +39,8 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
         list: Uma lista com informações relevantes a respeito das matrículas dos estudantes de uma disciplina.
     """
 
-    #query= remover_parametros_da_query(query, excluir=['self'])   
-    query = str(query)
+    #query = str(query)
+    query= remover_parametros_da_query(query, excluir=['self'])   
     nome_da_disciplina=str(nome_da_disciplina)
     nome_do_curso=str(nome_do_curso)
     nome_do_campus=str(nome_do_campus)
@@ -82,7 +82,7 @@ def get_matriculas_disciplina(query: Any, nome_do_campus: Any, nome_do_curso: An
             gerenciador.save_data(estudantes_na_disciplina)
 
         try:
-            dados = gerenciador.get_data("estudante_na_disciplina",query)
+            dados = gerenciador.get_data("estudante_na_disciplina",query, True)
             if len(dados) == 0:
                 return ["Não foi encontrado nada"]
         except TypeError as e:

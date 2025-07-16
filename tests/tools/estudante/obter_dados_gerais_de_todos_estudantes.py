@@ -59,8 +59,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    print(f"Tool `obter_dados_de_todos_estudantes` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus}, situacao_estudante={situacao_estudante}, motivo_de_evasao={motivo_de_evasao}, periodo_de_ingresso_de={periodo_de_ingresso_de}, periodo_de_ingresso_ate={periodo_de_ingresso_ate}, periodo_de_evasao_de={periodo_de_evasao_ate}, periodo_de_evasao_ate={periodo_de_evasao_ate}")
    print(f"A query da pergunta foi: {query}")
    
-   query = remover_parametros_da_query(query)
    #query = str(query)
+   query = remover_parametros_da_query(query)
    nome_do_campus = str(nome_do_campus)
    nome_do_curso = str(nome_do_curso)
    periodo_de_ingresso_de = str(periodo_de_ingresso_de)
@@ -109,7 +109,6 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
       gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)
       gerenciador.save_data(estudantes)
       response = gerenciador.get_data("estudante_info_gerais", query, True)   
-      print("Resposta da tool: ", response, "\n")
       return  f"RESULTADO DO SQL: {response}"
    else:
       return [{"error_status": response.status_code, "msg": response.json()}]
