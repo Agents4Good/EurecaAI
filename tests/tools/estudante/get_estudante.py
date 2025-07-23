@@ -1,4 +1,4 @@
-import requests, json
+import requests, json, inspect
 from typing import Any
 from ..utils.base_url import URL_BASE
 from langchain_core.tools import tool
@@ -18,10 +18,24 @@ def estudante_info(matricula: Any, token: Any) -> dict:
         "token-de-autenticacao": token
     }
 
-    response = requests.get(f'{URL_BASE}/estudantes/estudante', params=params, headers=headers)
+    try:
+        response = requests.get(f'{URL_BASE}/estudantes/estudante', params=params, headers=headers)
+        
+        if response.status_code == 200:
+            dados = json.loads(response.text)
+            frame = inspect.currentframe()
+            args, _, _, values = inspect.getargvalues(frame)
+            result = str({
+                "resposta:": dados,
+                "Observação:": "mensagem",
+                "Argumentos_usados": {arg: values[arg] for arg in args if arg != "" or arg != None}
+            })
+
+            print(result)
+            return result
+        else:
+            return {"erro_status": response.status_code, "msg": response.text}
     
-    if response.status_code == 200:
-        dados = json.loads(response.text)
-        return dados
-    else:
-        return {"erro_status": response.status_code, "msg": response.text}
+    except Exception as error:
+        print(str(error))
+        return str(error)

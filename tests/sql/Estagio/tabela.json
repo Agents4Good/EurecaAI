@@ -5,11 +5,6 @@
             "description": "Matrícula do estudante",
             "mapper": "matricula_do_estudante"
         },
-        "id_empresa": {
-            "type": "INTEGER",
-            "description": "Identificador da empresa",
-            "mapper": "id_concedente"
-        },
         "uf_concedente": {
             "type": "TEXT",
             "description": "Sigla da unidade da federação do concedente. (duas letras em maiúsculo). Use apenas quando tiver explicito na pergunta.",
@@ -20,7 +15,7 @@
             "description": "Matrícula do professor orientador",
             "mapper": "matricula_do_docente"
         },
-        "departamento_da_empresa": {
+        "nome_da_empresa": {
             "type": "TEXT",
             "description": "Departamento da empresa onde o estágio é realizado",
             "mapper": "departamento"
@@ -54,11 +49,6 @@
             "type": "TEXT",
             "description": "Status do estágio, exemplo: 'Termo celebrado', 'Termo rescindido', 'Termo', 'Plano aprovado CPE/Centro'",
             "mapper": "status"
-        },
-        "codigo_da_disciplina": {
-            "type": "TEXT",
-            "description": "Código da disciplina relacionada ao estágio",
-            "mapper": "codigo_da_disciplina"
         },
         "bolsa_mensal": {
             "type": "REAL",

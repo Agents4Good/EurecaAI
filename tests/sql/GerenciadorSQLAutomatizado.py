@@ -12,7 +12,7 @@ class GerenciadorSQLAutomatizado:
         self.table_name = table_name
         self.db_name = db_name
         self.path = os.path.join(BASE_DIR, "", self.table_name, "tabela.json")
-        print(f"Path do arquivo JSON: {self.path}")   
+        # print(f"Path do arquivo JSON: {self.path}")   
              
         if not os.path.exists(self.path):
             raise ValueError("Arquivo JSON não encontrado. Verifique o caminho do arquivo.")
@@ -111,7 +111,7 @@ class GerenciadorSQLAutomatizado:
                 data_json (list): Lista de dicionários com os dados.
         """
        
-        print("Salvando dados dos cursos temporariamente em um banco de dados SQLite")
+        # print("Salvando dados dos cursos temporariamente em um banco de dados SQLite")
 
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
@@ -135,7 +135,7 @@ class GerenciadorSQLAutomatizado:
 
         conn.commit()
         conn.close()
-        print(f"Dados salvos na tabela {self.table_name} do banco de dados {self.db_name}.")
+        # print(f"Dados salvos na tabela {self.table_name} do banco de dados {self.db_name}.")
 
 
     def __execute_sql(self, sql: str):
@@ -147,7 +147,7 @@ class GerenciadorSQLAutomatizado:
             Returns:
                 list: Lista de resultados da consulta.
         """
-        print("Executando o comando SQL")
+        # print("Executando o comando SQL")
         conn = sqlite3.connect(self.db_name)
         cursor = conn.cursor()
 
@@ -168,6 +168,6 @@ class GerenciadorSQLAutomatizado:
         result = sqlGenerateLLM.write_query(query=question, tabela=self.tabela)
         sql = result['query']
         result = self.__execute_sql(result['query'])
-        print("RESULTADO DO SQL: ", result)
+        # print("RESULTADO DO SQL: ", result)
         return f"SQL USADO NA CONSULTA DOS DADOS: {sql}; Resultado encontrado: {result}"
     

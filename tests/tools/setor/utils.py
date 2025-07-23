@@ -5,6 +5,12 @@ from langchain_ollama import ChatOllama
 from ..utils.processar_json import processar_json
 from langchain_community.chat_models import ChatDeepInfra
 from flask_app.langchain_models import model
+import requests
+import json
+from ..utils.base_url import URL_BASE
+import inspect, time, traceback
+from pprint import pprint
+from functools import wraps
 
 #model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
@@ -45,7 +51,6 @@ def get_setor_most_similar(nome_do_centro_setor: str, nome_do_campus: str, filtr
     return processar_json(response.content, "setor")
 
 
-
 def get_setor_most_similar_por_codigo(nome_do_centro_setor: str, codigo_do_campus: str, filtro: str = "") -> dict:
     """
     Busca o código do setor pelo nome dele.
@@ -79,3 +84,75 @@ def get_setor_most_similar_por_codigo(nome_do_centro_setor: str, codigo_do_campu
     )
     
     return processar_json(response.content, "setor")
+
+
+def obter_disciplina_codigo(codigo: int):
+    """
+    Obtém informações sobre uma disciplina a partir do seu código.
+
+    Args:
+        codigo (str): Código da disciplina.
+
+    Returns:
+        dict: Informações sobre a disciplina.
+    """
+
+    params = {
+        'disciplina': codigo
+    }
+
+    url = f"{URL_BASE}/disciplinas"
+    response = requests.get(url, params=params)
+
+    if response.status_code == 200:
+        return json.loads(response.text)
+    else:
+        return {"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}
+
+
+def logger_eureca_tool(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        bound_args = inspect.signature(func).bind(*args, **kwargs)
+        bound_args.apply_defaults()
+
+        argumentos_formatados = [
+            f'{k}="{v}"' if isinstance(v, str) else f"{k}={v}"
+            for k, v in bound_args.arguments.items()
+        ]
+
+        argumentos_str = ",\n\t- ".join(argumentos_formatados)
+        print(f"Tool {func.__name__} chamada com os seguintes parâmetros:\n\t- {argumentos_str}")
+
+        argumentos = {
+            k: v for k, v in bound_args.arguments.items()
+            if v not in ("", None)
+        }
+
+        inicio = time.time()
+
+        try:
+            retorno = func(*args, **kwargs)
+        except Exception as error:
+            print("\n❌ ERRO DURANTE A EXECUÇÃO DA FUNÇÃO. Arquivo e linha do erro:")
+            print(traceback.format_exc())
+            return str(error)
+
+        fim = time.time()
+        tempo_execucao = fim - inicio
+
+        result = {
+            "nome_da_funcao": func.__name__,
+            "resposta": retorno,
+            "Argumentos_usados": argumentos,
+            "tempo_execucao_segundos": round(tempo_execucao, 4)
+        }
+
+        query = argumentos.get("query", None)
+        if query is not "" and query is not None:
+            print(json.dumps(result, indent=4, ensure_ascii=False))
+            return result
+
+        return retorno
+
+    return wrapper

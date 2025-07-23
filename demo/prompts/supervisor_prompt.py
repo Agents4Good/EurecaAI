@@ -21,6 +21,11 @@ Capacidades dos Agentes:
   - Especializado em informações gerais sobre os estudantes da UFCG.
   - Capacidades:
     * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade e local de nascimento.
+
+4. Agente_Setor:
+  - Especializado em informações gerais sobre os setores, estágios e professores da UFCG.
+  - Capacidades:
+    * Buscar informações relevantes de todos os estudantes como imformações gerais de setores (centros e unidades), estágios e professores da UFCG.
   
 **Importante**
 - Quando a tarefa estiver completa, responda apenas com 'FINISH'.
@@ -62,6 +67,11 @@ Capacidades dos Agentes:
   - Capacidades:
     * Buscar informações relevantes de todos os estudantes como nome, matrícula, sexo, idade, situação acadêmica, naturalidade, cor, nacionalidade, local de nascimento, cra (média geral do estudante) e períodos cursados.
     * Por último, também é capaz de lidar com estudantes que foram ingressantes em um curso.
+
+4. Agente_Setor:
+  - Especializado em informações gerais sobre os setores, estágios e professores da UFCG.
+  - Capacidades:
+    * Buscar informações relevantes de todos os estudantes como imformações gerais de setores (centros e unidades), estágios e professores da UFCG.
 
 **Importante**
 - Quando a tarefa estiver completa, responda com: `{{"next": "FINISH"}}`

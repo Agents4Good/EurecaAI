@@ -26,8 +26,8 @@ class LLMGenerateSQL:
             input=query
         )
        
-        print(f"\nPrompt: {self.prompt}")
-        print("\n=========================\n")
+        #print(f"\nPrompt: {self.prompt}")
+        #print("\n=========================\n")
         structured_llm = self.llm.with_structured_output(StateSQL,  method="function_calling")
         result = structured_llm.invoke(self.prompt)
 
@@ -41,14 +41,14 @@ class LLMGenerateSQL:
         )
         
         sql_gerado = self.llm.invoke(self.prompt).content
-        print("SQL GERADOOOOOOOOO: ", sql_gerado)
+        #print("SQL GERADOOOOOOOOO: ", sql_gerado)
         match = re.search(r'SELECT\b[\s\S]*?(?:;)?(?=\s*(?:```|\n?\}|"\s*\}|\s*$))', sql_gerado, re.IGNORECASE)
 
         if match:
             sql = match.group()
             sql = re.sub(r'\\n|\n', ' ', sql)
             sql = re.sub(r'\s+', ' ', sql).strip()
-            print("REGEX: ", sql)
+            #print("REGEX:", f"'{sql}'")
             return {"query": sql}
         else:
             return {"query": "Erro para consultar os dados"}

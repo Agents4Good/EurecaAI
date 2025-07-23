@@ -67,10 +67,8 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    
    validar_periodos, mensagem = validar_periodo(periodo_de_ingresso_de, periodo_de_ingresso_ate, periodo_de_evasao_de, periodo_de_evasao_ate)
    if not validar_periodos: 
-      print("Não passou")
+      print("Período inválido")
       return mensagem
-
-   print("Passou")
 
    if situacao_estudante in SITUACAO:
       params = {
@@ -85,26 +83,32 @@ def obter_dados_gerais_de_todos_estudantes(query: Any, nome_do_curso: Any, nome_
    else:
       return ["Por favor informe a situação dos estudantes correta.\n Pode ser uma dessas: SUSPENSOS, REINGRESSOS, REATIVADOS, DESISTENTE, EVADIDOS, JUBILADOS, ABANDONOS, TRANSFERIDOS, FINALIZADOS, INATIVOS, EGRESSOS, ATIVOS"]
    
-   if (nome_do_curso != "" and nome_do_campus != ""):
-      dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-      params["curso"] = dados_curso['curso']['codigo']
-   elif (nome_do_curso == "" and nome_do_campus != ""):
-      dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-      params["campus"] = dados_campus['campus']['codigo']
-   elif (nome_do_curso == "" and nome_do_campus == ""):
-      pass
-   else:
-      return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
+   try:
+      if (nome_do_curso != "" and nome_do_campus != ""):
+         dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+         params["curso"] = dados_curso['curso']['codigo']
+      elif (nome_do_curso == "" and nome_do_campus != ""):
+         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+         params["campus"] = dados_campus['campus']['codigo']
+      elif (nome_do_curso == "" and nome_do_campus == ""):
+         pass
+      else:
+         return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
 
-   response = requests.get(f'{URL_BASE}/estudantes', params=params)
-   if response.status_code == 200:
-      estudantes = normalize_data_estudante(json.loads(response.text))
-      estudantes = [estudante for estudante in estudantes if motivo_de_evasao in estudante["motivo_de_evasao"]]
-      db_name = "db_estudantes.sqlite"
-      gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
-      gerenciador.save_data(estudantes)
-      response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)   
-      print("Resposta da tool: ", response, "\n")
-      return  f"RESULTADO DO SQL: {response}"
-   else:
-      return [{"error_status": response.status_code, "msg": response.json()}]
+      response = requests.get(f'{URL_BASE}/estudantes', params=params)
+      if response.status_code == 200:
+         estudantes = normalize_data_estudante(json.loads(response.text))
+         estudantes = [estudante for estudante in estudantes if motivo_de_evasao in estudante["motivo_de_evasao"]]
+         db_name = "db_estudantes.sqlite"
+         gerenciador = GerenciadorSQLAutomatizado("Estudante_Info_Gerais", db_name)
+         gerenciador.save_data(estudantes)
+         response = gerenciador.get_data(query, PROMPT_SQL_ESTUDANTES_INFO_GERAIS)   
+         print("Resposta da tool: ", response, "\n")
+         return  f"RESULTADO DO SQL: {response}"
+      
+      else:
+         return [{"error_status": response.status_code, "msg": response.json()}]
+
+   except Exception as error:
+      print(error)
+      return str(error)

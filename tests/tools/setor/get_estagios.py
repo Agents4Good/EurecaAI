@@ -3,15 +3,16 @@ from ..campus.utils import get_campus_most_similar
 from ..disciplina.get_disciplinas import get_disciplinas
 from ..campus.utils import get_campus_most_similar
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
-from ...sql.Estagio.normalize_data import normalize_data_estagio
+from .normalize_data import normalize_data_estagio
 from ...sql.Estagio.prompt import PROMPT_SQL_ESTAGIO
 from ..utils.base_url import URL_BASE
 from datetime import datetime
 from typing import Any
-import requests
-import json
-import unicodedata
+import requests, json, unicodedata
+from .exception import *
+from .utils import logger_eureca_tool
 
+@logger_eureca_tool
 def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus: Any = "", nome_do_centro_unidade: Any = "", nome_do_curso: Any = "") -> list:
     """
     Buscar informações sobre estágios dos estudantes de uma centro da unidade de um curso.
@@ -37,63 +38,57 @@ def get_estagios(query: Any, ano_de: Any = "", ano_ate: Any = "", nome_do_campus
     nome_do_centro_unidade=str(nome_do_centro_unidade)
     ano_de=str(ano_de)
     ano_ate=str(ano_ate)
-    if ano_ate == "":
-        ano_ate = str(datetime.now().year)
-    
-    print(f"Tool get_estagios chamada com nome_do_campus={nome_do_campus}, nome_do_centro_unidade={nome_do_centro_unidade}, nome_do_curso={nome_do_curso}, ano_de={ano_de} e ano_ate={ano_ate}")
-    params = {
-        "inicio-de": ano_de,
-        "fim-ate": ano_ate
+    ano_ate = str(datetime.now().year) if ano_ate == "" else ano_ate
+    params = { 
+        "inicio-de": ano_de, 
+        "fim-ate": ano_ate 
     }
 
     response = requests.get(f'{URL_BASE}/estagios', params=params)
-
     if response.status_code != 200:
         return [{"error_status": response.status_code, "msg": "Não foi possível obter informação da UFCG."}]
     
     estagios = json.loads(response.text)
-    estagios_filtrados = filtragem(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, nome_do_centro_unidade=nome_do_centro_unidade, estagios=estagios)
-    
-    print("Okay")
+    estagios_filtrados, mensagem = filtragem(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, nome_do_centro_unidade=nome_do_centro_unidade, estagios=estagios)
     if len(estagios_filtrados) == 0:
-        return "Erro: Informe para passar os dados necessarios nessa ferramenta"
-    print("Okay2")
+        not_found_message = "Erro: Não foram encontrados estagiários."
+        return not_found_message
 
     estagios_filtrados_normalizados = normalize_data_estagio(estagios_filtrados)
     gerenciador = GerenciadorSQLAutomatizado(table_name="Estagio", db_name="db_estagio.sqlite")
     gerenciador.save_data(estagios_filtrados_normalizados)
+
     return gerenciador.get_data(query, PROMPT_SQL_ESTAGIO, temperature=0)
 
 
-#FUNÇÂO AUXILIAR
 def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
     estagios_filtrados = []
 
     if not nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
-        return estagios
+        return estagios, "Dados obtidos para os estagiáros de todos os cursos de todos os campus da UFCG."
     
     elif nome_do_campus and not nome_do_curso and not nome_do_centro_unidade:
-        print("primeira condição")
         dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
         codigo_campus = str(dados_campus["campus"]["codigo"])
 
         for estagio in estagios:
             codigo = estagio["codigo_da_disciplina"]
-            #EXISTEM ALGUNS CÒDIGOS QUE SÂO NONE
             if codigo is not None and str(codigo)[0] == codigo_campus:
                 estagios_filtrados.append(estagio)
+        
+        return estagios_filtrados, f"Dados obtidos para os estagiarios de todos os cursos de {nome_do_campus}."
     
     elif nome_do_campus and nome_do_centro_unidade:
-        print("segunda condição")
         professores = get_professores_setor(nome_do_campus=nome_do_campus, nome_do_centro_setor=nome_do_centro_unidade)
         codigo_professores = [professor["matricula_do_docente"] for professor in professores]
         for estagio in estagios:
             if estagio["matricula_do_docente"] in codigo_professores:
                 estagios_filtrados.append(estagio)
+            
+        return estagios_filtrados, f"Dados obtidos para os estagiários da unidade {nome_do_centro_unidade} do campus {nome_do_campus}."
     
     elif nome_do_campus and nome_do_curso:
-        print("terceira condição")
-        disciplinas = get_disciplinas(query="", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=" ") #CURRICULO TEM QUE PASSAR UM ESPAÇO EM BRANCO
+        disciplinas = get_disciplinas(query="", nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, curriculo=" ")
 
         disciplinas_de_estagios = [
                 disciplina["codigo_da_disciplina"]
@@ -104,5 +99,16 @@ def filtragem(nome_do_campus, nome_do_curso, nome_do_centro_unidade, estagios):
         for estagio in estagios:
             if estagio["codigo_da_disciplina"] in disciplinas_de_estagios:
                 estagios_filtrados.append(estagio)
+        
+        return estagios_filtrados, f"Dados obtidos para o curso de {nome_do_curso} do campus de {nome_do_campus}."
 
-    return estagios_filtrados
+    raise ParametrosInvalidosEstagioError("""
+          Erro: Ocorreu um erro.
+          
+          Causas:
+            - Se você quer estagiários de um curso, use apenas o nome do curso e o nome do campus.
+            - Se você quer estagiários de um campus, informe apenas o nome do campus.
+            - Se você quer estagiários de um centro ou unidade, informe o nome campus e do centro ou unidade.
+          
+          Se não souber uma desses três informações, então peça que informe essas informações.
+          """)

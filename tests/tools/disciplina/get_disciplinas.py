@@ -6,7 +6,9 @@ from ..utils.base_url import URL_BASE
 from ...sql.Disciplina.prompt import PROMPT_SQL_DISCIPLINA
 from ...sql.GerenciadorSQLAutomatizado import GerenciadorSQLAutomatizado
 from ..utils.validacoes import valida_periodo_curriculo
+from ..setor.utils import logger_eureca_tool
 
+@logger_eureca_tool
 def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curriculo: Any = "") -> list:
     """_summary_
     Informações de todas as disciplinas da grade de um curso.
@@ -34,7 +36,6 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
     nome_do_curso = str(nome_do_curso)    
     nome_do_campus = str(nome_do_campus)
     curriculo = str(curriculo)
-    print(f"Tool `get_disciplinas` chamada com nome_do_curso={nome_do_curso}, nome_do_campus={nome_do_campus} e codigo_curriculo={curriculo}.")
     
     if curriculo == "":
         dados_curso, curriculo, _, mensagem = valida_periodo_curriculo(nome_do_campus=nome_do_campus, nome_do_curso=nome_do_curso, periodo="", curriculo=curriculo)
@@ -46,7 +47,7 @@ def get_disciplinas(query: Any, nome_do_curso: Any, nome_do_campus: Any, curricu
         'curso': dados_curso['curso']['codigo'],
         'curriculo': curriculo
     }
-
+    
     print("CURRICULO USADO ", curriculo)
     print(f"Recuperando as disciplinas do curso de {dados_curso['curso']['nome']} e código {dados_curso['curso']['codigo']} e currículo {curriculo}")
     print(params)

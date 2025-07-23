@@ -50,38 +50,43 @@ def get_ingressantes_sisu(nome_do_curso: Any = "", nome_do_campus: Any = "", per
         "periodo-ate": periodo
     }
     
-    if (nome_do_curso != "" and nome_do_campus != ""):
-        dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
-        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-        params["curso"] = dados_curso['curso']['codigo']
-        params["campus"] = dados_campus['campus']['codigo']
-    elif (nome_do_curso == "" and nome_do_campus != ""):
-        dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
-        params["campus"] = dados_campus['campus']['codigo']
-    elif (nome_do_curso == "" and nome_do_campus == ""):
-        pass
-    else:
-        return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
+    try:
+        if (nome_do_curso != "" and nome_do_campus != ""):
+            dados_curso = get_curso_most_similar(nome_do_curso=nome_do_curso, nome_do_campus=nome_do_campus)
+            dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+            params["curso"] = dados_curso['curso']['codigo']
+            params["campus"] = dados_campus['campus']['codigo']
+        elif (nome_do_curso == "" and nome_do_campus != ""):
+            dados_campus = get_campus_most_similar(nome_do_campus=nome_do_campus)
+            params["campus"] = dados_campus['campus']['codigo']
+        elif (nome_do_curso == "" and nome_do_campus == ""):
+            pass
+        else:
+            return [{"error_status": 500, "msg": "Não foi possível obter a informação porque você informou um curso sem passar o campus dele."}]
 
-    
-    response = requests.get(f'{URL_BASE}/vagas-no-sisu', params=params)
-    if response.status_code == 200:
-        dados = json.loads(response.text)
-        if len(dados) == 1:
-            return dados
         
-        cursos = get_lista_cursos("")
+        response = requests.get(f'{URL_BASE}/vagas-no-sisu', params=params)
+        if response.status_code == 200:
+            dados = json.loads(response.text)
+            if len(dados) == 1:
+                return dados
+            
+            cursos = get_lista_cursos("")
 
-        dicionario_cursos = {}
-        for dado in dados:
-            dicionario_cursos[dado["codigo_do_curso"]] = dado
+            dicionario_cursos = {}
+            for dado in dados:
+                dicionario_cursos[dado["codigo_do_curso"]] = dado
+            
+            for curso in cursos:
+                codigo = curso.get("codigo_do_curso")
+                if codigo in dicionario_cursos:
+                    dicionario_cursos[codigo]["nome_do_curso"] = curso.get("descricao", "")
+            
+            return list(dicionario_cursos.values())
         
-        for curso in cursos:
-            codigo = curso.get("codigo_do_curso")
-            if codigo in dicionario_cursos:
-                dicionario_cursos[codigo]["nome_do_curso"] = curso.get("descricao", "")
-        
-        return list(dicionario_cursos.values())
+        else:
+            return [{"error_status": response.status_code, "msg": response.json()}]
     
-    else:
-        return [{"error_status": response.status_code, "msg": response.json()}]
+    except Exception as error:
+        print(str(error))
+        return str(error)
