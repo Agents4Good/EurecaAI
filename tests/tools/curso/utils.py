@@ -1,16 +1,12 @@
-import json, requests, time
-from langchain_ollama import ChatOllama
+import json, requests
 from ..utils.most_similar import get_most_similar
 from ..utils.processar_json import processar_json
 from ..campus.utils import get_campus_most_similar
 from ...sql.Curso.db_cursos import inserir_dados, recuperar_dados
 from ..utils.base_url import URL_BASE
-from langchain_community.chat_models import ChatDeepInfra
-from flask_app.langchain_models import model
+from application.config import model
 
 
-#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
-#model = ChatOllama(model="llama3.1", temperature=0)
 mapper_curso = {"nome": "descricao", "codigo": "codigo_do_curso"}
 format = """{'curso': {'codigo': '', 'nome': ''}}"""
 

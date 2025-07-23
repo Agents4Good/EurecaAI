@@ -3,14 +3,11 @@ from ..utils.preprocess_text import get_most_similar_acronym
 from ..utils.most_similar import get_most_similar
 from .get_disciplinas import get_disciplinas, get_disciplinas_por_codigo
 from ..utils.processar_json import processar_json
-from langchain_ollama import ChatOllama
 from ..curso.get_curriculo_mais_recente_curso import get_curriculo_mais_recente_curso
 from ..curso.get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
-from langchain_community.chat_models import ChatDeepInfra
-from flask_app.langchain_models import model
+from application.config import model
 
 
-#model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temperature=0)
 mapper = {"nome": "nome", "codigo": "codigo_da_disciplina"}
 format = """{'disciplina': {'codigo': '', 'nome_da_disciplina': ''}}"""
 

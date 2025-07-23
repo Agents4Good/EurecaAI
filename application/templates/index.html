@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eureca AI</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/ufcg.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="css/index.css"></script>
+    <script src="{{url_for('static', filename='js/account.js')}}"></script>
+    <script src="{{url_for('static', filename='js/audio.js')}}"></script>
+    <script src="{{url_for('static', filename='js/cookies.js')}}"></script>
+    <script src="{{url_for('static', filename='js/dom_events_io.js')}}"></script>
+    <script src="{{url_for('static', filename='js/render_history.js')}}"></script>
+    <script src="{{url_for('static', filename='js/send_human_message.js')}}"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        let idChatLocal = null;
+        let isSpeaking = false;
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+        let arquivosSelecionados = [];
+
+        let socket = io("http://127.0.0.1:8000", {
+            transports: ['websocket']
+        });
+    </script>
+    <script>
+        function trocar_chat_pelo_id(id, exists) {
+            document.querySelector('.chat__container').innerHTML = '';
+            const historyItem = document.getElementById(id);
+            if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
+                try {
+                    historyItem.remove();
+                } catch {}
+                
+                if (!exists) {
+                    getProfile();
+                }
+                if (id == idChatLocal || id == '') {
+                    idChatLocal = null;
+                }
+            }
+        }
+
+
+        function trocar_chat(id, exists) {
+            if (exists) {
+                trocar_chat_pelo_id("", true);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get_chat',
+                    timeout: 400000,
+                    success: function (response) {
+                        render_histoty(id);
+                    }
+                });
+            } else {
+                if (id == '') {
+                    trocar_chat_pelo_id('');
+                } else {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/delete_chat',
+                        timeout: 400000,
+                        success: function (response) {
+                            trocar_chat_pelo_id(id);
+                        }
+                    });
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="aside__mobile__button" onClick="openAsideBarMobile()">
+            <i class='fas fa-bars fa-2x'></i>
+        </div>
+        <img src="{{ url_for('static', filename='images/Eureca_AI_logo.png') }}" onClick="window.location.href=''"/>
+        <button class="login__button btn waves-effect waves-light azul-escuro-1" onClick="login_account()">
+            <span>Login</span>
+        </button>
+    </header>
+    <main>
+        <section>
+            <article class="chat">
+                <div 
+                class="chat__container"
+                data-audio-img="{{ url_for('static', filename='images/audio.png') }}"
+                data-bot-img="{{ url_for('static', filename='images/bot.png') }}"
+                data-brilhos-gif="{{ url_for('static', filename='images/brilhos.gif') }}"
+                >
+
+                </div>
+            </article>
+
+            <form id="chat_form" class="query__container" method="post">
+                <div class="input_container">
+                    <textarea id="user_input" class="query" autocomplete="off" oninput="autoGrow(this)" placeholder="Pergunte alguma coisa"></textarea>
+                </div>
+                <div class="chat_aux">
+                    <div class="chat_aux_container">
+                        <div class="chat_aux_container_left">
+                            <input id="fileInput" class="button_add_file" type="file" style="display: none;"/>
+                            <i onclick="abrirSeletorArquivo()" class="fa fa-file" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                        </div>
+                        <div class="chat_aux_container_medium">
+
+                        </div>
+                        <div class="chat_aux_container_right">
+                            <button class="button_record">
+                            <i onClick="recording(this)" class="fa fa-microphone" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
+                            <button class="button_send">
+                                <i onClick="recording(this)" class="fa fa-arrow-up" aria-hidden="true" id="recordImage" style="cursor: pointer; color: white;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+        <aside class="aside-chat">
+            <div class="aside-title-container">
+                <div>
+                    <img src="{{ url_for('static', filename='images/logo_ufcg.png') }}"/>
+                </div>
+                <p class="aside-title-content">Histórico</p>
+            </div>
+            <div class="history">
+                <div class="history_item novo_chat" onclick="apagar_chat('')" style="margin-top: -40px;">
+                    <p>Novo Chat</p>
+                    <div class="fab-wrapper">
+                        <div class="fab">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="history_menu">
+                
+            </div>
+            <div class="about">
+                <p>© 2025 UFCG</p>
+                <p 
+                onClick="window.location.href='/politica_termos'" 
+                style="text-decoration: underline; cursor: pointer;"
+                >Política e Termos</p>
+            </div>
+        </aside>
+    </main>
+</body>
+</html>

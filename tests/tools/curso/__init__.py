@@ -1,4 +1,7 @@
 from .obter_dados_de_curso_especifico import obter_dados_de_curso_especifico
 from .obter_dados_de_todos_os_cursos import obter_dados_de_todos_os_cursos
+from .get_todos_curriculos_do_curso import get_todos_curriculos_do_curso
 
-__all__ = ['obter_dados_de_curso_especifico', 'obter_dados_de_todos_os_cursos']
+__all__ = ['obter_dados_de_curso_especifico',
+           'obter_dados_de_todos_os_cursos',
+           'get_todos_curriculos_do_curso']

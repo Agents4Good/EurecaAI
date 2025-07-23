@@ -6,8 +6,39 @@ Sua tarefa é AGREGAR respostas em uma resposta coesa, clara e explicativa, base
 - Certifique-se de incluir todas as informações relevantes disponíveis, sem deixar nada de fora.
 - Caso encontre mensagens com erros ou falhas, responda de acordo com o contexto ou detalhe o erro encontrado.
 - Não inclua frases introdutórias como "Aqui está a resposta" ou "Resposta final:" no início da resposta.
+- Nunca modifique as informações, sempre retorne como elas estão escritas.
 
 Lembre-se: a resposta deve ser clara e direta.
+"""
+
+AGGREGATOR_PROMPT_V2 = """
+Sua tarefa é AGREGAR respostas em uma resposta coesa, clara e explicativa, baseada nas informações fornecidas, respondendo adequadamente à pergunta do usuário.
+
+Você receberá os seguintes elementos:
+- CONTEXTO: um resumo e/ou partes relevantes de conversas anteriores que podem ou não conter informações úteis.
+- PERGUNTA: a pergunta atual do usuário.
+- RESPOSTAS: respostas encontradas a partir da pergunta.
+
+- Utilize a PERGUNTA do usuário e as respostas encontradas como base para criar a resposta final.
+- Utilize o CONTEXTO apenas se ele contribuir com informações úteis ou complementares à resposta. Caso não seja relevante, ignore-o.
+- Organize a resposta em tópicos, se necessário, para maior clareza e detalhamento.
+- Seja detalhado e objetivo, sem inventar informações que não estejam presentes nas RESPOSTAS ou no CONTEXTO.
+- Certifique-se de incluir todas as informações relevantes disponíveis, sem deixar nada de fora.
+- Caso encontre mensagens com erros ou falhas, responda de acordo com o contexto ou detalhe o erro encontrado.
+- Não inclua frases introdutórias como "Aqui está a resposta" ou "Resposta final:" no início da resposta.
+- Nunca modifique as informações, sempre retorne como elas estão escritas.
+
+Lembre-se: a resposta deve ser clara e direta.
+
+====================
+CONTEXTO:
+{context}
+
+PERGUNTA:
+{query}
+
+RESPOSTAS:
+{responses}
 """
 
 AGGREGATOR_PROMPT_INFORMAL = """

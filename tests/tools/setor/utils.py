@@ -1,18 +1,14 @@
-from typing import Any
-from .get_todos_setores import get_todos_setores, get_todos_setores_por_codigo_do_campus
-from ..utils.most_similar import get_most_similar
-from langchain_ollama import ChatOllama
-from ..utils.processar_json import processar_json
-from langchain_community.chat_models import ChatDeepInfra
-from flask_app.langchain_models import model
-import requests
-import json
-from ..utils.base_url import URL_BASE
-import inspect, time, traceback
-from pprint import pprint
+import requests, json, inspect, time, traceback
+
 from functools import wraps
 
-#model = ChatDeepInfra(model="meta-llama/Meta-Llama-3.1-8B-Instruct", temperature=0)
+from ..utils.base_url import URL_BASE
+from .get_todos_setores import get_todos_setores, get_todos_setores_por_codigo_do_campus
+from ..utils.most_similar import get_most_similar
+from ..utils.processar_json import processar_json
+from application.config import model
+
+
 format = """{'setor': {'codigo': '', 'nome': ''}}"""
 mapper_setor = {"nome": "descricao", "codigo": "codigo_do_setor"}
 

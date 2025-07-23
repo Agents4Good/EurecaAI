@@ -59,18 +59,21 @@ class CreateAgent():
         
         model = cast(BaseChatModel, model).bind_tools(tool_classes)
 
-        def call_model(state: AgentState):
+        async def call_model(state: AgentState):
             messages = state["messages"]
             filtered_messages = [
                 msg for msg in messages
                 if not isinstance(msg, AIMessage) or getattr(msg, 'name', None) == self.name or getattr(msg, 'name', None) is None
             ]
             
+            print(f"\nESTADO EM {self.name}:\n")
+            print(filtered_messages)
+
             if prompt:
                 messages = [SystemMessage(content=prompt)] + messages
                 filtered_messages = [SystemMessage(content=prompt)] + filtered_messages
 
-            response = model.invoke(filtered_messages)
+            response = await model.ainvoke(filtered_messages)
             response = extract_tool_calls(response)
 
             if hasattr(response, "content") and isinstance(response.content, str):
