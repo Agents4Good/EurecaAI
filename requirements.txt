@@ -23,7 +23,8 @@ faker
 IPython
 langchain_google_genai
 vanna
-langgraph-checkpoint-postgres
+langgraph-checkpoint==2.0.26
+langgraph-checkpoint-postgres==2.0.21
 flask-socketio
 eventlet
 psycopg

@@ -31,12 +31,13 @@ app.checkpointer_cm = None
 
 @app.before_serving
 async def setup():
+    # Inicializa o checkpointer
     app.checkpointer_cm = get_postgres_saver(db_uri=DB_URI)
     app.checkpointer = await app.checkpointer_cm.__aenter__()
 
     # Usar setup() apenas na primeira execução do sistema, para criar as tabelas do PostgresSaver
-    # await app.checkpointer.setup()
-    await app.checkpointer.adelete_thread("anon_8de0f045-4617-4510-8481-221356e93502")
+    await app.checkpointer.setup()
+    # await app.checkpointer.adelete_thread("anon_8de0f045-4617-4510-8481-221356e93502")
 
     # Inicializa a pool do asyncpg, para lidar com as demais tabelas do sistema
     app.db_pool = await asyncpg.create_pool(dsn=DB_URI)

@@ -11,7 +11,7 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - eureca_pgdata:/var/lib/postgresql/data
-      - ./flask_app/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./application/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
 volumes:
   eureca_pgdata:

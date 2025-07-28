@@ -35,8 +35,7 @@ supervisor_model = ChatDeepInfra(model="meta-llama/Llama-3.3-70B-Instruct", temp
 aggregator_model_class = ChatGoogleGenerativeAI
 aggregator_model_kwargs = {
     "model": "gemini-2.0-flash",
-    "temperature": 0,
-    "streaming": True
+    "temperature": 0
 }
 
 # Agentes Especializados
