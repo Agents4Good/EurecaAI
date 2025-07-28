@@ -67,6 +67,7 @@ function render_botao_historico(item) {
     const newDiv = document.createElement("div");
     newDiv.className = "history_item";
     newDiv.id = item.chat_id;
+    newDiv.dataset.buttonId = item.chat_id;
     console.log(item.chat)
     newDiv.dataset.timestamp = item.timestamp;
     
@@ -207,9 +208,9 @@ async function sendMessage(message, showStars) {
 
     socket.on("resposta_final", (data) => {
         $('.bot').last().find('.audio-button').show();
+
         const textoFinal = data.resposta;
         const chat_id = data.chat_id;
-
         const htmlResponse = marked.parse(textoFinal);
         $lastBotResponse.html(htmlResponse);
 
@@ -217,49 +218,57 @@ async function sendMessage(message, showStars) {
         $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
 
         $lastBotResponse.closest('.bot').removeClass('skeleton');
-
         const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
         $status.text("");
 
-        /*if (!idChatLocal) {
-            const newDiv = document.createElement("div");
-            const id = `item_${Date.now()}`;
-            newDiv.className = "history_item";
-            newDiv.id = id;
-            idChatLocal = id;
-            
-            get_resumo(message).then((resumo) => { render_botao_historico({title: resumo, chat_id: id, timestamp: new Date().toISOString()}) }).then(() => {
-                ordenar_historico_por_data();
-            });
-        }*/
+        // Verificar se chat_id já existe na lista de .history_item
+        const historyContainer = document.querySelector('.history');
+        const ids = [];
 
-        if (chat_id) {
-            idChatLocal = chat_id;
+        if (historyContainer) {
+            for (const filho of historyContainer.children) {
+                if (filho.id) {
+                    ids.push(filho.id);
+                }
+            }
+        }
 
-            get_resumo(message).then((resumo) => {
-                return fetch('/update_title', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id, title: resumo })
-                }).then(() => resumo);
-            })
-            .then((resumo) => {
-                render_botao_historico({
-                    title: resumo,
-                    chat_id: chat_id,
-                    timestamp: new Date().toISOString()
+        // Se chat_id ainda não estiver no histórico
+        console.log(ids, chat_id, idChatLocal)
+        if (!idChatLocal || idChatLocal == null) {
+            get_resumo(message)
+                .then((resumo) => {
+                    return fetch('/update_title', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id, title: resumo })
+                    }).then(() => resumo);
+                })
+                .then((resumo) => {
+                    render_botao_historico({
+                        title: resumo,
+                        chat_id: chat_id,
+                        timestamp: new Date().toISOString()
+                    });
                 });
-                ordenar_historico_por_data();
-            });
+
         } else {
+            // Se já existir, não adiciona novo botão e zera idChatLocal
+            console.log("Chat já existe no histórico. Não adicionando.");
             idChatLocal = null;
         }
 
-        const elemento = document.querySelector(`.history_item#${idChatLocal}`);
+        // Atualiza timestamp se o item ainda for válido
+        idChatLocal = chat_id;
+        console.log(historyContainer, idChatLocal)
+        const elemento = document.querySelector(`.history_item[data-button-id="${idChatLocal}"]`);
+        console.log("Atualizando timestamp:", elemento);
+
         if (elemento) {
             elemento.dataset.timestamp = new Date().toISOString();
             ordenar_historico_por_data();
         }
+
         scrollToBottom();
         enable_input();
     });

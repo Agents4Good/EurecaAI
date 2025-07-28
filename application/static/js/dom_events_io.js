@@ -61,6 +61,7 @@ async function carregarHistorico() {
 
 
 function ordenar_historico_por_data() {
+    console.log("ordenando")
     const container = document.querySelector('.history');
     const botaoNovoChat = container.querySelector('.history_item.novo_chat');
     let itens = Array.from(container.querySelectorAll('.history_item:not(.novo_chat)'));
