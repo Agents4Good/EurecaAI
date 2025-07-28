@@ -68,8 +68,9 @@ function render_botao_historico(item) {
     newDiv.className = "history_item";
     newDiv.id = item.chat_id;
     newDiv.dataset.buttonId = item.chat_id;
-    console.log(item.chat)
     newDiv.dataset.timestamp = item.timestamp;
+    console.log(item.chat, item.timestamp, newDiv.dataset.timestamp)
+
     
     newDiv.onclick = function () {
         get_chat(item.chat_id);
@@ -245,10 +246,13 @@ async function sendMessage(message, showStars) {
                     }).then(() => resumo);
                 })
                 .then((resumo) => {
+                    let data = new Date().toISOString();
+                    console.log(data);
+
                     render_botao_historico({
                         title: resumo,
                         chat_id: chat_id,
-                        timestamp: new Date().toISOString()
+                        timestamp: data
                     });
                 });
 
@@ -266,9 +270,9 @@ async function sendMessage(message, showStars) {
 
         if (elemento) {
             elemento.dataset.timestamp = new Date().toISOString();
-            ordenar_historico_por_data();
         }
 
+        ordenar_historico_por_data();
         scrollToBottom();
         enable_input();
     });

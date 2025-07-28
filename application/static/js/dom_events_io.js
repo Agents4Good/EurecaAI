@@ -46,8 +46,9 @@ async function carregarHistorico() {
             if (response.status === 200) {
                 const data = await response.json();
 
-                data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                data.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
                 .forEach(item => {
+                    item.timestamp = updated_at
                     render_botao_historico(item);
                 });
             } else {
@@ -66,11 +67,15 @@ function ordenar_historico_por_data() {
     const botaoNovoChat = container.querySelector('.history_item.novo_chat');
     let itens = Array.from(container.querySelectorAll('.history_item:not(.novo_chat)'));
 
+    console.log(itens)
+
     itens.sort((a, b) => {
         const dataA = new Date(a.dataset.timestamp);
         const dataB = new Date(b.dataset.timestamp);
         return dataB - dataA;
     });
+
+    console.log(itens)
 
     container.innerHTML = '';
 
