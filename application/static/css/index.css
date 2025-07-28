@@ -439,6 +439,21 @@ aside {
     border: 10px solid transparent;
     box-sizing: border-box;
     padding-top: 50px;
+    overflow: auto;
+}
+
+.history::-webkit-scrollbar {
+    width: 10px;
+    margin-left: 10px;
+}
+
+.history::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 10px;
 }
 
 .history_item {
