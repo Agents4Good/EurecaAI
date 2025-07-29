@@ -41,7 +41,11 @@ function disable_input() {
 }
 
 
-function toggleMenu(id) {
+function toggleMenu(id, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
     const menu = document.getElementById(`${id}_menu`);
     document.querySelectorAll('.fab-menu').forEach(m => {
         if (m !== menu) m.style.display = 'none';
@@ -87,7 +91,9 @@ function render_botao_historico(item) {
     newDiv.innerHTML = `
         <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</p>
             <div class="fab-wrapper">
-                <div class="fab" onclick="toggleMenu('${item.chat_id}')"><i class='fas fa-ellipsis-h'></i></div>
+                <div class="fab" onclick="toggleMenu('${item.chat_id}', event)">
+                    <i class='fas fa-ellipsis-h'></i>
+                </div>
                 <div class="fab-menu" id="${item.chat_id}_menu">
                     <i class='fas fa-trash' onclick="apagar_chat(${item.chat_id})"></i>
                 </div>

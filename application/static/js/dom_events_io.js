@@ -333,3 +333,18 @@ function get_chat(id) {
         });
     }
 }
+
+function closeAllMenus() {
+    document.querySelectorAll('.fab-menu').forEach(m => m.style.display = 'none');
+}
+
+function algumMenuAberto() {
+    return Array.from(document.querySelectorAll('.fab-menu'))
+        .some(m => getComputedStyle(m).display === 'flex');
+}
+
+function fechar_toggles() {
+    if (algumMenuAberto()) {
+        closeAllMenus();
+    }
+}
