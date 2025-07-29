@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function carregarHistorico() {
+    console.log("carregando")
     const profileStr = getCookie("profile");
     const res = profileStr ? JSON.parse(profileStr) : null;
     const perfil_response = res || {token: ""};
@@ -45,10 +46,11 @@ async function carregarHistorico() {
 
             if (response.status === 200) {
                 const data = await response.json();
-
-                data.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
+                
+                data
+                //.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
                 .forEach(item => {
-                    item.timestamp = updated_at
+                    //item.timestamp = updated_at
                     render_botao_historico(item);
                 });
             } else {
@@ -249,8 +251,10 @@ function addUserMessage(message) {
 
 
 function apagar_chat(id) {
+    console.log("apag", id, 'ok');
 
     function apagar_chat_pelo_id(id) {
+        console.log("apagand")
         document.querySelector('.chat__container').innerHTML = '';
         const historyItem = document.getElementById(id);
         if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
@@ -271,6 +275,7 @@ function apagar_chat(id) {
         apagar_chat_pelo_id('');
         reseta_arquivos('');
     } else {
+        console.log("apagandoooooo")
         $.ajax({
             type: 'POST',
             url: '/delete_chat',
@@ -279,6 +284,8 @@ function apagar_chat(id) {
             timeout: 400000,
             success: function (response) {
                 if (response.status == 200) {
+                    apagar_chat_pelo_id(id);
+                } else {
                     apagar_chat_pelo_id(id);
                 }
             }
@@ -334,6 +341,14 @@ function get_chat(id) {
     }
 }
 
+
+
+
+
+
+
+
+
 function closeAllMenus() {
     document.querySelectorAll('.fab-menu').forEach(m => m.style.display = 'none');
 }
@@ -344,7 +359,73 @@ function algumMenuAberto() {
 }
 
 function fechar_toggles() {
+    console.log()
     if (algumMenuAberto()) {
         closeAllMenus();
     }
+}
+
+
+function toggleMenu(id) {
+    const menu = document.getElementById(`${id}_menu`);
+    if (!menu) return;
+
+    const isVisible = getComputedStyle(menu).display === 'flex';
+    closeAllMenus();
+
+    if (!isVisible) {
+        menu.style.display = 'flex';
+    }
+}
+
+document.addEventListener('click', function (event) {
+    setTimeout(() => {
+        const isClickInsideFab = event.target.closest('.fab');
+        const isClickInsideMenu = event.target.closest('.fab-menu');
+    
+        if (!isClickInsideFab && !isClickInsideMenu) {
+            closeAllMenus();
+        }
+    }, 0); // adia a execução para depois dos handlers inline
+});
+
+const fab = newDiv.querySelector('.fab');
+fab.addEventListener('click', (e) => {
+    e.stopPropagation(); // evita que o clique no botão dispare o listener global
+    toggleMenu(item.chat_id);
+});
+
+function render_botao_historico(item) {
+    const newDiv = document.createElement("div");
+    newDiv.className = "history_item";
+    newDiv.id = item.chat_id;
+    newDiv.dataset.buttonId = item.chat_id;
+    newDiv.dataset.timestamp = item.timestamp;
+    console.log(item.chat, item.timestamp, newDiv.dataset.timestamp)
+
+    newDiv.onclick = function () {
+        get_chat(item.chat_id);
+        
+        const todos = document.querySelectorAll('.history_item');
+        todos.forEach(el => el.classList.remove('selecionado'));
+    
+        const elemento = document.querySelector(`.history_item#${item.chat_id}`);
+        if (elemento) {
+            elemento.classList.add('selecionado');
+        }
+    };
+    
+    newDiv.innerHTML = `
+        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</p>
+            <div class="fab-wrapper">
+                <div class="fab" onclick="toggleMenu('${item.chat_id}')">
+                    <i class='fas fa-ellipsis-h'></i>
+                </div>
+                <div class="fab-menu" id="${item.chat_id}_menu" style="display: none;">
+                    <i class='fas fa-trash' onclick="apagar_chat('${item.chat_id}')"></i>
+                </div>
+            </div>
+        `;
+    
+    document.getElementsByClassName("history")[0].appendChild(newDiv);
 }

@@ -40,23 +40,6 @@ function disable_input() {
     document.querySelector('.button_add_file').disabled = true;
 }
 
-
-function toggleMenu(id, event) {
-    if (event) {
-        event.stopPropagation();
-    }
-
-    const menu = document.getElementById(`${id}_menu`);
-    document.querySelectorAll('.fab-menu').forEach(m => {
-        if (m !== menu) m.style.display = 'none';
-    });
-
-    if (menu) {
-        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
-    }
-}
-
-
 async function fileToBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -64,43 +47,6 @@ async function fileToBase64(file) {
         reader.onerror = reject;
         reader.readAsDataURL(file);
     });
-}
-
-
-function render_botao_historico(item) {
-    const newDiv = document.createElement("div");
-    newDiv.className = "history_item";
-    newDiv.id = item.chat_id;
-    newDiv.dataset.buttonId = item.chat_id;
-    newDiv.dataset.timestamp = item.timestamp;
-    console.log(item.chat, item.timestamp, newDiv.dataset.timestamp)
-
-    
-    newDiv.onclick = function () {
-        get_chat(item.chat_id);
-        
-        const todos = document.querySelectorAll('.history_item');
-        todos.forEach(el => el.classList.remove('selecionado'));
-    
-        const elemento = document.querySelector(`.history_item#${item.chat_id}`);
-        if (elemento) {
-            elemento.classList.add('selecionado');
-        }
-    };
-    
-    newDiv.innerHTML = `
-        <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</p>
-            <div class="fab-wrapper">
-                <div class="fab" onclick="toggleMenu('${item.chat_id}', event)">
-                    <i class='fas fa-ellipsis-h'></i>
-                </div>
-                <div class="fab-menu" id="${item.chat_id}_menu">
-                    <i class='fas fa-trash' onclick="apagar_chat(${item.chat_id})"></i>
-                </div>
-            </div>
-        `;
-    
-    document.getElementsByClassName("history")[0].appendChild(newDiv);
 }
 
 
