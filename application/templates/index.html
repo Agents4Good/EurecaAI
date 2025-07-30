@@ -30,53 +30,6 @@
             transports: ['websocket']
         });
     </script>
-    <script>
-        function trocar_chat_pelo_id(id, exists) {
-            document.querySelector('.chat__container').innerHTML = '';
-            const historyItem = document.getElementById(id);
-            if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
-                try {
-                    historyItem.remove();
-                } catch {}
-                
-                if (!exists) {
-                    getProfile();
-                }
-                if (id == idChatLocal || id == '') {
-                    idChatLocal = null;
-                }
-            }
-        }
-
-
-        function trocar_chat(id, exists) {
-            if (exists) {
-                trocar_chat_pelo_id("", true);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/get_chat',
-                    timeout: 400000,
-                    success: function (response) {
-                        render_histoty(id);
-                    }
-                });
-            } else {
-                if (id == '') {
-                    trocar_chat_pelo_id('');
-                } else {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/delete_chat',
-                        timeout: 400000,
-                        success: function (response) {
-                            trocar_chat_pelo_id(id);
-                        }
-                    });
-                }
-            }
-        }
-    </script>
 </head>
 <body>
     <header>
@@ -143,7 +96,7 @@
                     </div>
                 </div>
             </div>
-            <div class="history_menu" onclick="fechar_toggles()">
+            <div class="history_menu">
                 
             </div>
             <div class="about">

@@ -16,3 +16,8 @@ async function store_token(name, value) {
     date.setTime(date.getTime() + hoursExpiredIn * 60 * 60 * 1000);
     document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
 }
+
+function estaLogado() {
+    const token = getCookie("profile");
+    return !!token; // true se o token existir, false se não
+}

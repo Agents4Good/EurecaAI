@@ -993,3 +993,11 @@ aside {
 .assistente-text {
     font-weight: bold;
 }
+
+.history_menu {
+    z-index: 1;
+}
+
+.history_item {
+    z-index: 2;
+}

@@ -6,7 +6,7 @@ window.onload = function() {
     });
     
     socket.on("connect", () => {
-      console.log("✅ Conectado ao servidor via Socket.IO!");
+        console.log("✅ Conectado ao servidor via Socket.IO!");
     });
 }
 
@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 async function carregarHistorico() {
-    console.log("carregando")
     const profileStr = getCookie("profile");
     const res = profileStr ? JSON.parse(profileStr) : null;
     const perfil_response = res || {token: ""};
@@ -64,12 +63,11 @@ async function carregarHistorico() {
 
 
 function ordenar_historico_por_data() {
-    console.log("ordenando")
     const container = document.querySelector('.history');
     const botaoNovoChat = container.querySelector('.history_item.novo_chat');
     let itens = Array.from(container.querySelectorAll('.history_item:not(.novo_chat)'));
 
-    console.log(itens)
+    //console.log(itens)
 
     itens.sort((a, b) => {
         const dataA = new Date(a.dataset.timestamp);
@@ -77,7 +75,7 @@ function ordenar_historico_por_data() {
         return dataB - dataA;
     });
 
-    console.log(itens)
+    // console.log(itens)
 
     container.innerHTML = '';
 
@@ -123,28 +121,31 @@ $(document).ready(function () {
     });
 });
 
-
-const form = document.getElementById('chat_form');
-form.addEventListener('keypress', function(event) {
-    if (event.keyCode === 13 && !event.shiftKey) {
-        event.preventDefault();
-        form.submit();
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('chat_form');
+    if (form) {
+        form.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                form.submit();
+            }
+        });
     }
 });
-
 
 const textarea = document.querySelector('.query');
-form.addEventListener('submit', function(event) {
-    if (!textarea.value.trim()) {
-        event.preventDefault();
-    }
-});
-
+const form = document.getElementById('chat_form');
+if (form && textarea) {
+    form.addEventListener('submit', function(event) {
+        if (!textarea.value.trim()) {
+            event.preventDefault();
+        }
+    });
+}
 
 function scrollToBottom() {
     $('.chat').animate({ scrollTop: $('.chat')[0].scrollHeight }, 200);
 }
-
 
 function openAsideBarMobile() {
     const aside = document.querySelector(".aside-chat");
@@ -249,12 +250,8 @@ function addUserMessage(message) {
     scrollToBottom();
 }
 
-
 function apagar_chat(id) {
-    console.log("apag", id, 'ok');
-
     function apagar_chat_pelo_id(id) {
-        console.log("apagand")
         document.querySelector('.chat__container').innerHTML = '';
         const historyItem = document.getElementById(id);
         if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
@@ -275,7 +272,6 @@ function apagar_chat(id) {
         apagar_chat_pelo_id('');
         reseta_arquivos('');
     } else {
-        console.log("apagandoooooo")
         $.ajax({
             type: 'POST',
             url: '/delete_chat',
@@ -297,7 +293,6 @@ function apagar_chat(id) {
 // Trocar matricula por id
 function get_chat(id) {
     if (idChatLocal != id) {
-        apagar_chat();
         
         const profileStr = getCookie("profile");
         const res = profileStr ? JSON.parse(profileStr) : null;
@@ -332,7 +327,6 @@ function get_chat(id) {
                         $status.text("");
                     }
                 });
-                console.log("ID DO CHAT LOCAL", idChatLocal);
             },
             error: function(error) {
                 console.log('Erro ao obter o chat:', error);
@@ -340,14 +334,6 @@ function get_chat(id) {
         });
     }
 }
-
-
-
-
-
-
-
-
 
 function closeAllMenus() {
     document.querySelectorAll('.fab-menu').forEach(m => m.style.display = 'none');
@@ -359,19 +345,17 @@ function algumMenuAberto() {
 }
 
 function fechar_toggles() {
-    console.log()
     if (algumMenuAberto()) {
         closeAllMenus();
     }
 }
 
-
 function toggleMenu(id) {
+    closeAllMenus();
     const menu = document.getElementById(`${id}_menu`);
     if (!menu) return;
 
     const isVisible = getComputedStyle(menu).display === 'flex';
-    closeAllMenus();
 
     if (!isVisible) {
         menu.style.display = 'flex';
@@ -386,13 +370,7 @@ document.addEventListener('click', function (event) {
         if (!isClickInsideFab && !isClickInsideMenu) {
             closeAllMenus();
         }
-    }, 0); // adia a execução para depois dos handlers inline
-});
-
-const fab = newDiv.querySelector('.fab');
-fab.addEventListener('click', (e) => {
-    e.stopPropagation(); // evita que o clique no botão dispare o listener global
-    toggleMenu(item.chat_id);
+    }, 100);
 });
 
 function render_botao_historico(item) {
@@ -401,15 +379,16 @@ function render_botao_historico(item) {
     newDiv.id = item.chat_id;
     newDiv.dataset.buttonId = item.chat_id;
     newDiv.dataset.timestamp = item.timestamp;
-    console.log(item.chat, item.timestamp, newDiv.dataset.timestamp)
 
     newDiv.onclick = function () {
         get_chat(item.chat_id);
         
+        // Tirando a cor em destaque de todos os botões do histórico.
         const todos = document.querySelectorAll('.history_item');
         todos.forEach(el => el.classList.remove('selecionado'));
     
-        const elemento = document.querySelector(`.history_item#${item.chat_id}`);
+        // Dando a cor em destaque apenas para o botão clicado.
+        const elemento = document.querySelector(`.history_item[id="${item.chat_id}"]`);
         if (elemento) {
             elemento.classList.add('selecionado');
         }
@@ -418,14 +397,27 @@ function render_botao_historico(item) {
     newDiv.innerHTML = `
         <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.title}</p>
             <div class="fab-wrapper">
-                <div class="fab" onclick="toggleMenu('${item.chat_id}')">
+                <div class="fab">
                     <i class='fas fa-ellipsis-h'></i>
                 </div>
                 <div class="fab-menu" id="${item.chat_id}_menu" style="display: none;">
-                    <i class='fas fa-trash' onclick="apagar_chat('${item.chat_id}')"></i>
+                    <i class='fas fa-trash'></i>
                 </div>
             </div>
         `;
     
     document.getElementsByClassName("history")[0].appendChild(newDiv);
+
+    const fab = newDiv.querySelector('.fab');
+    const trashIcon = newDiv.querySelector('.fab-menu .fa-trash');
+
+    fab.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu(item.chat_id);
+    });
+
+    trashIcon.addEventListener('click', (e) => {
+        e.stopPropagation();
+        apagar_chat(item.chat_id);
+    });
 }

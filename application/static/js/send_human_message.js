@@ -78,7 +78,7 @@ async function sendMessage(message, showStars) {
     const perfil_response = res || {token: ""};
     const userToken = perfil_response && perfil_response["token"]
 
-    console.log("CHAT ID QUE SERÁ ENVIADO: ", idChatLocal);
+    // console.log("CHAT ID QUE SERÁ ENVIADO: ", idChatLocal);
     socket.emit("input_text", {
         input_data: message,
         arquivos: arquivosBase64,
@@ -187,8 +187,8 @@ async function sendMessage(message, showStars) {
         }
 
         // Se chat_id ainda não estiver no histórico
-        console.log(ids, chat_id, idChatLocal)
-        if (!idChatLocal || idChatLocal == null) {
+        // console.log(ids, chat_id, idChatLocal)
+        if ((!idChatLocal || idChatLocal == null) && estaLogado()) {
             get_resumo(message)
                 .then((resumo) => {
                     return fetch('/update_title', {
@@ -199,7 +199,7 @@ async function sendMessage(message, showStars) {
                 })
                 .then((resumo) => {
                     let data = new Date().toISOString();
-                    console.log(data);
+                    // console.log(data);
 
                     render_botao_historico({
                         title: resumo,
@@ -210,15 +210,15 @@ async function sendMessage(message, showStars) {
 
         } else {
             // Se já existir, não adiciona novo botão e zera idChatLocal
-            console.log("Chat já existe no histórico. Não adicionando.");
+            // console.log("Chat já existe no histórico. Não adicionando.");
             idChatLocal = null;
         }
 
         // Atualiza timestamp se o item ainda for válido
         idChatLocal = chat_id;
-        console.log(historyContainer, idChatLocal)
+        // console.log(historyContainer, idChatLocal)
         const elemento = document.querySelector(`.history_item[data-button-id="${idChatLocal}"]`);
-        console.log("Atualizando timestamp:", elemento);
+        // console.log("Atualizando timestamp:", elemento);
 
         if (elemento) {
             elemento.dataset.timestamp = new Date().toISOString();
