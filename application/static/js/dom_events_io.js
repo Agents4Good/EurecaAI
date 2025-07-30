@@ -45,11 +45,11 @@ async function carregarHistorico() {
 
             if (response.status === 200) {
                 const data = await response.json();
-                
+                console.log(data)
                 data
-                //.sort((a, b) => new Date(a.updated_at) - new Date(b.updated_at))
+                .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
                 .forEach(item => {
-                    //item.timestamp = updated_at
+                    item.timestamp = item.updated_at
                     render_botao_historico(item);
                 });
             } else {

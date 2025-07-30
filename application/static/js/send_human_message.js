@@ -206,6 +206,7 @@ async function sendMessage(message, showStars) {
                         chat_id: chat_id,
                         timestamp: data
                     });
+                    ordenar_historico_por_data();
                 });
 
         } else {
@@ -217,14 +218,18 @@ async function sendMessage(message, showStars) {
         // Atualiza timestamp se o item ainda for válido
         idChatLocal = chat_id;
         // console.log(historyContainer, idChatLocal)
-        const elemento = document.querySelector(`.history_item[data-button-id="${idChatLocal}"]`);
-        // console.log("Atualizando timestamp:", elemento);
+        Promise.resolve().then(()=> {
+            const elemento = document.querySelector(`.history_item[data-button-id="${idChatLocal}"]`);
+            // console.log("Atualizando timestamp:", elemento);
 
-        if (elemento) {
-            elemento.dataset.timestamp = new Date().toISOString();
-        }
+            if (elemento) {
+                elemento.dataset.timestamp = new Date().toISOString();
+            }
+            console.log(document.querySelector('.history'))
+        }).then(() => {
+            ordenar_historico_por_data();
+        })
 
-        ordenar_historico_por_data();
         scrollToBottom();
         enable_input();
     });
