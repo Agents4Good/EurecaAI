@@ -1,0 +1,1 @@
+USER_AGENT = "eureca-app/1.0"
