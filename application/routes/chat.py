@@ -117,7 +117,12 @@ async def get_historico():
         return jsonify([])
     
     result = [
-        {"chat_id": str(tab["id"]), "title": tab["title"]}
+        {
+            "chat_id": str(tab["id"]), 
+            "title": tab["title"],
+            "updated_at": tab["updated_at"].isoformat() if tab["updated_at"] else None
+        }
         for tab in tabs
     ]
+    print("\nValor dos chats retornado:\n", result)
     return jsonify(result)

@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS chat_tabs (
     user_id UUID REFERENCES users(id),
     title TEXT,
     context TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP /*PAREI AQUI*/
 );
 
 CREATE TABLE IF NOT EXISTS chat_messages (

@@ -9,9 +9,12 @@ async def delete_chat_tab(conn, chat_tab_id):
     await conn.execute("DELETE FROM chat_messages WHERE chat_tab_id=$1", chat_tab_id)
     await conn.execute("DELETE FROM chat_tabs WHERE id=$1", chat_tab_id)
 
+async def update_at_by_chat_tab_id(conn, chat_tab_id):
+    await conn.execute("UPDATE chat_tabs SET updated_at = NOW() WHERE id=$1", chat_tab_id)
+
 async def get_chat_tabs_by_matricula(conn, matricula):
     return await conn.fetch("""
-        SELECT ct.id, ct.title
+        SELECT ct.id, ct.title, ct.updated_at
         FROM chat_tabs ct
         JOIN users u ON ct.user_id = u.id
         WHERE u.matricula = $1

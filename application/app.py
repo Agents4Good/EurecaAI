@@ -146,6 +146,7 @@ async def execute_system(sid, user_message, arquivos, token, chat_tab_id):
             async with app.db_pool.acquire() as conn:
                 await add_chat_message(conn, chat_tab_id, "human_message", user_message)
                 await add_chat_message(conn, chat_tab_id, "ai_message", response)
+                await update_at_by_chat_tab_id(conn, chat_tab_id)
             await sio.emit("resposta_final", {"resposta": response, "chat_id": chat_tab_id}, room=sid)
         else:
             await sio.emit("resposta_final", {"resposta": response}, room=sid)
