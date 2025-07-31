@@ -664,7 +664,7 @@ aside {
 
 .fab-menu {
     position: absolute;
-    top: -60px; /* sobe acima do botão */
+    top: -60px;
     right: 0;
     background-color: white;
     border: 1px solid #ddd;
@@ -734,7 +734,6 @@ aside {
     justify-content: center;
     align-items: center;
     padding-top: 5px;
-    /*background-color: red;*/
 }
 
 #recordImage {
