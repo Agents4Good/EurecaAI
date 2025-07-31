@@ -250,27 +250,38 @@ function addUserMessage(message) {
     scrollToBottom();
 }
 
+
 function apagar_chat(id) {
-    function apagar_chat_pelo_id(id) {
-        document.querySelector('.chat__container').innerHTML = '';
-        const historyItem = document.getElementById(id);
-        if ((historyItem && historyItem.classList.contains("history_item")) || id == '') {
+    const isIdVazio = id === '';
+
+    function apagar_chat_pelo_id(chatId) {
+        console.log("apagando pelo id", chatId, idChatLocal);
+
+        const historyItem = document.getElementById(chatId);
+        const ehItemDeHistorico = historyItem && historyItem.classList.contains("history_item");
+        const isChatSendoApagadoOAtual = chatId === idChatLocal;
+
+        if (ehItemDeHistorico || chatId === '') {
             try {
-                historyItem.remove();
-            } catch {}
-            if (id == idChatLocal || id == '') {
-                idChatLocal = null;
-                const todos = document.querySelectorAll('.history_item');
-                todos.forEach(el => el.classList.remove('selecionado'));
+                if (isChatSendoApagadoOAtual || chatId === '') {
+                    document.querySelector('.chat__container').innerHTML = '';
+                    document.querySelectorAll('.history_item').forEach(el => el.classList.remove('selecionado'));
+                    idChatLocal = null;
+                } else {
+                    const historyItem = document.querySelector(`.history_item[data-button-id="${chatId}"]`);
+                    historyItem?.classList.remove('selecionado');
+                }
+                historyItem?.remove();
+            } catch (e) {
+                console.error("Erro ao apagar chat pelo ID:", e);
             }
         }
 
-        reseta_arquivos(id);
+        reseta_arquivos(chatId);
     }
 
-    if (id == '') {
+    if (isIdVazio) {
         apagar_chat_pelo_id('');
-        reseta_arquivos('');
     } else {
         $.ajax({
             type: 'POST',
@@ -278,12 +289,18 @@ function apagar_chat(id) {
             contentType: 'application/json',
             data: JSON.stringify({ chat_id: id }),
             timeout: 400000,
-            success: function (response) {
-                if (response.status == 200) {
+            success: function (_response, _textStatus, xhr) {
+                const statusCode = xhr.status;
+                console.log("Status HTTP:", statusCode);
+
+                if (statusCode === 200) {
                     apagar_chat_pelo_id(id);
                 } else {
-                    apagar_chat_pelo_id(id);
+                    console.warn("Resposta inesperada ao deletar chat:", statusCode);
                 }
+            },
+            error: function (xhr, _status, error) {
+                console.error("Erro ao tentar deletar chat. Status HTTP:", xhr.status, "-", error);
             }
         });
     }

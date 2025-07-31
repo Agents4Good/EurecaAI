@@ -741,6 +741,10 @@ aside {
     font-size: 20px;
 }
 
+#recordImage:hover {
+    background-color: #1A4E8A;
+}
+
 .chat_aux_container {
     width: calc(100% - 10px);
     height: 100%;
@@ -934,6 +938,7 @@ aside {
     align-items: center;
     aspect-ratio: 1 / 1;
 }
+
 .logos-container {
     display: inline-flex;
     align-items: center;
@@ -996,8 +1001,4 @@ aside {
 
 .history_menu {
     z-index: 1;
-}
-
-.history_item {
-    z-index: 2;
 }

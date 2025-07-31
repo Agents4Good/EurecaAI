@@ -207,6 +207,8 @@ async function sendMessage(message, showStars) {
                         timestamp: data
                     });
                     ordenar_historico_por_data();
+                    const elemento = document.querySelector(`.history_item[data-button-id="${chat_id}"]`);
+                    elemento?.classList.add('selecionado');
                 });
 
         } else {
@@ -220,6 +222,7 @@ async function sendMessage(message, showStars) {
         // console.log(historyContainer, idChatLocal)
         Promise.resolve().then(()=> {
             const elemento = document.querySelector(`.history_item[data-button-id="${idChatLocal}"]`);
+            elemento?.classList.add('selecionado');
             // console.log("Atualizando timestamp:", elemento);
 
             if (elemento) {
