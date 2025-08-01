@@ -102,6 +102,15 @@
             window.location.href = "/";
         }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleLogin();
+                }
+            })
+        })
+
     </script>
 </head>
 <body class="valign-wrapper">
