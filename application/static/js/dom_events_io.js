@@ -49,7 +49,6 @@ async function carregarHistorico() {
                 data
                 .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
                 .forEach(item => {
-                    item.timestamp = item.updated_at
                     render_botao_historico(item);
                 });
             } else {
@@ -70,8 +69,8 @@ function ordenar_historico_por_data() {
     //console.log(itens)
 
     itens.sort((a, b) => {
-        const dataA = new Date(a.dataset.timestamp);
-        const dataB = new Date(b.dataset.timestamp);
+        const dataA = new Date(a.dataset.updated_at);
+        const dataB = new Date(b.dataset.updated_at);
         return dataB - dataA;
     });
 
@@ -395,7 +394,7 @@ function render_botao_historico(item) {
     newDiv.className = "history_item";
     newDiv.id = item.chat_id;
     newDiv.dataset.buttonId = item.chat_id;
-    newDiv.dataset.timestamp = item.timestamp;
+    newDiv.dataset.updated_at = item.updated_at;
 
     newDiv.onclick = function () {
         get_chat(item.chat_id);

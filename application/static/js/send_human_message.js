@@ -204,7 +204,7 @@ async function sendMessage(message, showStars) {
                     render_botao_historico({
                         title: resumo,
                         chat_id: chat_id,
-                        timestamp: data
+                        updated_at: data
                     });
                     ordenar_historico_por_data();
                     const elemento = document.querySelector(`.history_item[data-button-id="${chat_id}"]`);
@@ -226,7 +226,7 @@ async function sendMessage(message, showStars) {
             // console.log("Atualizando timestamp:", elemento);
 
             if (elemento) {
-                elemento.dataset.timestamp = new Date().toISOString();
+                elemento.dataset.updated_at = new Date().toISOString();
             }
             console.log(document.querySelector('.history'))
         }).then(() => {
