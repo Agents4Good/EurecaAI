@@ -1,3 +1,4 @@
+
 import json
 import re
 import traceback
@@ -47,13 +48,12 @@ class AgenteTools:
         prompt: str,
         temperature: int = 0,
         max_tokens: int = 2000,
+        session=None,  # sessão MCP para executar as tools
     ):
-        self.model = LLM(
-            model=model, temperature=temperature, max_tokens=max_tokens
-        )
-        
+        self.model = LLM(model=model, temperature=temperature, max_tokens=max_tokens).bind_tools(tools)
         self.tools = tools
         self.prompt = prompt
+        self.session = session
         self.app = self.build()
 
     async def call_model(self, state: AgentState):
@@ -63,63 +63,55 @@ class AgenteTools:
 
         message = await self.model.ainvoke(messages)
         message = await self.extract_tool_calls(message)
-    
-        print("RESPOSTA DO AGENTE: ", message)
+
+        print("RESPOSTA DO AGENTE:", message)
+
+        # for tool_call in message.tool_calls:
+        #     tool_name = tool_call['name']
+        #     tool_args = tool_call['args']
+        #     print(f"Executando tool '{tool_name}' com args {tool_args}")
+        #     tool_result = await self.session.call_tool(tool_name, arguments=tool_args)
+
+        #     print( " \nTOOOL RESULT ", tool_result, " \n ")
         return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
-    
 
 
     def build(self):
         workflow = StateGraph(AgentState)
         workflow.add_node("agent", self.call_model)
-        workflow.add_node("tools", ToolNode(self.tools))
-        # workflow.add_node("exit", self.exit_node)
+        workflow.add_node("call_server", self.call_server)
+        # Remove execução automática da tool para controlar manualmente
         workflow.add_edge(START, "agent")
-        workflow.add_conditional_edges("agent", self.should_continue, ["tools", END])
-        workflow.add_edge("tools", "agent")
-        # workflow.add_edge("exit", END)
+        workflow.add_conditional_edges("agent", self.should_continue, ["call_server",END])
+        workflow.add_edge("call_server", "agent")
         return workflow.compile()
     
+
+    async def call_server(self, state: AgentState):
+        last_message = state["messages"][-1]
+        response = []
+
+        for tool_call in last_message.tool_calls:
+            tool_name = tool_call["name"]
+            tool_args = tool_call["args"]
+
+            print(f"[EXECUTE TOOL] Executando tool '{tool_name}' com args: {tool_args}")
+            tool_result = await self.session.call_tool(tool_name, arguments=tool_args)
+            #print("Resultado da tool:", tool_result)
+
+            for content_item in tool_result.content:
+                response.append(content_item.text)
+
+        return {'messages': [AIMessage(content="\n".join(response))]}
+
     async def should_continue(self, state: AgentState):
         messages = state["messages"]
         last_message = messages[-1]
         if last_message.tool_calls:
-            return "tools"
+            return "call_server"
         return END
 
-    # async def execute_tool_remotely(self, state: AgentState) -> AgentState:
-    #     from langchain_core.messages import ToolMessage
-
-    #     last_message = state["messages"][-1]
-    #     tool_calls = last_message.tool_calls
-
-    #     results = []
-
-    #     print(" LAST MESSAGE NO EXECUTE TOOL ", last_message.tool_calls)
-    #     for tool_call in tool_calls:
-    #         tool_name = tool_call["name"]
-    #         args = tool_call["args"]
-
-    #         # Busca a tool pelo nome
-    #         tool = next((t for t in self.tools if t.name == tool_name), None)
-
-    #         if not tool:
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=f"Tool {tool_name} não encontrada."))
-    #             continue
-
-    #         try:
-    #             result = await tool.ainvoke(args)
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=str(result)))
-    #         except Exception as e:
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=f"Erro: {e}"))
-
-    #     return {"messages": state["messages"] + results}
-
     async def arun(self, question: str):
-        # graph = self.build()
-        # response = await graph.ainvoke({"messages": [HumanMessage(content=question)]})
-
-        # return response
         thread = {"configurable": {"thread_id": "1"}}
         auxiliar = ""
         async for message_chunk in self.app.astream(
@@ -132,7 +124,7 @@ class AgenteTools:
                 message.pretty_print()
 
         return auxiliar.content
-
+    
 
     async def extract_tool_calls(self, response):
         try:
