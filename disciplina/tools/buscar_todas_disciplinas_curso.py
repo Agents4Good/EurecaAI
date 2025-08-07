@@ -3,6 +3,7 @@ from utils.BASE_URL import BASE_URL
 from mcp_server import mcp
 import logging
 from helpers.make_request import make_request
+import inspect
 
 @mcp.tool()
 async def buscar_todas_disciplinas_curso(campus: Any = 1, curso: Any = 14102100) -> str | list[dict]:
@@ -29,26 +30,16 @@ async def buscar_todas_disciplinas_curso(campus: Any = 1, curso: Any = 14102100)
         url = f"{BASE_URL}/disciplinas"
         data = await make_request(url, params)
 
-
         if not data:
             return "Não foi possível obter as disciplinas ou nenhuma disciplina foi encontrada"
         
-        print("Resultado da chamada:", data[0:10])
+ 
         return data[0:10]
     except Exception as e:
         import traceback
-        print("❌ Tool deu erro:", e)
+        func_name = inspect.currentframe().f_code.co_name
+        print(f"❌Tool {func_name} deu erro:", e)
         traceback.print_exc()
-        raise  # Se você quiser que o erro continue subindo (bom pra debug)
+        raise
         
 
-
-
-# import asyncio
-
-# async def main():
-#     resultado = await buscar_todas_disciplinas_curso(campus=1, curso=14102100)
-#     print("Resultado da chamada:", resultado)
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
