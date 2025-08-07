@@ -50,7 +50,7 @@ class AgenteTools:
     ):
         self.model = LLM(
             model=model, temperature=temperature, max_tokens=max_tokens
-        )
+        ).bind_tools(tools)
         
         self.tools = tools
         self.prompt = prompt
@@ -63,8 +63,6 @@ class AgenteTools:
 
         message = await self.model.ainvoke(messages)
         message = await self.extract_tool_calls(message)
-    
-        print("RESPOSTA DO AGENTE: ", message)
         return {'messages': [AIMessage(content=message.content, tool_calls=message.tool_calls)]}
     
 
@@ -87,39 +85,7 @@ class AgenteTools:
             return "tools"
         return END
 
-    # async def execute_tool_remotely(self, state: AgentState) -> AgentState:
-    #     from langchain_core.messages import ToolMessage
-
-    #     last_message = state["messages"][-1]
-    #     tool_calls = last_message.tool_calls
-
-    #     results = []
-
-    #     print(" LAST MESSAGE NO EXECUTE TOOL ", last_message.tool_calls)
-    #     for tool_call in tool_calls:
-    #         tool_name = tool_call["name"]
-    #         args = tool_call["args"]
-
-    #         # Busca a tool pelo nome
-    #         tool = next((t for t in self.tools if t.name == tool_name), None)
-
-    #         if not tool:
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=f"Tool {tool_name} não encontrada."))
-    #             continue
-
-    #         try:
-    #             result = await tool.ainvoke(args)
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=str(result)))
-    #         except Exception as e:
-    #             results.append(ToolMessage(name=tool_name, tool_call_id=tool_call["id"], content=f"Erro: {e}"))
-
-    #     return {"messages": state["messages"] + results}
-
     async def arun(self, question: str):
-        # graph = self.build()
-        # response = await graph.ainvoke({"messages": [HumanMessage(content=question)]})
-
-        # return response
         thread = {"configurable": {"thread_id": "1"}}
         auxiliar = ""
         async for message_chunk in self.app.astream(

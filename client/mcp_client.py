@@ -7,12 +7,25 @@ from langchain_mcp_adapters.tools import load_mcp_tools
 from agentes.agente_tools import AgenteTools
 
 from langchain_community.chat_models import ChatDeepInfra
-#from agentes.agente_tools import AgenteTools
-from agentes.agente_tools2 import *
-#from mcp_wrapper import MCPToolWrapper
+from agentes.agente_tools import AgenteTools
+from agentes.agente_tools_sem_suporte import AgenteToolsSemSuporte
+
 
 from dotenv import load_dotenv
 load_dotenv()
+
+
+prompt = """
+Você é um assistente universitário e pode usar ferramentas para responder perguntas. Você não deve executar as ferramentas, seu papel é apenas escolher as ferramentas corretas e passar os parámetros no fluxo de execução. ** Sempre que quiser usar uma ferramenta, escreva assim: **
+    use_tool(nome_da_ferramenta, {'param1': 'valor', 'param2': 'valor'})
+    
+Suas ferramentas:
+- buscar_todas_disciplinas_curso {campus: codigo_campus, curso: codigo_do_curso }.
+- buscar_disciplina_especifica_curso {disciplina: codigo_disciplina, campus: codigo_campus, curso: codigo_curso}
+
+IMPORTANTE:
+- utilize somente as suas ferramentas.
+"""
 
 class MCPClient:
     def __init__(self):
@@ -45,20 +58,29 @@ class MCPClient:
         print("✅ Ferramentas carregadas diretamente do MCP server:",
               [t.name for t in self.tools])
 
-        # wrapped_tools = [
-        #         MCPToolWrapper(tool_name=tool.name, session=self.session)
-        #         for tool in self.tools  
-        # ]
-        
-        self.agent = AgenteTools(
+       
+        # sem suporte a tool call Qwen/Qwen2.5-Coder-7B
+        #meta-llama/Llama-4-Scout-17B-16E-Instruct
+
+        self.agent = AgenteToolsSemSuporte(
             LLM=ChatDeepInfra,
-            model="meta-llama/Llama-4-Scout-17B-16E-Instruct",
+            model="Qwen/Qwen2.5-Coder-7B",
             tools=self.tools,
-            prompt="Você é um assistente universitário e pode usar ferramentas para responder perguntas. Você não deve executar as ferramentas, seu papel é apenas escolher as ferramentas corretas e passar os parámetros no fluxo de execução.",
+            prompt=prompt,
             temperature=0.7,
             max_tokens=1000,
             session=self.session
         )
+
+
+        # self.agent = AgenteTools(
+        #     LLM=ChatDeepInfra,
+        #     model="Qwen/Qwen2.5-Coder-7B",
+        #     tools=self.tools,
+        #     prompt=prompt,
+        #     temperature=0.7,
+        #     max_tokens=1000
+        # )
 
 
 
