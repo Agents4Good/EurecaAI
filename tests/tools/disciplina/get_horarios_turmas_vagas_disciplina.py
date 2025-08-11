@@ -2,7 +2,7 @@ import json
 import requests
 from typing import Any
 from .utils import get_disciplina_grade_most_similar, get_disciplina_grade_most_similar_por_codigo_do_curso
-from .turmas_por_cursos import get_turmas_por_cursos
+from .get_turmas_por_cursos import get_turmas_por_cursos
 from ..utils.base_url import URL_BASE
 from ..utils.validacoes import valida_periodo_curriculo, validar_turma
 

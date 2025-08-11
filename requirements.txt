@@ -34,3 +34,6 @@ quart
 PyMuPDF
 hypercorn
 opik
+langchain_mcp_adapters
+fastmcp
+mcp
