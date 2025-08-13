@@ -4,6 +4,7 @@ from typing import Optional
 from langchain_community.chat_models import ChatDeepInfra
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_mcp_adapters.prompts import load_mcp_prompt
 from agentes.agente_tools import AgenteTools
 
 from langchain_community.chat_models import ChatDeepInfra
@@ -15,17 +16,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-prompt = """
-Você é um assistente universitário e pode usar ferramentas para responder perguntas. Você não deve executar as ferramentas, seu papel é apenas escolher as ferramentas corretas e passar os parámetros no fluxo de execução. ** Sempre que quiser usar uma ferramenta, escreva assim: **
-    use_tool(nome_da_ferramenta, {'param1': 'valor', 'param2': 'valor'})
-    
-Suas ferramentas:
-- buscar_todas_disciplinas_curso {campus: codigo_campus, curso: codigo_do_curso }.
-- buscar_disciplina_especifica_curso {disciplina: codigo_disciplina, campus: codigo_campus, curso: codigo_curso}
 
-IMPORTANTE:
-- utilize somente as suas ferramentas.
-"""
+# prompt = """
+# Você é um assistente universitário e pode usar ferramentas para responder perguntas. Você não deve executar as ferramentas, seu papel é apenas escolher as ferramentas corretas e passar os parámetros no fluxo de execução. ** Sempre que quiser usar uma ferramenta, escreva assim: **
+#     use_tool(nome_da_ferramenta, {'param1': 'valor', 'param2': 'valor'})
+    
+# Suas ferramentas:
+# - buscar_todas_disciplinas_curso {campus: codigo_campus, curso: codigo_do_curso }.
+# - buscar_disciplina_especifica_curso {disciplina: codigo_disciplina, campus: codigo_campus, curso: codigo_curso}
+
+# IMPORTANTE:
+# - utilize somente as suas ferramentas.
+# """
+
+
 
 class MCPClient:
     def __init__(self):
@@ -45,7 +49,7 @@ class MCPClient:
         }
 
         streamable = {
-            "url": "http://100.66.116.115:8888/mcp",
+            "url": "http://100.66.116.115:8888/mcp", # URL que Bia usa
             "transport": "streamable_http",
         }
 
@@ -54,14 +58,25 @@ class MCPClient:
         self.session = await self.session_cm.__aenter__()
         await self.session.initialize()
         self.tools = await load_mcp_tools(self.session)
+        #print( " PROMPT ", prompt.messages[0].content.text)
 
         print("✅ Ferramentas carregadas diretamente do MCP server:",
               [t.name for t in self.tools])
+        
+        prompts = await load_mcp_prompt(self.session, "campus_prompt")
+        prompt = prompts[0].content
 
+
+        # print(" PROMPT ", prompt)
+        # print("TIPOOOO PROMPT " , type(prompt.content))
+        #print("Available prompts:", [p.content for p in prompt])
+
+        #print(" TOOOLS ", self.tools)
        
         # sem suporte a tool call Qwen/Qwen2.5-Coder-7B
         #meta-llama/Llama-4-Scout-17B-16E-Instruct
 
+    
         self.agent = AgenteToolsSemSuporte(
             LLM=ChatDeepInfra,
             model="Qwen/Qwen2.5-Coder-7B",
