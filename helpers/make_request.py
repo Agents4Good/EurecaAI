@@ -3,7 +3,7 @@ import httpx
 from typing import Any
 from config import USER_AGENT
 
-async def make_request(url: str, params: dict) -> dict[str, Any] | None:
+async def make_request(url: str, params: dict = {}) -> dict[str, Any] | None:
     """Faz uma requisição GET com tratamento de erros."""
     
     headers = {
@@ -15,7 +15,6 @@ async def make_request(url: str, params: dict) -> dict[str, Any] | None:
         try:
             response = await client.get(url, params=params, headers=headers, timeout=30.0)
             response.raise_for_status()
-
             print("🟢 Status Code:", response.status_code)
             print("🟢 Content-Type:", response.headers.get("Content-Type"))
             print("🟢 Response Text:", response.text[:300])  # Mostra parte da resposta pra debug
@@ -24,4 +23,3 @@ async def make_request(url: str, params: dict) -> dict[str, Any] | None:
             print("❌ Erro ao fazer request:")
             traceback.print_exc()
             return None
-     
