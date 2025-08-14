@@ -8,17 +8,22 @@ from utils.obter_info_func import get_func_info
 @mcp.tool()
 async def buscar_todos_campus() -> list[dict]:
     """
-    Busca todos os campi/campus/polos da UFCG.
+    Retorna todos os campi/polos da UFCG.
 
     Returns:
-        list[dict]: Lista  de dicionários com 'campus' (código do campus), 'descricao' (nome do campus) e 'representacao' (número do campus em romano).
+        list[dict]: Lista de campi no formato:
+            {
+                "campus": int,           # Código do campus
+                "descricao": str,        # Nome do campus
+                "representacao": str     # Número do campus em algarismo romano
+            }
     """
 
     func_name, parametros_str = get_func_info()
+    url = f"{BASE_URL}/campi"
 
     try:
         logging.info(f"🔍 Chamando {func_name}({parametros_str})")
-        url = f"{BASE_URL}/campi"
         data = await make_request(url)
 
         if not data:

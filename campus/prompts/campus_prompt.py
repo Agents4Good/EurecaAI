@@ -1,5 +1,7 @@
 from mcp_server import mcp
 
+"""Trata-se de um prompt de exemplo"""
+
 @mcp.prompt()
 def campus_prompt() -> str:
     """Retorna o prompt do agente de campus"""
