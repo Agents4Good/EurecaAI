@@ -349,7 +349,6 @@ function apagar_chat(id) {
 }
 
 
-// Trocar matricula por id
 function get_chat(id) {
     if (idChatLocal != id) {
         
