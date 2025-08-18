@@ -1,3 +1,5 @@
+const textarea = document.getElementById('user_input');
+
 function formatCamelCase(str) {
     const exceptions = ['de', 'da', 'do', 'das', 'dos', 'e'];
     return str.toLowerCase().split(' ').map((word, index) => {
@@ -26,16 +28,12 @@ async function get_resumo(texto) {
     }
 }
 
-
 function enable_input() {
-    const textarea = document.getElementById('user_input');
     textarea.disabled = false;
     document.querySelector('.button_add_file').disabled = false;
 }
 
-
 function disable_input() {
-    const textarea = document.getElementById('user_input');
     textarea.disabled = true;
     document.querySelector('.button_add_file').disabled = true;
 }
@@ -246,5 +244,6 @@ async function sendMessage(message, showStars) {
 
         scrollToBottom();
         enable_input();
+        textarea.focus();
     });
 }
