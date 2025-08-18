@@ -37,3 +37,4 @@ opik
 langchain_mcp_adapters
 fastmcp
 mcp
+pymongo

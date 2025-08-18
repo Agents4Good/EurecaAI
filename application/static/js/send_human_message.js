@@ -157,8 +157,9 @@ async function sendMessage(message, showStars) {
 
         const html = marked.parse(streamingMarkdown.trim());
         const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+        console.log($lastBotResponse);
         $status.text("");
-
+        
         $lastBotResponse.html(html); // substitui com HTML convertido de Markdown
         $lastBotResponse.closest('.bot').removeClass('skeleton');
     });
@@ -171,6 +172,11 @@ async function sendMessage(message, showStars) {
         const chat_id = data.chat_id;
         const htmlResponse = marked.parse(textoFinal);
         $lastBotResponse.html(htmlResponse);
+        
+        const lastBotResponse_ = $lastBotResponse.get(0); // ou $lastBotResponse[0]
+        if (lastBotResponse_) {
+            lastBotResponse_.dataset.ready = "true";
+        }
 
         const cleanedResponse = textoFinal.trim().replace(/['"]/g, '').trim();
         $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);

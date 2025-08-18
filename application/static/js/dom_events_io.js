@@ -11,7 +11,12 @@ window.onload = function() {
     });
 
     socket.on("disconnect", () => {
-        bot_alert_message("Ocorreu um erro! Você está desconectado do servidor.");
+        const $lastBotResponse_get = $('.bot__name__response').last();
+        const lastBotResponse_get = $lastBotResponse_get.get(0);
+
+        if (lastBotResponse_get && lastBotResponse_get.dataset.ready !== "true") {
+            bot_alert_message("Ocorreu um erro! Você está desconectado do servidor.");
+        }
     });
 }
 
@@ -35,6 +40,9 @@ function bot_alert_message(mensagem) {
     const textarea = document.getElementById('user_input');
     textarea.disabled = false;
     document.querySelector('.button_add_file').disabled = false;
+
+    enable_input();
+    textarea.focus();
 }
 
 

@@ -10,6 +10,7 @@ from tests.tools.setor import *
 from tests.tools.campus.get_calendarios import get_calendarios
 from tests.tools.campus.get_campi import get_campi
 from tests.tools.campus.get_periodo_mais_recente import get_periodo_mais_recente
+from pymongo import MongoClient
 
 
 # TOOLS USADAS

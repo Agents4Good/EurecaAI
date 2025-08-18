@@ -14,12 +14,7 @@ mcp_campus = FastMCP("disciplina")
 tools = [
     get_disciplinas, 
     get_disciplina_ofertadas_periodo,
-    get_horarios_turmas_vagas_disciplina,
-    get_matriculas_disciplina,
-    get_plano_de_aulas,
-    get_pre_requisitos_disciplina,
-    get_turmas_disciplina,
-    get_turmas_por_cursos
+
 ]
 
 for func in tools:
