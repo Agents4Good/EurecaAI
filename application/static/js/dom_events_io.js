@@ -370,7 +370,9 @@ function get_chat(id) {
 
                 data.forEach(message => {
                     if (message.human_message) {
+                        arquivosSelecionados = message.arquivos || [];
                         render_human_message(message.human_message);
+                        arquivosSelecionados = []
                     } else if (message.ai_message) {
                         render_ai_message(message.ai_message, false);
                         $('.bot').last().find('.audio-button').show();
