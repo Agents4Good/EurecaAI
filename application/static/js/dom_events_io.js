@@ -2,7 +2,7 @@ window.onload = function() {
     getProfile();
 
     const socket = io("http://127.0.0.1:8000", {
-    transports: ['websocket']
+        transports: ['websocket']
     });
     
     socket.on("connect", () => {
@@ -10,8 +10,10 @@ window.onload = function() {
 
         const $lastBotResponse_get = $('.bot__name__response').last();
         const lastBotResponse_get = $lastBotResponse_get.get(0);
+        const $responses_bots = $('.bot__name__response');
+        console.log("Total de respostas de bots:", $responses_bots.length);
 
-        if (lastBotResponse_get && lastBotResponse_get.dataset.ready !== "true") {
+        if (lastBotResponse_get && lastBotResponse_get.dataset.ready !== "true" && $responses_bots.length > 1) {
             bot_alert_message("A conexão com o servidor foi restabelecida. Por favor, tente novamente!");
         }
     });
