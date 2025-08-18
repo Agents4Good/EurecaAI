@@ -7,7 +7,34 @@ window.onload = function() {
     
     socket.on("connect", () => {
         console.log("✅ Conectado ao servidor via Socket.IO!");
+        bot_alert_message("A conexão com o servidor foi restabelecida. Por favor, tente novamente!")
     });
+
+    socket.on("disconnect", () => {
+        bot_alert_message("Ocorreu um erro! Você está desconectado do servidor.");
+    });
+}
+
+
+function bot_alert_message(mensagem) {
+    console.log(mensagem);
+    const $lastBotResponse = $('.bot__name__response').last();
+
+    $('.bot').last().find('.audio-button').show();
+    const textoFinal = mensagem;
+    const htmlResponse = marked.parse(textoFinal);
+    $lastBotResponse.html(htmlResponse);
+
+    const cleanedResponse = textoFinal.trim().replace(/['"]/g, '');
+    $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
+
+    $lastBotResponse.closest('.bot').removeClass('skeleton');
+    const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
+    $status.text("");
+
+    const textarea = document.getElementById('user_input');
+    textarea.disabled = false;
+    document.querySelector('.button_add_file').disabled = false;
 }
 
 
