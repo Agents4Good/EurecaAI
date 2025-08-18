@@ -68,6 +68,11 @@ async function sendMessage(message, showStars) {
     const arquivosParaEnviar = [...arquivosSelecionados];
     reseta_arquivos('');
 
+    if (!socket.connected) {
+        bot_alert_message("Ocorreu um erro! Você está desconectado do servidor.");
+        return;
+    }
+
     const arquivosBase64 = await Promise.all(arquivosParaEnviar.map(async (file) => ({
         filename: file.name,
         content: await fileToBase64(file)
@@ -150,7 +155,7 @@ async function sendMessage(message, showStars) {
         const token = data.resposta;
         streamingMarkdown += token;
 
-        const html = marked.parse(streamingMarkdown);
+        const html = marked.parse(streamingMarkdown.trim());
         const $status = $lastBotResponse.closest('.bot').find('.bot__name__response_status');
         $status.text("");
 
@@ -167,7 +172,7 @@ async function sendMessage(message, showStars) {
         const htmlResponse = marked.parse(textoFinal);
         $lastBotResponse.html(htmlResponse);
 
-        const cleanedResponse = textoFinal.trim().replace(/['"]/g, '');
+        const cleanedResponse = textoFinal.trim().replace(/['"]/g, '').trim();
         $('.audio-button').last().attr("onClick", `speak('${cleanedResponse}')`);
 
         $lastBotResponse.closest('.bot').removeClass('skeleton');
