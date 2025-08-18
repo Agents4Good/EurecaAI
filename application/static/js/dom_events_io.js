@@ -7,7 +7,13 @@ window.onload = function() {
     
     socket.on("connect", () => {
         console.log("✅ Conectado ao servidor via Socket.IO!");
-        bot_alert_message("A conexão com o servidor foi restabelecida. Por favor, tente novamente!")
+
+        const $lastBotResponse_get = $('.bot__name__response').last();
+        const lastBotResponse_get = $lastBotResponse_get.get(0);
+
+        if (lastBotResponse_get && lastBotResponse_get.dataset.ready !== "true") {
+            bot_alert_message("A conexão com o servidor foi restabelecida. Por favor, tente novamente!");
+        }
     });
 
     socket.on("disconnect", () => {
