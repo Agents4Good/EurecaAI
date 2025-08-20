@@ -62,9 +62,9 @@ class EurecaChat:
         messages = state["messages"]
         summary = state.get("summary", "")
         response_count = state.get("response_count", 0)
-        limit = 3
+        limit = 3 # limite de quantas respostas do agregador para se fazer um resumo da conversa até então
 
-        print("\nESTADO QUANDO CHECGOU NO SUMARIZADOR:\n", state)
+        print("\nESTADO QUANDO CHEGOU NO SUMARIZADOR:\n", state)
         print("\nCONTAGEM DE RESPOSTAS GERADAS: ", response_count)
 
         latest_pair = format_context(messages)
@@ -176,13 +176,13 @@ class EurecaChat:
         for cb in callbacks:
             if hasattr(cb, 'emit'):
                 await cb.emit("agregando", {})
-                await cb.emit("status", {"resposta": "Agregando as informações, aguarde!"})
-                await cb.emit("logos_sites", [
-                    "https://www.google.com/s2/favicons?sz=64&domain=g1.globo.com",
-                    "https://www.google.com/s2/favicons?sz=64&domain=cnn.com",
-                    "https://www.google.com/s2/favicons?sz=64&domain=exame.com",
-                    "https://www.google.com/s2/favicons?sz=64&domain=uol.com"
-                ])
+                await cb.emit("status", {"resposta": "Juntando as informações, por favor aguarde!"})
+                # await cb.emit("logos_sites", [
+                #     "https://www.google.com/s2/favicons?sz=64&domain=g1.globo.com",
+                #     "https://www.google.com/s2/favicons?sz=64&domain=cnn.com",
+                #     "https://www.google.com/s2/favicons?sz=64&domain=exame.com",
+                #     "https://www.google.com/s2/favicons?sz=64&domain=uol.com"
+                # ])
             break
         
         query, formatted_responses = format_agent_responses(state["messages"])

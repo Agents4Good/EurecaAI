@@ -1,3 +1,5 @@
+import json
+from datetime import timezone
 from quart import Blueprint, request, jsonify, current_app
 
 from application.config import title_model
@@ -89,7 +91,11 @@ async def get_chat():
     for msg in messages:
         timestamp = msg["created_at"].isoformat()
         if msg["role"] == "human_message":
-            result.append({"human_message": msg["content"], "timestamp": timestamp})
+            try:
+                filenames = json.loads(msg["filename"]) if msg["filename"] else []
+            except json.JSONDecodeError:
+                filenames = []
+            result.append({"human_message": msg["content"], "timestamp": timestamp, "arquivos": [{"name": nome} for nome in filenames]})
         elif msg["role"] == "ai_message":
             result.append({"ai_message": msg["content"], "timestamp": timestamp})
     print("\nChat encontrado: ", result)
@@ -120,7 +126,13 @@ async def get_historico():
         {
             "chat_id": str(tab["id"]), 
             "title": tab["title"],
-            "updated_at": tab["updated_at"].isoformat() if tab["updated_at"] else None
+            "updated_at": (
+                tab["updated_at"]
+                .astimezone(timezone.utc)
+                .isoformat()
+                .replace("+00:00", "Z")
+                if tab["updated_at"] else None
+            )
         }
         for tab in tabs
     ]

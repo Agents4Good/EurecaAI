@@ -1,5 +1,5 @@
 # app.py
-import asyncio, asyncpg, sys, uuid
+import asyncio, asyncpg, sys, uuid, json
 from quart import Quart
 from dotenv import load_dotenv
 
@@ -36,7 +36,7 @@ async def setup():
     app.checkpointer = await app.checkpointer_cm.__aenter__()
 
     # Usar setup() apenas na primeira execução do sistema, para criar as tabelas do PostgresSaver
-    await app.checkpointer.setup()
+    # await app.checkpointer.setup()
     # await app.checkpointer.adelete_thread("anon_8de0f045-4617-4510-8481-221356e93502")
 
     # Inicializa a pool do asyncpg, para lidar com as demais tabelas do sistema
@@ -104,6 +104,8 @@ async def handle_input(sid, data):
 
 async def execute_system(sid, user_message, arquivos, token, chat_tab_id):
     try:
+        context = ""
+
         if token:
             if not chat_tab_id:
                 user_info = await get_info(token)
@@ -118,35 +120,43 @@ async def execute_system(sid, user_message, arquivos, token, chat_tab_id):
                     user = await get_user_or_create(conn, nome, matricula)
                     chat_tab = await create_chat_tab(conn, user["id"], "Novo Chat")
                     chat_tab_id = str(chat_tab["id"])
-        
-        print("\nCHAT TAB ID: ", chat_tab_id)
+
+            async with app.db_pool.acquire() as conn:
+                context = await get_chat_tab_context(conn, chat_tab_id) or ""
 
         config = {
-            "configurable": {"thread_id": chat_tab_id}, # thread_id é o id do chat_tab gerado ao ser criado no bd, caso não tenha usuário logado é um id gerado temporariamente
+            "configurable": {"thread_id": chat_tab_id}, # thread_id é o id do chat_tab gerado ao ser criado no BD, caso não tenha usuário logado é um id gerado temporariamente
             "token": token,
-            "callbacks_sio": [SocketIOStreamingHandler(sid=sid, socketio=sio)]
+            "callbacks_sio": [SocketIOStreamingHandler(sid=sid, socketio=sio)],
+            "current_context": context
         }
         
-        await sio.emit("status", {"resposta": "Iniciando os agentes..."})
+        await sio.emit("status", {"resposta": "Processando a pergunta do usuário..."})
 
+        filename = []
         if arquivos and isinstance(arquivos, list) and len(arquivos) > 0:
+            filename = [arquivo["filename"] for arquivo in arquivos if arquivo["filename"]]
             await sio.emit("status", {"resposta": "Lendo arquivos pdf..."}, room=sid)
-            user_message = f"Texto contido nos arquivos lidos: {realizar_tratamento_dos_arquivos(arquivos)}. \n\n Pergunta: {user_message}."
+            msg_file = f"Texto contido nos arquivos lidos: {realizar_tratamento_dos_arquivos(arquivos)}. \n\n Pergunta: {user_message}."
+            inputs = {"messages": [HumanMessage(content=msg_file)]}
+        else:
+            inputs = {"messages": [HumanMessage(content=user_message)]}
         
-        inputs = {"messages": [HumanMessage(content=user_message)]}
         response = ""
-
         async for chunk in app.system.astream(inputs, config, stream_mode="values"):
             print("\n\nCHUNK GERADA: ", chunk["messages"][-1])
             chunk["messages"][-1].pretty_print()
             response = chunk["messages"][-1].content
+            new_context = chunk.get("context", None)
         response = response or "Desculpe, não consegui processar sua solicitação."
 
         if token:
             async with app.db_pool.acquire() as conn:
-                await add_chat_message(conn, chat_tab_id, "human_message", user_message)
-                await add_chat_message(conn, chat_tab_id, "ai_message", response)
+                await add_chat_message(conn, chat_tab_id, "human_message", user_message, json.dumps(filename))
+                await add_chat_message(conn, chat_tab_id, "ai_message", response, None)
                 await update_at_by_chat_tab_id(conn, chat_tab_id)
+                if new_context:
+                    await update_chat_tab_context(conn, chat_tab_id, new_context)
             await sio.emit("resposta_final", {"resposta": response, "chat_id": chat_tab_id}, room=sid)
         else:
             await sio.emit("resposta_final", {"resposta": response}, room=sid)

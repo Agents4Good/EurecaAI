@@ -9,7 +9,7 @@ def realizar_tratamento_dos_arquivos(arquivos):
     if len(pdfs) > 0:
         texto_pdf = ler_pdf(pdfs)
         if texto_pdf.strip():
-            messages.append(HumanMessage(content=[{"type": "text", "text": "O PDF enviado tem o seguinte texto"}, {"type": "text", "text": texto_pdf}]))
+            messages.append(f"O PDF enviado tem o seguinte texto: {texto_pdf}")
 
     imagens_dataurls = ler_imagens([arquivo for arquivo in arquivos if arquivo["filename"].lower().endswith((".jpg", ".jpeg", ".png"))])
     

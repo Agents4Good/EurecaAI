@@ -67,6 +67,7 @@ def get_disciplina_grade_most_similar(nome_do_campus: Any, nome_do_curso: Any, n
         {format}
         
         Não adicione mais nada, apenas a resposta nesse formato (codigo e nome_da_disciplina).
+        Se o nome da disciplina em questão for **idêntico** a umas das possíveis disciplinas, então é óbvio que a resposta é essa disciplina idêntica.
         """
     )
     

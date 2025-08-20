@@ -42,6 +42,7 @@ aggregator_model_kwargs = {
 # Agentes Especializados
 agents_model = ChatDeepInfra(model="Qwen/Qwen3-14B", temperature=0, max_tokens=2048)
 #agents_model = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
+#agents_model = ChatOpenAI(model="gpt-4o-mini-2024-07-18", temperature=0)
 
 # Modelo Sumarizador
 summarizer_model = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0)
