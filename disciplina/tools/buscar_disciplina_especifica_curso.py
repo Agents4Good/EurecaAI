@@ -58,7 +58,7 @@ async def buscar_disciplina_especifica_curso(disciplina: Any, curso: Any, campus
         data = await make_request(url, params)
 
         if not data:
-            return "Não foi possível obter a disciplina"
+            return f"Não foi possível obter a disciplina {disciplina} do curso {curso} do campus {campus}"
         
         return data
     except Exception as e:

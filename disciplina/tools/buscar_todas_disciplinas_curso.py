@@ -54,7 +54,7 @@ async def buscar_todas_disciplinas_curso(campus: Any = 1, curso: Any = 14102100)
         logging.info(f"🔍 Chamando {func_name}({parametros_str})")
         data = await make_request(url, params)
         if not data:
-            return "Não foi possível obter as disciplinas ou nenhuma disciplina foi encontrada"
+            return "Não foi possível obter as disciplinas do curso {curso} do campus {campus}"
  
         return data[0:10] #Limitação para teste
     except Exception as e:

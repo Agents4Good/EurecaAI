@@ -5,8 +5,6 @@ from mcp_server import mcp
 
 import disciplina.tools 
 import campus.tools
-import campus.prompts
-
 
 from config import USER_AGENT
 from dotenv import load_dotenv
