@@ -6,7 +6,7 @@ from helpers.make_request import make_request
 from utils.obter_info_func import get_func_info
 
 @mcp.tool()
-async def buscar_todos_curriculos_curso(campus:Any, curso: Any) -> list[dict]:
+async def buscar_todos_curriculos_curso(curso: Any) -> list[dict]:
     """
     Retorna as informações de todos os currículos de um curso específico da UFCG.
 
@@ -49,7 +49,6 @@ async def buscar_todos_curriculos_curso(campus:Any, curso: Any) -> list[dict]:
     """
 
     params = {
-        "campus": campus,
         "curso": curso
     }
 

@@ -9,5 +9,6 @@ wheels/
 # Virtual environments
 .venv/
 
+handlers/*
 
 __pycache__/

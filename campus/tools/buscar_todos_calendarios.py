@@ -31,7 +31,7 @@ async def buscar_todos_calendarios(periodo_de:Any, periodo_ate: Any, campus:Any 
     """
 
     params = {
-        "periodo_de": periodo_ate,
+        "periodo_de": periodo_de,
         "periodo_ate": periodo_ate,
         "campus": campus
     }

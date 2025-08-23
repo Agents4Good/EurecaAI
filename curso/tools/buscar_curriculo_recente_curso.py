@@ -6,7 +6,7 @@ from helpers.make_request import make_request
 from utils.obter_info_func import get_func_info
 
 @mcp.tool()
-async def buscar_curriculo_recente_curso(campus: Any, curso:Any) -> dict:
+async def buscar_curriculo_recente_curso(curso:Any) -> dict:
     """
     Retorna a informação do currículo mais recente de um curso específico da UFCG.
 
@@ -50,7 +50,6 @@ async def buscar_curriculo_recente_curso(campus: Any, curso:Any) -> dict:
 
     
     params = {
-        "campus": campus,
         "curso": curso
     }
 

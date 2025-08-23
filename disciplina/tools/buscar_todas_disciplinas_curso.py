@@ -6,13 +6,13 @@ from helpers.make_request import make_request
 from utils.obter_info_func import get_func_info
 
 @mcp.tool()
-async def buscar_todas_disciplinas_curso(campus: Any = 1, curso: Any = 14102100) -> list[dict]:
+async def buscar_todas_disciplinas_curso(campus: Any, curso: Any) -> list[dict]:
     """
     Retorna todas as disciplinas de um curso em um determinado campus da UFCG.
 
     Args:
-        campus (Any): Código do campus. Default = 1.
-        curso (Any): Código do curso. Default = 14102100.
+        campus (Any): Código do campus.
+        curso (Any): Código do curso.
 
     Returns:
         list[dict]: Lista com as disciplinas no formato:

@@ -7,7 +7,7 @@ from utils.obter_info_func import get_func_info
 
 
 @mcp.tool()
-async def buscar_todos_estudantes_curso(campus: Any, curso: Any, situacao_estudante: Any = "", periodo_de_ingresso_de: Any = "", periodo_de_ingresso_ate: Any = "", periodo_de_evasao_de: Any = "", periodo_de_evasao_ate: Any = "") -> list[dict]:
+async def buscar_todos_estudantes_curso(campus: Any, curso: Any, situacao_estudante: Any = "", periodo_de_ingresso_de: Any = "", periodo_de_ingresso_ate: Any = "") -> list[dict]:
     """
     Busca informações gerais dos estudantes da UFCG com base no(s) curso(s) e situação acadêmica.
 
@@ -15,23 +15,11 @@ async def buscar_todos_estudantes_curso(campus: Any, curso: Any, situacao_estuda
         campus (Any): código do campus.
         curso (Any): código do curso. 
         situacao_estudante (str): Situação do estudante. Valores permitidos:
-            - 'SUSPENSOS'
-            - 'REINGRESSOS'
-            - 'REATIVADOS'
-            - 'DESISTENTES'
-            - 'EVADIDOS'
-            - 'JUBILADOS'
-            - 'ABANDONOS'
-            - 'TRANSFERIDOS'
-            - 'FINALIZADOS'
-            - 'INATIVOS'
             - 'EGRESSOS'
             - 'ATIVOS'
         periodo_de_ingresso_de (Any, optional): Período inicial de ingresso. Defaults to "".
         periodo_de_ingresso_ate (Any, optional): Período final de ingresso. Defaults to "".
-        periodo_de_evasao_de (Any, optional): Período inicial de evasão. Defaults to "".
-        periodo_de_evasao_ate (Any, optional): Período final de evasão. Defaults to "".
-
+       
     Returns:
         list[dict]: Lista de estudantes no formato:
             {
@@ -102,9 +90,7 @@ async def buscar_todos_estudantes_curso(campus: Any, curso: Any, situacao_estuda
         "curso": curso,
         "situacao-do-estudante": situacao_estudante,
         "periodo-de-ingresso-de": periodo_de_ingresso_de,
-        "periodo-de-ingresso-ate": periodo_de_ingresso_ate,
-        "periodo-de-evasao-de": periodo_de_evasao_de,
-        "periodo-de-evasao-ate": periodo_de_evasao_ate
+        "periodo-de-ingresso-ate": periodo_de_ingresso_ate
     }
 
     func_name, parametros_str = get_func_info()
